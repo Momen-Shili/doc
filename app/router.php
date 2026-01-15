@@ -1,0 +1,173 @@
+<?php
+// Router
+require_once __DIR__ . '/controllers/auth_controller.php';
+require_once __DIR__ . '/controllers/dashboard_controller.php';
+require_once __DIR__ . '/controllers/patients_controller.php';
+require_once __DIR__ . '/controllers/appointments_controller.php';
+require_once __DIR__ . '/controllers/payments_controller.php';
+require_once __DIR__ . '/controllers/cash_controller.php';
+require_once __DIR__ . '/controllers/reports_controller.php';
+require_once __DIR__ . '/controllers/services_controller.php';
+require_once __DIR__ . '/controllers/import_controller.php';
+require_once __DIR__ . '/controllers/reminders_controller.php';
+
+$route = $_GET['r'] ??'dashboard';
+
+switch ($route) {
+    case'login':
+        auth_login();
+        break;
+    case'register':
+        auth_register();
+        break;
+    case'logout':
+        auth_logout();
+        break;
+    case'profile':
+        auth_profile();
+        break;
+    case'dashboard':
+        dashboard_index();
+        break;
+    case'patients':
+        patients_index();
+        break;
+    case'patient':
+        patients_show();
+        break;
+    case'patients-create':
+        patients_create();
+        break;
+    case'patients-edit':
+        patients_edit();
+        break;
+    case'patients-delete':
+        patients_delete();
+        break;
+    case'notes-create':
+        notes_create();
+        break;
+    case'notes-edit':
+        notes_edit();
+        break;
+    case'notes-delete':
+        notes_delete();
+        break;
+    case'tags-add':
+        tags_add();
+        break;
+    case'tags-remove':
+        tags_remove();
+        break;
+    case'documents-upload':
+        documents_upload();
+        break;
+    case'documents-delete':
+        documents_delete();
+        break;
+    case'documents-download':
+        documents_download();
+        break;
+    case'appointments':
+        appointments_index();
+        break;
+    case'appointments-create':
+        appointments_create();
+        break;
+    case'appointments-edit':
+        appointments_edit();
+        break;
+    case'appointments-cancel':
+        appointments_cancel();
+        break;
+    case'services':
+        services_index();
+        break;
+    case'services-create':
+        services_create();
+        break;
+    case'services-edit':
+        services_edit();
+        break;
+    case'services-toggle':
+        services_toggle();
+        break;
+    case'payments':
+        payments_index();
+        break;
+    case'payments-create':
+        payments_create();
+        break;
+    case'payments-receipt':
+        payments_receipt();
+        break;
+    case'cash':
+        cash_index();
+        break;
+    case'cash-export':
+        cash_export();
+        break;
+    case'cash-closure':
+        cash_closure_create();
+        break;
+    case'cash-closure-print':
+        cash_closure_print();
+        break;
+    case'reports':
+        reports_index();
+        break;
+    case'reports-services':
+        reports_services();
+        break;
+    case'reports-export':
+        reports_export_csv();
+        break;
+    case'reports-services-export':
+        reports_services_export();
+        break;
+    case'reports-mom-export':
+        reports_mom_export();
+        break;
+    case'reminders-templates':
+        reminders_templates();
+        break;
+    case'reminders-templates-create':
+        reminders_templates_create();
+        break;
+    case'reminders-templates-edit':
+        reminders_templates_edit();
+        break;
+    case'reminders-templates-toggle':
+        reminders_templates_toggle();
+        break;
+    case'reminders-log':
+        reminders_log();
+        break;
+    case'reminders-log-recreate':
+        reminders_log_recreate();
+        break;
+    case'reminders-export':
+        reminders_export();
+        break;
+    case'reminders-send':
+        reminders_send();
+        break;
+    case'import':
+        import_index();
+        break;
+    case'import-map':
+        import_map();
+        break;
+    case'import-preview':
+        import_preview();
+        break;
+    case'import-validate':
+        import_validate();
+        break;
+    case'import-run':
+        import_run();
+        break;
+    default:
+        http_response_code(404);
+        echo render('pages/error.php', ['message' => 'Page introuvable.']);
+}

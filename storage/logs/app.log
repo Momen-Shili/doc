@@ -1,0 +1,78 @@
+[2026-01-15 00:04:50] Uncaught Exception: SQLSTATE[HY000] [1049] Unknown database 'doctor_saas'
+[2026-01-15 01:02:16] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 01:02:16] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 01:03:16] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 01:03:16] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 01:04:01] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 01:04:01] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 01:15:22] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 01:15:22] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 01:17:40] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 01:17:40] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 01:17:47] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 01:17:47] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 20:01:05] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.reminders_log' doesn't exist
+[2026-01-15 20:01:11] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.services' doesn't exist
+[2026-01-15 20:01:13] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.services' doesn't exist
+[2026-01-15 20:01:19] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.payment_items' doesn't exist
+[2026-01-15 20:01:20] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.reminder_templates' doesn't exist
+[2026-01-15 20:01:26] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.reminders_log' doesn't exist
+[2026-01-15 20:02:43] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.services' doesn't exist
+[2026-01-15 20:04:00] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.payment_items' doesn't exist
+[2026-01-15 20:04:01] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.reminders_log' doesn't exist
+[2026-01-15 20:04:03] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.reminders_log' doesn't exist
+[2026-01-15 20:05:33] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.reminders_log' doesn't exist
+[2026-01-15 20:19:51] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.reminders_log' doesn't exist
+[2026-01-15 20:21:35] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 20:21:35] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 20:21:37] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 20:21:37] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 20:21:37] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 20:21:37] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 20:22:44] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 20:22:44] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 20:37:40] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:38:03] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:38:14] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:38:17] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:38:18] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:38:19] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:38:20] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:38:21] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:38:22] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:38:23] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:38:23] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:38:24] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:40:09] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:40:09] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:40:39] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:40:39] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:40:40] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:42:56] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:46:05] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:46:06] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:47:21] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:47:22] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:47:23] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:47:24] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:47:24] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:47:25] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:47:25] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:47:25] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:47:26] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:47:26] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:47:27] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:47:28] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:47:33] Uncaught Exception: syntax error, unexpected identifier "administrateur"
+[2026-01-15 20:50:18] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 20:50:18] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 20:50:19] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 20:50:19] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 20:50:48] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 20:50:48] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 20:51:58] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 20:51:58] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 20:53:07] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 20:53:07] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
+[2026-01-15 20:53:08] PHP Error: require(D:\XAMPP\htdocs\doc\app/views/day): Failed to open stream: No such file or directory in D:\XAMPP\htdocs\doc\app\helpers.php:15
+[2026-01-15 20:53:08] Uncaught Exception: Failed opening required 'D:\XAMPP\htdocs\doc\app/views/day' (include_path='D:\XAMPP\php\PEAR')
