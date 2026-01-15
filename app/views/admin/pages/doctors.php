@@ -1,4 +1,4 @@
-<?php
+<php
 $title = 'Médecins';
 ob_start();
 >
@@ -20,55 +20,55 @@ ob_start();
                 </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
-                <?php if (!$doctors): ?>
+                <php if (!$doctors): >
                     <tr>
                         <td colspan="5" class="px-3 py-6 text-center text-sm text-slate-400">Aucun médecin.</td>
                     </tr>
-                <?php else: ?>
-                    <?php foreach ($doctors as $doc): ?>
+                <php else: >
+                    <php foreach ($doctors as $doc): >
                         <tr class="odd:bg-slate-800/40">
-                            <td class="px-3 py-3 text-slate-100"><?= e($doc['full_name']) ?></td>
-                            <td class="px-3 py-3 text-slate-300"><?= e($doc['email']) ?></td>
-                            <td class="px-3 py-3 text-slate-300"><?= e($doc['plan']) ?></td>
+                            <td class="px-3 py-3 text-slate-100"><= e($doc['full_name']) ></td>
+                            <td class="px-3 py-3 text-slate-300"><= e($doc['email']) ></td>
+                            <td class="px-3 py-3 text-slate-300"><= e($doc['plan']) ></td>
                             <td class="px-3 py-3">
-                                <?php if (!empty($doc['suspended_at'])): ?>
+                                <php if (!empty($doc['suspended_at'])): >
                                     <span class="inline-flex items-center rounded-full bg-rose-500/20 px-2 py-1 text-xs font-semibold text-rose-200">Suspendu</span>
-                                <?php elseif ((int)$doc['is_active'] === 1): ?>
+                                <php elseif ((int)$doc['is_active'] === 1): >
                                     <span class="inline-flex items-center rounded-full bg-emerald-500/20 px-2 py-1 text-xs font-semibold text-emerald-200">Actif</span>
-                                <?php else: ?>
+                                <php else: >
                                     <span class="inline-flex items-center rounded-full bg-slate-700 px-2 py-1 text-xs font-semibold text-slate-200">Inactif</span>
-                                <?php endif; ?>
+                                <php endif; >
                             </td>
                             <td class="px-3 py-3 text-right text-sm font-semibold">
-                                <?php if (!empty($doc['suspended_at'])): ?>
+                                <php if (!empty($doc['suspended_at'])): >
                                     <form method="post" action="r=doctor-toggle" class="inline">
-                                        <?= csrf_field() ?>
-                                        <input type="hidden" name="id" value="<?= e($doc['id']) ?>" />
+                                        <= csrf_field() >
+                                        <input type="hidden" name="id" value="<= e($doc['id']) >" />
                                         <input type="hidden" name="action" value="activate" />
                                         <button class="text-emerald-300 hover:text-emerald-200">Activer</button>
                                     </form>
-                                <?php else: ?>
+                                <php else: >
                                     <form method="post" action="r=doctor-toggle" class="inline" onsubmit="return confirm('Suspendre ce médecin') ">
-                                        <?= csrf_field() ?>
-                                        <input type="hidden" name="id" value="<?= e($doc['id']) ?>" />
+                                        <= csrf_field() >
+                                        <input type="hidden" name="id" value="<= e($doc['id']) >" />
                                         <input type="hidden" name="action" value="suspend" />
                                         <button class="text-rose-300 hover:text-rose-200">Suspendre</button>
                                     </form>
-                                <?php endif; ?>
+                                <php endif; >
                                 <form method="post" action="r=impersonate" class="inline">
-                                    <?= csrf_field() ?>
-                                    <input type="hidden" name="id" value="<?= e($doc['id']) ?>" />
+                                    <= csrf_field() >
+                                    <input type="hidden" name="id" value="<= e($doc['id']) >" />
                                     <button class="ml-3 text-indigo-300 hover:text-indigo-200">Impersonner</button>
                                 </form>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <php endforeach; >
+                <php endif; >
             </tbody>
         </table>
     </div>
 </div>
-<?php
+<php
 $content = ob_get_clean();
 require __DIR__ . '/../layout.php';
 >

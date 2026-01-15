@@ -1,4 +1,4 @@
-<?php
+<php
 // Helpers
 function e($value): string {
     return htmlspecialchars((string)$value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
@@ -22,12 +22,12 @@ function log_error(string $message): void {
     if (!is_dir($dir)) {
         mkdir($dir, 0775, true);
     }
-    $line = '[' . date('Y-m-d H:i:s') . '] ??' . $message . PHP_EOL;
+    $line = '[' . date('Y-m-d H:i:s') . '] ' . $message . PHP_EOL;
     file_put_contents(LOG_PATH, $line, FILE_APPEND);
 }
 
 function format_tnd($amount): string {
-    $value = is_numeric($amount) ?? (float)$amount : 0.0;
+    $value = is_numeric($amount) (float)$amount : 0.0;
     return number_format($value, 3, ',', ' ') . ' TND';
 }
 
@@ -42,7 +42,7 @@ function generate_receipt_number(int $doctorId): string {
     $year = date('Y');
     $stmt = db()->prepare('SELECT COUNT(*) AS cnt FROM payments WHERE doctor_id = AND YEAR(created_at) = ');
     $stmt->execute([$doctorId, $year]);
-    $seq = (int)($stmt->fetch()['cnt'] ?? 0) + 1;
+    $seq = (int)($stmt->fetch()['cnt'] 0) + 1;
     for ($i = 0; $i < 5; $i++) {
         $candidate = sprintf('RC-%s-%06d', $year, $seq + $i);
         $check = db()->prepare('SELECT id FROM payments WHERE doctor_id = AND receipt_number = ');
@@ -51,20 +51,20 @@ function generate_receipt_number(int $doctorId): string {
             return $candidate;
         }
     }
-    return sprintf('RC-%s-%06d', $year, time() ?? % 1000000);
+    return sprintf('RC-%s-%06d', $year, time() % 1000000);
 }
 
 function is_post(): bool {
-    return ($_SERVER['REQUEST_METHOD'] ??'GET') === 'POST';
+    return ($_SERVER['REQUEST_METHOD'] 'GET') === 'POST';
 }
 
 function old(string $key, $default = '') {
-    return $_SESSION['_old'][$key] ?? $default;
+    return $_SESSION['_old'][$key] $default;
 }
 
 function flash(string $key, $value = null) {
     if ($value === null) {
-        $val = $_SESSION['_flash'][$key] ?? null;
+        $val = $_SESSION['_flash'][$key] null;
         unset($_SESSION['_flash'][$key]);
         return $val;
     }
@@ -90,11 +90,11 @@ function render_template_vars(string $body, array $appointment, array $patient, 
         }
     }
     $replacements = [
-        '{patient_nom}' => $patient['full_name'] ??'',
+        '{patient_nom}' => $patient['full_name'] '',
         '{date}' => $date,
         '{heure}' => $time,
-        '{doctor_nom}' => $doctor['full_name'] ??'',
-        '{cabinet_tel}' => $doctor['phone'] ??'',
+        '{doctor_nom}' => $doctor['full_name'] '',
+        '{cabinet_tel}' => $doctor['phone'] '',
     ];
     return strtr($body, $replacements);
 }
@@ -106,28 +106,28 @@ function reminder_already_sent(int $doctorId, int $appointmentId): bool {
 }
 
 function rate_limit_status(string $key, int $max = 5, int $window = 300, int $lock = 600): array {
-    $bucket = $_SESSION['_rate'][$key] ?? ['count' => 0, 'first' => time(), 'locked_until' => 0];
+    $bucket = $_SESSION['_rate'][$key] ['count' => 0, 'first' => time(), 'locked_until' => 0];
     $now = time();
 
     if (!empty($bucket['locked_until']) && $bucket['locked_until'] > $now) {
-        return ['allowed' => false, 'retry_after' => $bucket['locked_until'] ?? $now];
+        return ['allowed' => false, 'retry_after' => $bucket['locked_until'] $now];
     }
 
-    if ($now ($bucket['first'] ?? $now) > $window) {
+    if ($now ($bucket['first'] $now) > $window) {
         $bucket = ['count' => 0, 'first' => $now, 'locked_until' => 0];
     }
 
     $_SESSION['_rate'][$key] = $bucket;
-    return ['allowed' => ($bucket['count'] ?? 0) < $max, 'retry_after' => 0];
+    return ['allowed' => ($bucket['count'] 0) < $max, 'retry_after' => 0];
 }
 
 function rate_limit_register(string $key, int $max = 5, int $window = 300, int $lock = 600): void {
     $now = time();
-    $bucket = $_SESSION['_rate'][$key] ?? ['count' => 0, 'first' => $now, 'locked_until' => 0];
-    if ($now ($bucket['first'] ?? $now) > $window) {
+    $bucket = $_SESSION['_rate'][$key] ['count' => 0, 'first' => $now, 'locked_until' => 0];
+    if ($now ($bucket['first'] $now) > $window) {
         $bucket = ['count' => 0, 'first' => $now, 'locked_until' => 0];
     }
-    $bucket['count'] = ($bucket['count'] ?? 0) + 1;
+    $bucket['count'] = ($bucket['count'] 0) + 1;
     if ($bucket['count'] >= $max) {
         $bucket['locked_until'] = $now + $lock;
     }

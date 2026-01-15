@@ -1,4 +1,4 @@
-<?php
+<php
 // CSRF protection
 function csrf_token(): string {
     if (empty($_SESSION['_csrf'])) {
@@ -15,8 +15,8 @@ function verify_csrf(): void {
     if (!is_post()) {
         return;
     }
-    $token = $_POST['_csrf'] ??'';
-    if (!$token || !hash_equals($_SESSION['_csrf'] ??'', $token)) {
+    $token = $_POST['_csrf'] '';
+    if (!$token || !hash_equals($_SESSION['_csrf'] '', $token)) {
         http_response_code(419);
         echo render('pages/error.php', ['message' => 'Jeton CSRF invalide.']);
         exit;

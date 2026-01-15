@@ -1,4 +1,4 @@
-<?php
+<php
 $nav = [
     [
         'route' => 'dashboard',
@@ -69,23 +69,23 @@ $current = $_GET['r'] 'dashboard';
                 </div>
                 <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-slate-950 px-6 pb-4 ring-1 ring-white/10">
                     <div class="flex h-16 shrink-0 items-center text-lg font-semibold text-white">
-                        <?= e(APP_NAME) ?>
+                        <= e(APP_NAME) >
                     </div>
                     <nav class="flex flex-1 flex-col">
                         <ul role="list" class="flex flex-1 flex-col gap-y-7">
                             <li>
                                 <ul role="list" class="-mx-2 space-y-1">
-                                    <?php foreach ($nav as $item): ?>
-                                        <?php $isActive = $current === $item['route']; ?>
+                                    <php foreach ($nav as $item): >
+                                        <php $isActive = $current === $item['route']; >
                                         <li>
-                                            <a href="r=<?= e($item['route']) ?>" class="<?= $isActive ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' ?> group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6">
+                                            <a href="r=<= e($item['route']) >" class="<= $isActive 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' > group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6">
                                                 <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                                    <?= $item['icon'] ?>
+                                                    <= $item['icon'] >
                                                 </svg>
-                                                <?= e($item['label']) ?>
+                                                <= e($item['label']) >
                                             </a>
                                         </li>
-                                    <?php endforeach; ?>
+                                    <php endforeach; >
                                 </ul>
                             </li>
                         </ul>
@@ -98,23 +98,23 @@ $current = $_GET['r'] 'dashboard';
     <div class="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
         <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-slate-950 px-6 pb-4">
             <div class="flex h-16 shrink-0 items-center text-lg font-semibold text-white">
-                <?= e(APP_NAME) ?>
+                <= e(APP_NAME) >
             </div>
             <nav class="flex flex-1 flex-col">
                 <ul role="list" class="flex flex-1 flex-col gap-y-7">
                     <li>
                         <ul role="list" class="-mx-2 space-y-1">
-                            <?php foreach ($nav as $item): ?>
-                                <?php $isActive = $current === $item['route']; ?>
+                            <php foreach ($nav as $item): >
+                                <php $isActive = $current === $item['route']; >
                                 <li>
-                                    <a href="r=<?= e($item['route']) ?>" class="<?= $isActive ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' ?> group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6">
+                                    <a href="r=<= e($item['route']) >" class="<= $isActive 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' > group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6">
                                         <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                            <?= $item['icon'] ?>
+                                            <= $item['icon'] >
                                         </svg>
-                                        <?= e($item['label']) ?>
+                                        <= e($item['label']) >
                                     </a>
                                 </li>
-                            <?php endforeach; ?>
+                            <php endforeach; >
                         </ul>
                     </li>
                     <li class="mt-auto">

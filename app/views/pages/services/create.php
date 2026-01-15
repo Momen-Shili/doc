@@ -1,4 +1,4 @@
-<?php
+<php
 $title = 'Créer un service';
 ob_start();
 $hasErrors = !empty($errors);
@@ -8,17 +8,17 @@ $hasErrors = !empty($errors);
         <h1 class="text-lg font-semibold text-white">Créer un service</h1>
         <p class="text-sm text-slate-400">Définissez un acte ou service.</p>
 
-        <?php if ($hasErrors): ?>
+        <php if ($hasErrors): >
             <div id="service-create-error" class="mt-4 rounded-md bg-rose-500/10 p-3 text-sm text-rose-200 ring-1 ring-rose-500/30" role="alert">
-                <?= e(implode(' ', $errors)) ?>
+                <= e(implode(' ', $errors)) >
             </div>
-        <?php endif; ?>
+        <php endif; >
 
         <form method="post" action="r=services-create" class="mt-6 space-y-4">
-            <?= csrf_field() ?>
+            <= csrf_field() >
             <div>
                 <label for="service-name" class="block text-sm font-medium text-slate-200">Nom <span class="text-rose-300">*</span></label>
-                <input id="service-name" type="text" name="name" required <?= $hasErrors ? 'aria-describedby="service-create-error"' : '' ?> class="mt-2 block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
+                <input id="service-name" type="text" name="name" required <= $hasErrors 'aria-describedby="service-create-error"' : '' > class="mt-2 block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
             </div>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
@@ -45,7 +45,7 @@ $hasErrors = !empty($errors);
         </form>
     </div>
 </div>
-<?php
+<php
 $content = ob_get_clean();
 require __DIR__ . '/../../layout.php';
 >

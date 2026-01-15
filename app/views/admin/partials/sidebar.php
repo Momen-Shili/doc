@@ -1,4 +1,4 @@
-<?php
+<php
 $nav = [
     [
         'route' => 'dashboard',
@@ -44,17 +44,17 @@ $current = $_GET['r'] 'dashboard';
                         <ul role="list" class="flex flex-1 flex-col gap-y-7">
                             <li>
                                 <ul role="list" class="-mx-2 space-y-1">
-                                    <?php foreach ($nav as $item): ?>
-                                        <?php $isActive = $current === $item['route']; ?>
+                                    <php foreach ($nav as $item): >
+                                        <php $isActive = $current === $item['route']; >
                                         <li>
-                                            <a href="r=<?= e($item['route']) ?>" class="<?= $isActive ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' ?> group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6">
+                                            <a href="r=<= e($item['route']) >" class="<= $isActive 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' > group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6">
                                                 <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                                    <?= $item['icon'] ?>
+                                                    <= $item['icon'] >
                                                 </svg>
-                                                <?= e($item['label']) ?>
+                                                <= e($item['label']) >
                                             </a>
                                         </li>
-                                    <?php endforeach; ?>
+                                    <php endforeach; >
                                 </ul>
                             </li>
                         </ul>
@@ -73,17 +73,17 @@ $current = $_GET['r'] 'dashboard';
                 <ul role="list" class="flex flex-1 flex-col gap-y-7">
                     <li>
                         <ul role="list" class="-mx-2 space-y-1">
-                            <?php foreach ($nav as $item): ?>
-                                <?php $isActive = $current === $item['route']; ?>
+                            <php foreach ($nav as $item): >
+                                <php $isActive = $current === $item['route']; >
                                 <li>
-                                    <a href="r=<?= e($item['route']) ?>" class="<?= $isActive ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' ?> group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6">
+                                    <a href="r=<= e($item['route']) >" class="<= $isActive 'bg-slate-800 text-white' : 'text-slate-400 hover:text-white hover:bg-slate-800' > group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6">
                                         <svg class="h-6 w-6 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-                                            <?= $item['icon'] ?>
+                                            <= $item['icon'] >
                                         </svg>
-                                        <?= e($item['label']) ?>
+                                        <= e($item['label']) >
                                     </a>
                                 </li>
-                            <?php endforeach; ?>
+                            <php endforeach; >
                         </ul>
                     </li>
                     <li class="mt-auto">

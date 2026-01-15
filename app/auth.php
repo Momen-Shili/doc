@@ -1,7 +1,7 @@
-<?php
+<php
 // Authentication helpers
 function auth_user(): array {
-    $doctorId = $_SESSION['doctor_id'] ?? null;
+    $doctorId = $_SESSION['doctor_id'] null;
     if (!$doctorId && is_impersonating()) {
         $doctorId = impersonated_doctor_id();
     }

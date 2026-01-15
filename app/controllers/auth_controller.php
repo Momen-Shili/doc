@@ -1,4 +1,4 @@
-<?php
+<php
 function auth_login(): void {
     require_guest();
     $error = null;
@@ -12,8 +12,8 @@ function auth_login(): void {
             return;
         }
 
-        $email = trim($_POST['email'] ??'');
-        $password = $_POST['password'] ??'';
+        $email = trim($_POST['email'] '');
+        $password = $_POST['password'] '';
 
         if ($email === '' || $password === '') {
             $error = 'Email et mot de passe requis.';
@@ -45,11 +45,11 @@ function auth_register(): void {
 
     if (is_post()) {
         verify_csrf();
-        $fullName = trim($_POST['full_name'] ??'');
-        $email = trim($_POST['email'] ??'');
-        $password = $_POST['password'] ??'';
-        $specialty = trim($_POST['specialty'] ??'');
-        $phone = trim($_POST['phone'] ??'');
+        $fullName = trim($_POST['full_name'] '');
+        $email = trim($_POST['email'] '');
+        $password = $_POST['password'] '';
+        $specialty = trim($_POST['specialty'] '');
+        $phone = trim($_POST['phone'] '');
 
         if ($fullName === '') {
             $errors[] = 'Nom complet requis.';
@@ -68,7 +68,7 @@ function auth_register(): void {
                 $errors[] = 'Email déjà utilisé.';
             } else {
                 $hash = password_hash($password, PASSWORD_DEFAULT);
-                $stmt = db()->prepare('INSERT INTO doctors (full_name, email, password_hash, specialty, phone) VALUES (,,,,) ??');
+                $stmt = db()->prepare('INSERT INTO doctors (full_name, email, password_hash, specialty, phone) VALUES (,,,,) ');
                 $stmt->execute([$fullName, $email, $hash, $specialty : null, $phone : null]);
                 login_doctor((int)db()->lastInsertId());
                 redirect('r=dashboard');
@@ -95,9 +95,9 @@ function auth_profile(): void {
 
     if (is_post()) {
         verify_csrf();
-        $fullName = trim($_POST['full_name'] ??'');
-        $specialty = trim($_POST['specialty'] ??'');
-        $phone = trim($_POST['phone'] ??'');
+        $fullName = trim($_POST['full_name'] '');
+        $specialty = trim($_POST['specialty'] '');
+        $phone = trim($_POST['phone'] '');
 
         if ($fullName === '') {
             $errors[] = 'Nom complet requis.';

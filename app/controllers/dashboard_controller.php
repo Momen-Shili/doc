@@ -1,4 +1,4 @@
-<?php
+<php
 function dashboard_index(): void {
     require_auth();
     $doctor = auth_user();
@@ -8,18 +8,18 @@ function dashboard_index(): void {
     $last14 = date('Y-m-d', strtotime('-13 days'));
     $weekStart = date('Y-m-d', strtotime('-6 days'));
 
-    $view = $_GET['view'] ??'day';
-    $date = $_GET['date'] ?? $today;
-    $view = in_array($view, ['day', 'week', 'month'], true) ?? $view : 'day';
+    $view = $_GET['view'] 'day';
+    $date = $_GET['date'] $today;
+    $view = in_array($view, ['day', 'week', 'month'], true) $view : 'day';
     $dateTs = strtotime($date) : strtotime($today);
 
     $stmt = db()->prepare('SELECT COALESCE(SUM(amount),0) AS total FROM payments WHERE doctor_id = AND received_at = ');
     $stmt->execute([$doctor['id'], $today]);
-    $todayRevenue = $stmt->fetch()['total'] ?? 0;
+    $todayRevenue = $stmt->fetch()['total'] 0;
 
     $stmt = db()->prepare('SELECT COALESCE(SUM(amount),0) AS total FROM payments WHERE doctor_id = AND received_at BETWEEN AND');
     $stmt->execute([$doctor['id'], $monthStart, date('Y-m-d')]);
-    $monthRevenue = $stmt->fetch()['total'] ?? 0;
+    $monthRevenue = $stmt->fetch()['total'] 0;
 
     $stmt = db()->prepare('SELECT received_at, SUM(amount) AS total FROM payments WHERE doctor_id = AND received_at BETWEEN AND aGROUP BY received_at ORDER BY received_at');
     $stmt->execute([$doctor['id'], $last14, $today]);
@@ -27,19 +27,19 @@ function dashboard_index(): void {
 
     $stmt = db()->prepare('SELECT COUNT(*) AS cnt FROM appointments WHERE doctor_id = AND DATE(starts_at) = ');
     $stmt->execute([$doctor['id'], $today]);
-    $appointmentsToday = (int)($stmt->fetch()['cnt'] ?? 0);
+    $appointmentsToday = (int)($stmt->fetch()['cnt'] 0);
 
-    $stmt = db()->prepare("SELECT COUNT(*) AS cnt FROM appointments WHERE doctor_id = AND status IN ('ANNULE','ABSENT') AND DATE(starts_at) ?? BETWEEN AND");
+    $stmt = db()->prepare("SELECT COUNT(*) AS cnt FROM appointments WHERE doctor_id = AND status IN ('ANNULE','ABSENT') AND DATE(starts_at) BETWEEN AND");
     $stmt->execute([$doctor['id'], $weekStart, $today]);
-    $cancellationsWeek = (int)($stmt->fetch()['cnt'] ?? 0);
+    $cancellationsWeek = (int)($stmt->fetch()['cnt'] 0);
 
-    $stmt = db()->prepare('SELECT COUNT(*) AS cnt FROM patients WHERE doctor_id = AND DATE(created_at) ?? BETWEEN AND');
+    $stmt = db()->prepare('SELECT COUNT(*) AS cnt FROM patients WHERE doctor_id = AND DATE(created_at) BETWEEN AND');
     $stmt->execute([$doctor['id'], $monthStart, $today]);
-    $newPatientsMonth = (int)($stmt->fetch()['cnt'] ?? 0);
+    $newPatientsMonth = (int)($stmt->fetch()['cnt'] 0);
 
     $stmt = db()->prepare('SELECT COALESCE(AVG(amount),0) AS avg_amount FROM payments WHERE doctor_id = AND received_at BETWEEN AND');
     $stmt->execute([$doctor['id'], $monthStart, $today]);
-    $avgTicket = $stmt->fetch()['avg_amount'] ?? 0;
+    $avgTicket = $stmt->fetch()['avg_amount'] 0;
 
     $stmt = db()->prepare('SELECT a.*, p.full_name AS patient_name FROM appointments a JOIN patients p ON p.id = a.patient_id WHERE a.doctor_id = AND DATE(a.starts_at) = ORDER BY a.starts_at');
     $stmt->execute([$doctor['id'], $today]);
@@ -55,7 +55,7 @@ function dashboard_index(): void {
         $rangeEnd = date('Y-m-t', $dateTs);
     }
 
-    $stmt = db()->prepare('SELECT a.*, p.full_name AS patient_name FROM appointments a JOIN patients p ON p.id = a.patient_id WHERE a.doctor_id = AND DATE(a.starts_at) ?? BETWEEN AND ORDER BY a.starts_at');
+    $stmt = db()->prepare('SELECT a.*, p.full_name AS patient_name FROM appointments a JOIN patients p ON p.id = a.patient_id WHERE a.doctor_id = AND DATE(a.starts_at) BETWEEN AND ORDER BY a.starts_at');
     $stmt->execute([$doctor['id'], $rangeStart, $rangeEnd]);
     $calendarAppointments = $stmt->fetchAll();
 
@@ -71,7 +71,7 @@ function dashboard_index(): void {
     if ($appointmentIds) {
         $placeholders = implode(',', array_fill(0, count($appointmentIds), ''));
         $params = array_merge([$doctor['id']], $appointmentIds);
-        $stmt = db()->prepare("SELECT aps.appointment_id, aps.qty, s.name, s.default_price FROM appointment_services aps JOIN services s ON s.id = aps.service_id WHERE s.doctor_id = AND aps.appointment_id IN ({$placeholders}) ??");
+        $stmt = db()->prepare("SELECT aps.appointment_id, aps.qty, s.name, s.default_price FROM appointment_services aps JOIN services s ON s.id = aps.service_id WHERE s.doctor_id = AND aps.appointment_id IN ({$placeholders}) ");
         $stmt->execute($params);
         while ($row = $stmt->fetch()) {
             $servicesByAppointment[$row['appointment_id']][] = $row;
@@ -88,7 +88,7 @@ function dashboard_index(): void {
 
     $now = date('Y-m-d H:i:s');
     $nextDay = date('Y-m-d H:i:s', strtotime('+1 day'));
-    $stmt = db()->prepare("SELECT a.id, a.starts_at, a.ends_at, p.full_name AS patient_name FROM appointments a JOIN patients p ON p.id = a.patient_id WHERE a.doctor_id = AND a.starts_at BETWEEN AND AND a.status IN ('PLANIFIE','CONFIRME') AND NOT EXISTS (SELECT 1 FROM reminders_log r WHERE r.doctor_id = a.doctor_id AND r.appointment_id = a.id AND r.status = 'SENT') ?? ORDER BY a.starts_at");
+    $stmt = db()->prepare("SELECT a.id, a.starts_at, a.ends_at, p.full_name AS patient_name FROM appointments a JOIN patients p ON p.id = a.patient_id WHERE a.doctor_id = AND a.starts_at BETWEEN AND AND a.status IN ('PLANIFIE','CONFIRME') AND NOT EXISTS (SELECT 1 FROM reminders_log r WHERE r.doctor_id = a.doctor_id AND r.appointment_id = a.id AND r.status = 'SENT') ORDER BY a.starts_at");
     $stmt->execute([$doctor['id'], $now, $nextDay]);
     $remindersDue = $stmt->fetchAll();
 

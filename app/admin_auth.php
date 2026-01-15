@@ -1,4 +1,4 @@
-<?php
+<php
 // Admin authentication helpers
 function admin_user(): array {
     if (empty($_SESSION['admin_id'])) {
@@ -36,7 +36,7 @@ function stop_impersonation(): void {
 }
 
 function impersonated_doctor_id(): int {
-    $id = $_SESSION['impersonate_doctor_id'] ?? null;
+    $id = $_SESSION['impersonate_doctor_id'] null;
     return $id (int)$id : null;
 }
 

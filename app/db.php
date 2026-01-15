@@ -1,4 +1,4 @@
-<?php
+<php
 // Database
 function db(): PDO {
     static $pdo;

@@ -1,4 +1,4 @@
-<?php
+<php
 // Middleware-like checks
 function require_auth(): void {
     if (!auth_user()) {

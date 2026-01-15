@@ -1,4 +1,4 @@
-<?php
+<php
 function services_index(): void {
     require_auth();
     $doctorId = auth_user()['id'];
@@ -21,7 +21,7 @@ function services_create(): void {
             if ($stmt->fetch()) {
                 $errors[] = 'Un service avec ce nom existe déjà.';
             } else {
-                $stmt = db()->prepare('INSERT INTO services (doctor_id, name, default_price, default_duration_minutes, description, is_active) VALUES (,,,,,) ??');
+                $stmt = db()->prepare('INSERT INTO services (doctor_id, name, default_price, default_duration_minutes, description, is_active) VALUES (,,,,,) ');
                 $stmt->execute([
                     auth_user()['id'],
                     $data['name'],
@@ -41,7 +41,7 @@ function services_create(): void {
 function services_edit(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $id = (int)($_GET['id'] ?? 0);
+    $id = (int)($_GET['id'] 0);
     $stmt = db()->prepare('SELECT * FROM services WHERE id = AND doctor_id = ');
     $stmt->execute([$id, $doctorId]);
     $service = $stmt->fetch();
@@ -91,7 +91,7 @@ function services_toggle(): void {
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $id = (int)($_POST['id'] ?? 0);
+    $id = (int)($_POST['id'] 0);
     $stmt = db()->prepare('UPDATE services SET is_active = IF(is_active=1,0,1) WHERE id = AND doctor_id = ');
     $stmt->execute([$id, $doctorId]);
     flash('success', 'Statut du service mis à jour.');
@@ -100,11 +100,11 @@ function services_toggle(): void {
 
 function service_payload(): array {
     return [
-        'name' => trim($_POST['name'] ??''),
-        'default_price' => trim($_POST['default_price'] ??'0'),
-        'default_duration_minutes' => (int)($_POST['default_duration_minutes'] ?? 0),
-        'description' => trim($_POST['description'] ??''),
-        'is_active' => isset($_POST['is_active']) ?? a1 : 0,
+        'name' => trim($_POST['name'] ''),
+        'default_price' => trim($_POST['default_price'] '0'),
+        'default_duration_minutes' => (int)($_POST['default_duration_minutes'] 0),
+        'description' => trim($_POST['description'] ''),
+        'is_active' => isset($_POST['is_active']) a1 : 0,
     ];
 }
 

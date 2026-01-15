@@ -1,9 +1,9 @@
-<?php
+<php
 function payments_index(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $from = trim($_GET['from'] ??'');
-    $to = trim($_GET['to'] ??'');
+    $from = trim($_GET['from'] '');
+    $to = trim($_GET['to'] '');
 
     $params = [$doctorId];
     $where = 'WHERE p.doctor_id = ';
@@ -19,7 +19,7 @@ function payments_index(): void {
 
     $stmt = db()->prepare("SELECT COALESCE(SUM(amount),0) AS total FROM payments p {$where}");
     $stmt->execute($params);
-    $total = $stmt->fetch()['total'] ?? 0;
+    $total = $stmt->fetch()['total'] 0;
 
     echo render('pages/payments/index.php', [
         'payments' => $payments,
@@ -37,19 +37,19 @@ function payments_create(): void {
     $services = load_active_services($doctorId);
     $errors = [];
 
-    $selectedAppointmentId = (int)($_POST['appointment_id'] ?? ($_GET['appointment_id'] ?? 0));
+    $selectedAppointmentId = (int)($_POST['appointment_id'] ($_GET['appointment_id'] 0));
     $appointmentServices = $selectedAppointmentId > 0 aload_appointment_services_for_payment($doctorId, $selectedAppointmentId) : [];
     $appointmentSummary = services_summary_for_payment($appointmentServices);
 
     if (is_post()) {
         verify_csrf();
         $data = [
-            'patient_id' => (int)($_POST['patient_id'] ?? 0),
-            'appointment_id' => (int)($_POST['appointment_id'] ?? 0),
-            'received_at' => trim($_POST['received_at'] ??''),
-            'amount' => trim($_POST['amount'] ??''),
-            'reference' => trim($_POST['reference'] ??''),
-            'notes' => trim($_POST['notes'] ??''),
+            'patient_id' => (int)($_POST['patient_id'] 0),
+            'appointment_id' => (int)($_POST['appointment_id'] 0),
+            'received_at' => trim($_POST['received_at'] ''),
+            'amount' => trim($_POST['amount'] ''),
+            'reference' => trim($_POST['reference'] ''),
+            'notes' => trim($_POST['notes'] ''),
         ];
         $detailItems = isset($_POST['detail_items']);
         $selectedServices = payment_services_from_post($doctorId);
@@ -87,7 +87,7 @@ function payments_create(): void {
 
         if (!$errors) {
             $receiptNumber = generate_receipt_number($doctorId);
-            $stmt = db()->prepare('INSERT INTO payments (doctor_id, patient_id, appointment_id, received_at, amount, receipt_number, created_by, reference, notes) VALUES (,,,,,,,,) ??');
+            $stmt = db()->prepare('INSERT INTO payments (doctor_id, patient_id, appointment_id, received_at, amount, receipt_number, created_by, reference, notes) VALUES (,,,,,,,,) ');
             $stmt->execute([
                 $doctorId,
                 $data['patient_id'],
@@ -149,12 +149,12 @@ function services_summary_for_payment(array $services): array {
 }
 
 function payment_services_from_post(int $doctorId): array {
-    $serviceIds = $_POST['service_id'] ?? [];
-    $qtys = $_POST['service_qty'] ?? [];
+    $serviceIds = $_POST['service_id'] [];
+    $qtys = $_POST['service_qty'] [];
     $pairs = [];
     foreach ($serviceIds as $idx => $serviceId) {
         $id = (int)$serviceId;
-        $qty = (int)($qtys[$idx] ?? 1);
+        $qty = (int)($qtys[$idx] 1);
         if ($id > 0 && $qty > 0) {
             $pairs[$id] = $qty;
         }
@@ -164,12 +164,12 @@ function payment_services_from_post(int $doctorId): array {
     }
     $placeholders = implode(',', array_fill(0, count($pairs), ''));
     $params = array_merge([$doctorId], array_keys($pairs));
-    $stmt = db()->prepare("SELECT id AS service_id, name, default_price FROM services WHERE doctor_id = AND id IN ({$placeholders}) ??");
+    $stmt = db()->prepare("SELECT id AS service_id, name, default_price FROM services WHERE doctor_id = AND id IN ({$placeholders}) ");
     $stmt->execute($params);
     $services = $stmt->fetchAll();
     $result = [];
     foreach ($services as $service) {
-        $qty = $pairs[(int)$service['service_id']] ?? 1;
+        $qty = $pairs[(int)$service['service_id']] 1;
         $result[] = [
             'service_id' => (int)$service['service_id'],
             'name' => $service['name'],
@@ -184,19 +184,19 @@ function create_payment_items(int $doctorId, int $paymentId, array $items): void
     if (!$items) {
         return;
     }
-    $stmt = db()->prepare('INSERT INTO payment_items (payment_id, service_id, description, qty, unit_price, line_total) VALUES (,,,,,) ??');
+    $stmt = db()->prepare('INSERT INTO payment_items (payment_id, service_id, description, qty, unit_price, line_total) VALUES (,,,,,) ');
     foreach ($items as $item) {
-        $qty = (int)($item['qty'] ?? 1);
-        $price = (float)($item['default_price'] ?? 0);
+        $qty = (int)($item['qty'] 1);
+        $price = (float)($item['default_price'] 0);
         $lineTotal = $qty * $price;
-        $stmt->execute([$paymentId, $item['service_id'] ?? null, $item['name'] ?? null, $qty, $price, $lineTotal]);
+        $stmt->execute([$paymentId, $item['service_id'] null, $item['name'] null, $qty, $price, $lineTotal]);
     }
 }
 
 function payments_receipt(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $id = (int)($_GET['id'] ?? 0);
+    $id = (int)($_GET['id'] 0);
     $stmt = db()->prepare('SELECT p.*, pat.full_name AS patient_name, pat.phone AS patient_phone, d.full_name AS doctor_name, d.specialty, d.phone AS doctor_phone, d.email AS doctor_email FROM payments p JOIN patients pat ON pat.id = p.patient_id JOIN doctors d ON d.id = p.doctor_id WHERE p.id = AND p.doctor_id = ');
     $stmt->execute([$id, $doctorId]);
     $payment = $stmt->fetch();

@@ -1,9 +1,9 @@
-<?php
+<php
 function appointments_index(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $date = trim($_GET['date'] ??'');
-    $status = trim($_GET['status'] ??'');
+    $date = trim($_GET['date'] '');
+    $status = trim($_GET['status'] '');
 
     $params = [$doctorId];
     $where = 'WHERE a.doctor_id = ';
@@ -49,7 +49,7 @@ function appointments_create(): void {
         }
 
         if (!$errors) {
-            $stmt = db()->prepare('INSERT INTO appointments (doctor_id, patient_id, starts_at, ends_at, status, reason, notes) VALUES (,,,,,,) ??');
+            $stmt = db()->prepare('INSERT INTO appointments (doctor_id, patient_id, starts_at, ends_at, status, reason, notes) VALUES (,,,,,,) ');
             $stmt->execute([
                 $doctorId,
                 $data['patient_id'],
@@ -77,7 +77,7 @@ function appointments_create(): void {
 function appointments_edit(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $id = (int)($_GET['id'] ?? 0);
+    $id = (int)($_GET['id'] 0);
     $patients = load_patients($doctorId);
 
     $stmt = db()->prepare('SELECT * FROM appointments WHERE id = AND doctor_id = ');
@@ -144,7 +144,7 @@ function appointments_cancel(): void {
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $id = (int)($_POST['id'] ?? 0);
+    $id = (int)($_POST['id'] 0);
     $stmt = db()->prepare("UPDATE appointments SET status = 'ANNULE' WHERE id = AND doctor_id = ");
     $stmt->execute([$id, $doctorId]);
     flash('success', 'Rendez-vous annulé.');
@@ -159,12 +159,12 @@ function load_patients(int $doctorId): array {
 
 function appointment_payload(): array {
     return [
-        'patient_id' => (int)($_POST['patient_id'] ?? 0),
-        'starts_at' => trim($_POST['starts_at'] ??''),
-        'ends_at' => trim($_POST['ends_at'] ??''),
-        'status' => trim($_POST['status'] ??'PLANIFIE'),
-        'reason' => trim($_POST['reason'] ??''),
-        'notes' => trim($_POST['notes'] ??''),
+        'patient_id' => (int)($_POST['patient_id'] 0),
+        'starts_at' => trim($_POST['starts_at'] ''),
+        'ends_at' => trim($_POST['ends_at'] ''),
+        'status' => trim($_POST['status'] 'PLANIFIE'),
+        'reason' => trim($_POST['reason'] ''),
+        'notes' => trim($_POST['notes'] ''),
     ];
 }
 
@@ -192,10 +192,10 @@ function validate_appointment(array $data): array {
 }
 
 function appointment_overlaps(int $doctorId, string $start, string $end, int $excludeId = 0): bool {
-    $query = 'SELECT COUNT(*) AS cnt FROM appointments WHERE doctor_id = AND id != AND NOT (ends_at <?= OR starts_at ?>= ) ??';
+    $query = 'SELECT COUNT(*) AS cnt FROM appointments WHERE doctor_id = AND id != AND NOT (ends_at <= OR starts_at >= ) ';
     $stmt = db()->prepare($query);
     $stmt->execute([$doctorId, $excludeId, $start, $end]);
-    return ((int)($stmt->fetch()['cnt'] ?? 0)) > 0;
+    return ((int)($stmt->fetch()['cnt'] 0)) > 0;
 }
 
 function load_services_for_form(int $doctorId, array $selectedIds): array {
@@ -204,7 +204,7 @@ function load_services_for_form(int $doctorId, array $selectedIds): array {
     $params = [$doctorId];
     $sql = 'SELECT * FROM services WHERE doctor_id = AND is_active = 1';
     if ($ids) {
-        $sql .= " OR (doctor_id = AND id IN ({$placeholders})) ??";
+        $sql .= " OR (doctor_id = AND id IN ({$placeholders})) ";
         $params[] = $doctorId;
         $params = array_merge($params, $ids);
     }
@@ -214,12 +214,12 @@ function load_services_for_form(int $doctorId, array $selectedIds): array {
 }
 
 function appointment_services_from_post(int $doctorId): array {
-    $serviceIds = $_POST['service_id'] ?? [];
-    $qtys = $_POST['service_qty'] ?? [];
+    $serviceIds = $_POST['service_id'] [];
+    $qtys = $_POST['service_qty'] [];
     $pairs = [];
     foreach ($serviceIds as $idx => $serviceId) {
         $id = (int)$serviceId;
-        $qty = (int)($qtys[$idx] ?? 1);
+        $qty = (int)($qtys[$idx] 1);
         if ($id > 0 && $qty > 0) {
             $pairs[$id] = $qty;
         }
@@ -229,12 +229,12 @@ function appointment_services_from_post(int $doctorId): array {
     }
     $placeholders = implode(',', array_fill(0, count($pairs), ''));
     $params = array_merge([$doctorId], array_keys($pairs));
-    $stmt = db()->prepare("SELECT * FROM services WHERE doctor_id = AND id IN ({$placeholders}) ??");
+    $stmt = db()->prepare("SELECT * FROM services WHERE doctor_id = AND id IN ({$placeholders}) ");
     $stmt->execute($params);
     $services = $stmt->fetchAll();
     $result = [];
     foreach ($services as $service) {
-        $qty = $pairs[(int)$service['id']] ?? 1;
+        $qty = $pairs[(int)$service['id']] 1;
         $result[] = [
             'service_id' => (int)$service['id'],
             'name' => $service['name'],
@@ -280,7 +280,7 @@ function sync_appointment_services(int $doctorId, int $appointmentId, array $ser
     if (!$services) {
         return;
     }
-    $stmt = db()->prepare('INSERT INTO appointment_services (appointment_id, service_id, qty) VALUES (,,) ??');
+    $stmt = db()->prepare('INSERT INTO appointment_services (appointment_id, service_id, qty) VALUES (,,) ');
     foreach ($services as $service) {
         $stmt->execute([$appointmentId, $service['service_id'], $service['qty']]);
     }

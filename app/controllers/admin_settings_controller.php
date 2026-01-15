@@ -1,4 +1,4 @@
-<?php
+<php
 function admin_settings(): void {
     require_admin_auth();
     $errors = [];
@@ -7,8 +7,8 @@ function admin_settings(): void {
 
     if (is_post()) {
         verify_csrf();
-        $appName = trim($_POST['app_name'] ??'');
-        $supportEmail = trim($_POST['support_email'] ??'');
+        $appName = trim($_POST['app_name'] '');
+        $supportEmail = trim($_POST['support_email'] '');
 
         if ($appName === '') {
             $errors[] = 'Nom de la plateforme requis.';
@@ -41,6 +41,6 @@ function load_settings(): array {
 }
 
 function save_setting(string $key, string $value): void {
-    $stmt = db()->prepare('INSERT INTO platform_settings (setting_key, setting_value) VALUES (, ) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value) ??');
+    $stmt = db()->prepare('INSERT INTO platform_settings (setting_key, setting_value) VALUES (, ) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value) ');
     $stmt->execute([$key, $value]);
 }

@@ -1,4 +1,4 @@
-<?php
+<php
 function admin_doctors(): void {
     require_admin_auth();
     $stmt = db()->query('SELECT id, full_name, email, specialty, phone, plan, is_active, suspended_at, created_at FROM doctors ORDER BY created_at DESC');
@@ -15,8 +15,8 @@ function admin_doctor_toggle(): void {
         return;
     }
     verify_csrf();
-    $id = (int)($_POST['id'] ?? 0);
-    $action = $_POST['action'] ??'';
+    $id = (int)($_POST['id'] 0);
+    $action = $_POST['action'] '';
 
     if ($id <=  0 || !in_array($action, ['suspend', 'activate'], true)) {
         flash('success', 'Action invalide.');
@@ -43,7 +43,7 @@ function admin_impersonate(): void {
         return;
     }
     verify_csrf();
-    $id = (int)($_POST['id'] ?? 0);
+    $id = (int)($_POST['id'] 0);
     $stmt = db()->prepare('SELECT id FROM doctors WHERE id = ');
     $stmt->execute([$id]);
     if ($stmt->fetch()) {

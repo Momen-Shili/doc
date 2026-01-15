@@ -1,9 +1,9 @@
-<?php
+<php
 function admin_payments(): void {
     require_admin_auth();
-    $from = trim($_GET['from'] ??'');
-    $to = trim($_GET['to'] ??'');
-    $doctorId = (int)($_GET['doctor_id'] ?? 0);
+    $from = trim($_GET['from'] '');
+    $to = trim($_GET['to'] '');
+    $doctorId = (int)($_GET['doctor_id'] 0);
 
     $where = [];
     $params = [];
@@ -24,7 +24,7 @@ function admin_payments(): void {
 
     $stmt = db()->prepare("SELECT COALESCE(SUM(amount),0) AS total FROM payments p {$whereSql}");
     $stmt->execute($params);
-    $total = $stmt->fetch()['total'] ?? 0;
+    $total = $stmt->fetch()['total'] 0;
 
     $doctors = db()->query('SELECT id, full_name FROM doctors ORDER BY full_name')->fetchAll();
 
@@ -40,9 +40,9 @@ function admin_payments(): void {
 
 function admin_payments_export(): void {
     require_admin_auth();
-    $from = trim($_GET['from'] ??'');
-    $to = trim($_GET['to'] ??'');
-    $doctorId = (int)($_GET['doctor_id'] ?? 0);
+    $from = trim($_GET['from'] '');
+    $to = trim($_GET['to'] '');
+    $doctorId = (int)($_GET['doctor_id'] 0);
 
     $where = [];
     $params = [];

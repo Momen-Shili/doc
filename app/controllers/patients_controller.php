@@ -1,16 +1,16 @@
-<?php
+<php
 function patients_index(): void {
     require_auth();
     $doctor = auth_user();
-    $q = trim($_GET['q'] ??'');
-    $page = max(1, (int)($_GET['page'] ?? 1));
+    $q = trim($_GET['q'] '');
+    $page = max(1, (int)($_GET['page'] 1));
     $perPage = 10;
     $offset = ($page - 1) * $perPage;
 
     $params = [$doctor['id']];
     $where = 'WHERE doctor_id = ';
     if ($q !== '') {
-        $where .= ' AND (full_name LIKE OR email LIKE OR phone LIKE ) ??';
+        $where .= ' AND (full_name LIKE OR email LIKE OR phone LIKE ) ';
         $like = '%' . $q . '%';
         $params[] = $like;
         $params[] = $like;
@@ -19,7 +19,7 @@ function patients_index(): void {
 
     $stmt = db()->prepare("SELECT COUNT(*) AS cnt FROM patients {$where}");
     $stmt->execute($params);
-    $total = (int)($stmt->fetch()['cnt'] ?? 0);
+    $total = (int)($stmt->fetch()['cnt'] 0);
 
     $stmt = db()->prepare("SELECT * FROM patients {$where} ORDER BY created_at DESC LIMIT {$perPage} OFFSET {$offset}");
     $stmt->execute($params);
@@ -41,11 +41,11 @@ function patients_create(): void {
     if (is_post()) {
         verify_csrf();
         $data = [
-            'full_name' => trim($_POST['full_name'] ??''),
-            'phone' => trim($_POST['phone'] ??''),
-            'email' => trim($_POST['email'] ??''),
-            'dob' => trim($_POST['dob'] ??''),
-            'notes' => trim($_POST['notes'] ??''),
+            'full_name' => trim($_POST['full_name'] ''),
+            'phone' => trim($_POST['phone'] ''),
+            'email' => trim($_POST['email'] ''),
+            'dob' => trim($_POST['dob'] ''),
+            'notes' => trim($_POST['notes'] ''),
         ];
 
         if ($data['full_name'] === '') {
@@ -56,7 +56,7 @@ function patients_create(): void {
         }
 
         if (!$errors) {
-            $stmt = db()->prepare('INSERT INTO patients (doctor_id, full_name, phone, email, dob, notes) VALUES (,,,,,) ??');
+            $stmt = db()->prepare('INSERT INTO patients (doctor_id, full_name, phone, email, dob, notes) VALUES (,,,,,) ');
             $stmt->execute([
                 auth_user()['id'],
                 $data['full_name'],
@@ -77,7 +77,7 @@ function patients_create(): void {
 function patients_edit(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $id = (int)($_GET['id'] ?? 0);
+    $id = (int)($_GET['id'] 0);
     $stmt = db()->prepare('SELECT * FROM patients WHERE id = AND doctor_id = ');
     $stmt->execute([$id, $doctorId]);
     $patient = $stmt->fetch();
@@ -91,11 +91,11 @@ function patients_edit(): void {
     if (is_post()) {
         verify_csrf();
         $data = [
-            'full_name' => trim($_POST['full_name'] ??''),
-            'phone' => trim($_POST['phone'] ??''),
-            'email' => trim($_POST['email'] ??''),
-            'dob' => trim($_POST['dob'] ??''),
-            'notes' => trim($_POST['notes'] ??''),
+            'full_name' => trim($_POST['full_name'] ''),
+            'phone' => trim($_POST['phone'] ''),
+            'email' => trim($_POST['email'] ''),
+            'dob' => trim($_POST['dob'] ''),
+            'notes' => trim($_POST['notes'] ''),
         ];
         if ($data['full_name'] === '') {
             $errors[] = 'Nom complet requis.';
@@ -133,7 +133,7 @@ function patients_delete(): void {
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $id = (int)($_POST['id'] ?? 0);
+    $id = (int)($_POST['id'] 0);
     $stmt = db()->prepare('DELETE FROM patients WHERE id = AND doctor_id = ');
     $stmt->execute([$id, $doctorId]);
     flash('success', 'Patient supprimé.');
@@ -143,9 +143,9 @@ function patients_delete(): void {
 function patients_show(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $id = (int)($_GET['id'] ?? 0);
-    $tab = $_GET['tab'] ??'appointments';
-    $tab = in_array($tab, ['appointments', 'payments', 'notes', 'documents'], true) ?? $tab : 'appointments';
+    $id = (int)($_GET['id'] 0);
+    $tab = $_GET['tab'] 'appointments';
+    $tab = in_array($tab, ['appointments', 'payments', 'notes', 'documents'], true) $tab : 'appointments';
 
     $patient = patient_or_404($doctorId, $id);
     if (!$patient) {
@@ -173,15 +173,15 @@ function patients_show(): void {
 
     $stmt = db()->prepare("SELECT COUNT(*) AS cnt FROM appointments WHERE doctor_id = AND patient_id = AND status = 'NO_SHOW'");
     $stmt->execute([$doctorId, $id]);
-    $noShowCount = (int)($stmt->fetch()['cnt'] ?? 0);
+    $noShowCount = (int)($stmt->fetch()['cnt'] 0);
 
     $stmt = db()->prepare('SELECT MAX(starts_at) AS last_visit FROM appointments WHERE doctor_id = AND patient_id = ');
     $stmt->execute([$doctorId, $id]);
-    $lastVisit = $stmt->fetch()['last_visit'] ?? null;
+    $lastVisit = $stmt->fetch()['last_visit'] null;
 
     $stmt = db()->prepare('SELECT COALESCE(SUM(amount),0) AS total FROM payments WHERE doctor_id = AND patient_id = ');
     $stmt->execute([$doctorId, $id]);
-    $totalPaid = $stmt->fetch()['total'] ?? 0;
+    $totalPaid = $stmt->fetch()['total'] 0;
 
     echo render('pages/patients/show.php', [
         'patient' => $patient,
@@ -207,8 +207,8 @@ function notes_create(): void {
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $patientId = (int)($_POST['patient_id'] ?? 0);
-    $noteText = trim($_POST['note_text'] ??'');
+    $patientId = (int)($_POST['patient_id'] 0);
+    $noteText = trim($_POST['note_text'] '');
 
     if ($noteText === '') {
         flash('success', 'Note vide.');
@@ -220,7 +220,7 @@ function notes_create(): void {
         redirect('r=patients');
     }
 
-    $stmt = db()->prepare('INSERT INTO clinical_notes (doctor_id, patient_id, note_text) VALUES (,,) ??');
+    $stmt = db()->prepare('INSERT INTO clinical_notes (doctor_id, patient_id, note_text) VALUES (,,) ');
     $stmt->execute([$doctorId, $patientId, $noteText]);
     flash('success', 'Note clinique ajoutée.');
     redirect('r=patient&id=' . $patientId . '&tab=notes');
@@ -235,9 +235,9 @@ function notes_edit(): void {
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $noteId = (int)($_POST['note_id'] ?? 0);
-    $patientId = (int)($_POST['patient_id'] ?? 0);
-    $noteText = trim($_POST['note_text'] ??'');
+    $noteId = (int)($_POST['note_id'] 0);
+    $patientId = (int)($_POST['patient_id'] 0);
+    $noteText = trim($_POST['note_text'] '');
 
     if ($noteText === '') {
         flash('success', 'Note vide.');
@@ -259,8 +259,8 @@ function notes_delete(): void {
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $noteId = (int)($_POST['note_id'] ?? 0);
-    $patientId = (int)($_POST['patient_id'] ?? 0);
+    $noteId = (int)($_POST['note_id'] 0);
+    $patientId = (int)($_POST['patient_id'] 0);
 
     $stmt = db()->prepare('DELETE FROM clinical_notes WHERE id = AND doctor_id = AND patient_id = ');
     $stmt->execute([$noteId, $doctorId, $patientId]);
@@ -277,9 +277,9 @@ function tags_add(): void {
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $patientId = (int)($_POST['patient_id'] ?? 0);
-    $name = trim($_POST['tag_name'] ??'');
-    $color = trim($_POST['tag_color'] ??'');
+    $patientId = (int)($_POST['patient_id'] 0);
+    $name = trim($_POST['tag_name'] '');
+    $color = trim($_POST['tag_color'] '');
 
     if ($name === '') {
         flash('success', 'Nom de tag requis.');
@@ -295,14 +295,14 @@ function tags_add(): void {
     $stmt->execute([$doctorId, $name]);
     $tag = $stmt->fetch();
     if (!$tag) {
-        $stmt = db()->prepare('INSERT INTO tags (doctor_id, name, color) VALUES (,,) ??');
+        $stmt = db()->prepare('INSERT INTO tags (doctor_id, name, color) VALUES (,,) ');
         $stmt->execute([$doctorId, $name, $color : null]);
         $tagId = (int)db()->lastInsertId();
     } else {
         $tagId = (int)$tag['id'];
     }
 
-    $stmt = db()->prepare('INSERT IGNORE INTO patient_tags (patient_id, tag_id) VALUES (, ) ??');
+    $stmt = db()->prepare('INSERT IGNORE INTO patient_tags (patient_id, tag_id) VALUES (, ) ');
     $stmt->execute([$patientId, $tagId]);
     flash('success', 'Tag ajouté.');
     redirect('r=patient&id=' . $patientId);
@@ -317,8 +317,8 @@ function tags_remove(): void {
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $patientId = (int)($_POST['patient_id'] ?? 0);
-    $tagId = (int)($_POST['tag_id'] ?? 0);
+    $patientId = (int)($_POST['patient_id'] 0);
+    $tagId = (int)($_POST['tag_id'] 0);
 
     $stmt = db()->prepare('DELETE pt FROM patient_tags pt JOIN tags t ON t.id = pt.tag_id WHERE pt.patient_id = AND pt.tag_id = AND t.doctor_id = ');
     $stmt->execute([$patientId, $tagId, $doctorId]);
@@ -335,8 +335,8 @@ function documents_upload(): void {
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $patientId = (int)($_POST['patient_id'] ?? 0);
-    $note = trim($_POST['note'] ??'');
+    $patientId = (int)($_POST['patient_id'] 0);
+    $note = trim($_POST['note'] '');
 
     if (!patient_or_404($doctorId, $patientId, false)) {
         flash('success', 'Patient introuvable.');
@@ -395,7 +395,7 @@ function documents_upload(): void {
     }
 
     $relativePath = 'storage/uploads/doctor_' . $doctorId . '/patients/' . $patientId . '/' . $fileName;
-    $stmt = db()->prepare('INSERT INTO documents (doctor_id, patient_id, file_name, file_path, mime_type, size_bytes, note) VALUES (,,,,,,) ??');
+    $stmt = db()->prepare('INSERT INTO documents (doctor_id, patient_id, file_name, file_path, mime_type, size_bytes, note) VALUES (,,,,,,) ');
     $stmt->execute([$doctorId, $patientId, $original, $relativePath, $mime, (int)$file['size'], $note : null]);
 
     flash('success', 'Document ajout.');
@@ -411,8 +411,8 @@ function documents_delete(): void {
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $docId = (int)($_POST['doc_id'] ?? 0);
-    $patientId = (int)($_POST['patient_id'] ?? 0);
+    $docId = (int)($_POST['doc_id'] 0);
+    $patientId = (int)($_POST['patient_id'] 0);
 
     $stmt = db()->prepare('SELECT file_path FROM documents WHERE id = AND doctor_id = AND patient_id = ');
     $stmt->execute([$docId, $doctorId, $patientId]);
@@ -432,7 +432,7 @@ function documents_delete(): void {
 function documents_download(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $docId = (int)($_GET['id'] ?? 0);
+    $docId = (int)($_GET['id'] 0);
     $stmt = db()->prepare('SELECT file_name, file_path, mime_type FROM documents WHERE id = AND doctor_id = ');
     $stmt->execute([$docId, $doctorId]);
     $doc = $stmt->fetch();

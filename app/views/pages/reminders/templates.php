@@ -1,4 +1,4 @@
-<?php
+<php
 $title = 'Rappels';
 ob_start();
 >
@@ -39,47 +39,47 @@ ob_start();
                 </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
-                <?php if (empty($templates)): ?>
+                <php if (empty($templates)): >
                     <tr>
                         <td colspan="5" class="px-3 py-6 text-center text-sm text-slate-400">Aucun modÃ¨le pour le moment.</td>
                     </tr>
-                <?php else: ?>
-                    <?php foreach ($templates as $template): ?>
+                <php else: >
+                    <php foreach ($templates as $template): >
                         <tr class="odd:bg-slate-800/40">
-                            <td class="px-3 py-3 text-slate-100"><?= e($template['name']) ?></td>
-                            <td class="px-3 py-3 text-slate-300"><?= e($template['channel']) ?></td>
+                            <td class="px-3 py-3 text-slate-100"><= e($template['name']) ></td>
+                            <td class="px-3 py-3 text-slate-300"><= e($template['channel']) ></td>
                             <td class="px-3 py-3 text-slate-300">
-                                <?php
-                                $preview = $previews[$template['id']] ?? $template['body'];
+                                <php
+                                $preview = $previews[$template['id']] $template['body'];
                                 if (function_exists('mb_strlen')) {
-                                    $short = mb_strlen($preview) ?? > 80 - mb_substr($preview, 0, 80) ?? . '...' : $preview;
+                                    $short = mb_strlen($preview) > 80 - mb_substr($preview, 0, 80) . '...' : $preview;
                                 } else {
-                                    $short = strlen($preview) ?? > 80 - substr($preview, 0, 80) ?? . '...' : $preview;
+                                    $short = strlen($preview) > 80 - substr($preview, 0, 80) . '...' : $preview;
                                 }
                                 >
-                                <?= e($short) ?>
+                                <= e($short) >
                             </td>
                             <td class="px-3 py-3">
-                                <span class="rounded-full px-2 py-1 text-xs font-semibold <?= (int)$template['is_active'] === 1 ? 'bg-emerald-500/20 text-emerald-200' : 'bg-slate-700 text-slate-300' ?>">
-                                    <?= (int)$template['is_active'] === 1 ? 'Actif' : 'Inactif' ?>
+                                <span class="rounded-full px-2 py-1 text-xs font-semibold <= (int)$template['is_active'] === 1 'bg-emerald-500/20 text-emerald-200' : 'bg-slate-700 text-slate-300' >">
+                                    <= (int)$template['is_active'] === 1 'Actif' : 'Inactif' >
                                 </span>
                             </td>
                             <td class="px-3 py-3 text-right text-sm font-semibold">
-                                <a class="text-indigo-300 hover:text-indigo-200" href="r=reminders-templates-edit&id=<?= e($template['id']) ?>">Modifier</a>
+                                <a class="text-indigo-300 hover:text-indigo-200" href="r=reminders-templates-edit&id=<= e($template['id']) >">Modifier</a>
                                 <form method="post" action="r=reminders-templates-toggle" class="inline" onsubmit="return confirm('Changer le statut de ce modÃ¨le') ">
-                                    <?= csrf_field() ?>
-                                    <input type="hidden" name="id" value="<?= e($template['id']) ?>" />
-                                    <button class="ml-3 text-slate-300 hover:text-white"><?= (int)$template['is_active'] === 1 ? 'DÃ©sactiver' : 'Activer' ?></button>
+                                    <= csrf_field() >
+                                    <input type="hidden" name="id" value="<= e($template['id']) >" />
+                                    <button class="ml-3 text-slate-300 hover:text-white"><= (int)$template['is_active'] === 1 'DÃ©sactiver' : 'Activer' ></button>
                                 </form>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <php endforeach; >
+                <php endif; >
             </tbody>
         </table>
     </div>
 </div>
-<?php
+<php
 $content = ob_get_clean();
 require __DIR__ . '/../../layout.php';
 >

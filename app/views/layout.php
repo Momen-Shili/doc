@@ -1,4 +1,4 @@
-<?php
+<php
 $user = auth_user();
 $title = $title APP_NAME;
 >
@@ -7,7 +7,7 @@ $title = $title APP_NAME;
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= e($title) ?></title>
+    <title><= e($title) ></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         a:focus-visible,
@@ -23,13 +23,13 @@ $title = $title APP_NAME;
 </head>
 <body class="h-full text-slate-100">
 <div>
-    <?php if ($user): ?>
-        <?php require __DIR__ . '/partials/sidebar.php'; ?>
+    <php if ($user): >
+        <php require __DIR__ . '/partials/sidebar.php'; >
         <div class="lg:pl-72">
-            <?php require __DIR__ . '/partials/topbar.php'; ?>
+            <php require __DIR__ . '/partials/topbar.php'; >
             <main class="py-10">
                 <div class="px-4 sm:px-6 lg:px-8">
-                    <?php if (is_impersonating() ?? && admin_user()): ?>
+                    <php if (is_impersonating() && admin_user()): >
                         <div class="mb-6 border-l-4 border-amber-400 bg-amber-50 p-4">
                             <div class="flex">
                                 <div class="flex-shrink-0">
@@ -40,34 +40,34 @@ $title = $title APP_NAME;
                                 <div class="ml-3 text-sm text-amber-800">
                                     <p>
                                         <span class="font-semibold">Mode impersonation :</span>
-                                        vous agissez en tant que Dr. <?= e($user['full_name'] '') ?>.
+                                        vous agissez en tant que Dr. <= e($user['full_name'] '') >.
                                         <a class="font-semibold underline hover:text-amber-700" href="admin/r=impersonate-stop">Quitter</a>
                                     </p>
                                 </div>
                             </div>
                         </div>
-                    <?php endif; ?>
-                    <?php require __DIR__ . '/partials/flash.php'; ?>
-                    <?= $content ?>
+                    <php endif; >
+                    <php require __DIR__ . '/partials/flash.php'; >
+                    <= $content >
                 </div>
             </main>
         </div>
-    <?php else: ?>
+    <php else: >
         <main class="min-h-screen flex items-center justify-center px-4 bg-slate-950">
-            <?= $content ?>
+            <= $content >
         </main>
-    <?php endif; ?>
+    <php endif; >
 </div>
 
     
     <script>
     document.addEventListener('submit', function (event) {
         var form = event.target;
-        if (!form || form.tagName !== 'FORM') ?? return;
-        if ((form.getAttribute('method') ?? || 'get').toLowerCase() ?? !== 'post') ?? return;
+        if (!form || form.tagName !== 'FORM') return;
+        if ((form.getAttribute('method') || 'get').toLowerCase() !== 'post') return;
         var buttons = form.querySelectorAll('button[type=\"submit\"], button:not([type]) ');
         buttons.forEach(function (btn) {
-            if (btn.disabled) ?? return;
+            if (btn.disabled) return;
             btn.dataset.originalText = btn.textContent;
             btn.textContent = btn.dataset.loadingText || 'Traitement...';
             btn.disabled = true;

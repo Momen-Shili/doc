@@ -1,13 +1,13 @@
-<?php
+<php
 function reports_index(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $from = trim($_GET['from'] ??'');
-    $to = trim($_GET['to'] ??'');
-    $momFrom = trim($_GET['mom_from'] ??'');
-    $momTo = trim($_GET['mom_to'] ??'');
-    $momMode = trim($_GET['mom_mode'] ??'previous');
-    $momBy = trim($_GET['mom_by'] ??'total');
+    $from = trim($_GET['from'] '');
+    $to = trim($_GET['to'] '');
+    $momFrom = trim($_GET['mom_from'] '');
+    $momTo = trim($_GET['mom_to'] '');
+    $momMode = trim($_GET['mom_mode'] 'previous');
+    $momBy = trim($_GET['mom_by'] 'total');
 
     if ($from === '' || $to === '') {
         $to = date('Y-m-d');
@@ -21,7 +21,7 @@ function reports_index(): void {
 
     $stmt = db()->prepare('SELECT COALESCE(SUM(amount),0) AS total FROM payments WHERE doctor_id = AND received_at BETWEEN AND');
     $stmt->execute([$doctorId, $from, $to]);
-    $total = $stmt->fetch()['total'] ?? 0;
+    $total = $stmt->fetch()['total'] 0;
 
     $stmt = db()->prepare('SELECT pat.full_name, SUM(p.amount) AS total FROM payments p JOIN patients pat ON pat.id = p.patient_id WHERE p.doctor_id = AND p.received_at BETWEEN AND aGROUP BY p.patient_id ORDER BY total DESC');
     $stmt->execute([$doctorId, $from, $to]);
@@ -47,8 +47,8 @@ function reports_services(): void {
 function reports_export_csv(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $from = trim($_GET['from'] ??'');
-    $to = trim($_GET['to'] ??'');
+    $from = trim($_GET['from'] '');
+    $to = trim($_GET['to'] '');
     if ($from === '' || $to === '') {
         $to = date('Y-m-d');
         $from = date('Y-m-d', strtotime('-29 days'));
@@ -71,8 +71,8 @@ function reports_export_csv(): void {
 function reports_services_export(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $from = trim($_GET['from'] ??'');
-    $to = trim($_GET['to'] ??'');
+    $from = trim($_GET['from'] '');
+    $to = trim($_GET['to'] '');
     if ($from === '' || $to === '') {
         $to = date('Y-m-d');
         $from = date('Y-m-d', strtotime('-29 days'));
@@ -94,10 +94,10 @@ function reports_services_export(): void {
 function reports_mom_export(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $momFrom = trim($_GET['mom_from'] ??'');
-    $momTo = trim($_GET['mom_to'] ??'');
-    $momMode = trim($_GET['mom_mode'] ??'previous');
-    $momBy = trim($_GET['mom_by'] ??'total');
+    $momFrom = trim($_GET['mom_from'] '');
+    $momTo = trim($_GET['mom_to'] '');
+    $momMode = trim($_GET['mom_mode'] 'previous');
+    $momBy = trim($_GET['mom_by'] 'total');
 
     if ($momFrom === '' || $momTo === '') {
         $momTo = date('Y-m-d');
@@ -135,13 +135,13 @@ function reports_mom_export(): void {
 
     fputcsv($out, []);
     fputcsv($out, ['date_index', 'date_current', 'total_current_raw', 'total_current', 'date_prev', 'total_prev_raw', 'total_prev', 'diff_raw', 'diff']);
-    foreach ($mom['rows'] ?? as $index => $row) {
+    foreach ($mom['rows'] as $index => $row) {
         fputcsv($out, [
             $index + 1,
             $row['date_current'],
             $row['total_current'],
             format_tnd($row['total_current']),
-            $row['date_prev'] ??'',
+            $row['date_prev'] '',
             $row['total_prev'],
             format_tnd($row['total_prev']),
             $row['diff'],
@@ -152,7 +152,7 @@ function reports_mom_export(): void {
     if ($mom['by'] === 'service' && !empty($mom['services'])) {
         fputcsv($out, []);
         fputcsv($out, ['service', 'total_current_raw', 'total_current', 'total_prev_raw', 'total_prev', 'diff_raw', 'diff']);
-        foreach ($mom['services'] ?? as $service) {
+        foreach ($mom['services'] as $service) {
             fputcsv($out, [
                 $service['name'],
                 $service['total_current'],
@@ -173,7 +173,7 @@ function reports_service_revenue(int $doctorId, string $from, string $to): array
     $db = db();
     $totals = [];
 
-    $addTotal = function (string $key, string $name, $amount) ?? use (&$totals): void {
+    $addTotal = function (string $key, string $name, $amount) use (&$totals): void {
         $value = (float)$amount;
         if (!isset($totals[$key])) {
             $totals[$key] = ['name' => $name, 'total' => 0.0];
@@ -184,20 +184,20 @@ function reports_service_revenue(int $doctorId, string $from, string $to): array
     $stmt = $db->prepare('SELECT pi.service_id, s.name, COALESCE(SUM(pi.line_total),0) AS total FROM payments p JOIN payment_items pi ON pi.payment_id = p.id LEFT JOIN services s ON s.id = pi.service_id WHERE p.doctor_id = AND p.received_at BETWEEN AND aGROUP BY pi.service_id, s.name');
     $stmt->execute([$doctorId, $from, $to]);
     while ($row = $stmt->fetch()) {
-        $name = $row['name'] ??'Non affect';
-        $key = $row['service_id'] ??'service_' . $row['service_id'] : 'unassigned_items';
+        $name = $row['name'] 'Non affect';
+        $key = $row['service_id'] 'service_' . $row['service_id'] : 'unassigned_items';
         $addTotal($key, $name, $row['total']);
     }
 
-    $stmt = $db->prepare('SELECT aps.service_id, s.name, COALESCE(SUM(aps.qty * s.default_price),0) AS total FROM payments p JOIN appointment_services aps ON aps.appointment_id = p.appointment_id JOIN services s ON s.id = aps.service_id WHERE p.doctor_id = AND p.received_at BETWEEN AND AND NOT EXISTS (SELECT 1 FROM payment_items pi WHERE pi.payment_id = p.id) ?? GROUP BY aps.service_id, s.name');
+    $stmt = $db->prepare('SELECT aps.service_id, s.name, COALESCE(SUM(aps.qty * s.default_price),0) AS total FROM payments p JOIN appointment_services aps ON aps.appointment_id = p.appointment_id JOIN services s ON s.id = aps.service_id WHERE p.doctor_id = AND p.received_at BETWEEN AND AND NOT EXISTS (SELECT 1 FROM payment_items pi WHERE pi.payment_id = p.id) GROUP BY aps.service_id, s.name');
     $stmt->execute([$doctorId, $from, $to]);
     while ($row = $stmt->fetch()) {
         $addTotal('service_' . $row['service_id'], $row['name'], $row['total']);
     }
 
-    $stmt = $db->prepare('SELECT COALESCE(SUM(p.amount),0) AS total FROM payments p WHERE p.doctor_id = AND p.received_at BETWEEN AND AND NOT EXISTS (SELECT 1 FROM payment_items pi WHERE pi.payment_id = p.id) AND (p.appointment_id IS NULL OR NOT EXISTS (SELECT 1 FROM appointment_services aps WHERE aps.appointment_id = p.appointment_id)) ??');
+    $stmt = $db->prepare('SELECT COALESCE(SUM(p.amount),0) AS total FROM payments p WHERE p.doctor_id = AND p.received_at BETWEEN AND AND NOT EXISTS (SELECT 1 FROM payment_items pi WHERE pi.payment_id = p.id) AND (p.appointment_id IS NULL OR NOT EXISTS (SELECT 1 FROM appointment_services aps WHERE aps.appointment_id = p.appointment_id)) ');
     $stmt->execute([$doctorId, $from, $to]);
-    $unassigned = (float)($stmt->fetch()['total'] ?? 0);
+    $unassigned = (float)($stmt->fetch()['total'] 0);
     if ($unassigned > 0) {
         $addTotal('unassigned', 'Non affect', $unassigned);
     }
@@ -205,7 +205,7 @@ function reports_service_revenue(int $doctorId, string $from, string $to): array
     $rows = array_values($totals);
 
     usort($rows, function (array $a, array $b): int {
-        return $b['total'] <?=  ?> $a['total'];
+        return $b['total'] <=  > $a['total'];
     });
 
     return $rows;
@@ -261,9 +261,9 @@ function reports_mom_data(int $doctorId, string $from, string $to, string $mode,
 
     $rows = [];
     foreach ($datesCurrent as $index => $date) {
-        $prevDate = $datesPrev[$index] ?? null;
-        $totalCurrent = $dailyCurrent[$date]['total'] ?? 0.0;
-        $totalPrev = $prevDate ($dailyPrev[$prevDate]['total'] ?? 0.0) : 0.0;
+        $prevDate = $datesPrev[$index] null;
+        $totalCurrent = $dailyCurrent[$date]['total'] 0.0;
+        $totalPrev = $prevDate ($dailyPrev[$prevDate]['total'] 0.0) : 0.0;
         $rows[] = [
             'date_current' => $date,
             'total_current' => $totalCurrent,
@@ -273,7 +273,7 @@ function reports_mom_data(int $doctorId, string $from, string $to, string $mode,
         ];
     }
 
-    $deltaValue = $currentTotals['total'] ?? $prevTotals['total'];
+    $deltaValue = $currentTotals['total'] $prevTotals['total'];
     $deltaPercent = $prevTotals['total'] > 0 ($deltaValue / $prevTotals['total']) * 100 : null;
     $currentAvg = $currentTotals['count'] > 0 $currentTotals['total'] / $currentTotals['count'] : 0.0;
     $prevAvg = $prevTotals['count'] > 0 $prevTotals['total'] / $prevTotals['count'] : 0.0;
@@ -338,11 +338,11 @@ function reports_mom_data(int $doctorId, string $from, string $to, string $mode,
                     'name' => $row['name'],
                     'total_current' => $row['total_current'],
                     'total_prev' => $row['total_prev'],
-                    'diff' => $row['total_current'] ?? $row['total_prev'],
+                    'diff' => $row['total_current'] $row['total_prev'],
                 ];
             }
             usort($services, function (array $a, array $b): int {
-                return $b['total_current'] <?=  ?> $a['total_current'];
+                return $b['total_current'] <=  > $a['total_current'];
             });
             $result['services'] = $services;
         }
@@ -356,8 +356,8 @@ function reports_totals_for_range(int $doctorId, string $from, string $to): arra
     $stmt->execute([$doctorId, $from, $to]);
     $row = $stmt->fetch();
     return [
-        'total' => (float)($row['total'] ?? 0),
-        'count' => (int)($row['cnt'] ?? 0),
+        'total' => (float)($row['total'] 0),
+        'count' => (int)($row['cnt'] 0),
     ];
 }
 

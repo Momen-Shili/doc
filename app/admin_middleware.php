@@ -1,4 +1,4 @@
-<?php
+<php
 // Admin middleware-like checks
 function require_admin_auth(): void {
     if (!admin_user()) {

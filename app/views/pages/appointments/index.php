@@ -1,4 +1,4 @@
-<?php
+<php
 $title = 'Rendez-vous';
 ob_start();
 $statuses = ['PLANIFIE','CONFIRME','TERMINE','ANNULE','NO_SHOW'];
@@ -20,7 +20,7 @@ $statuses = ['PLANIFIE','CONFIRME','TERMINE','ANNULE','NO_SHOW'];
         <div>
             <label for="appointments-date" class="block text-sm font-medium text-slate-200">Date</label>
             <div class="mt-2">
-                <input id="appointments-date" type="date" name="date" value="<?= e($date) ?>" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
+                <input id="appointments-date" type="date" name="date" value="<= e($date) >" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
             </div>
         </div>
         <div>
@@ -28,9 +28,9 @@ $statuses = ['PLANIFIE','CONFIRME','TERMINE','ANNULE','NO_SHOW'];
             <div class="mt-2">
                 <select id="appointments-status" name="status" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500">
                     <option value="">Tous statuts</option>
-                    <?php foreach ($statuses as $s): ?>
-                        <option value="<?= e($s) ?>" <?= $status === $s ? 'selected' : '' ?>><?= e(appointment_status_label($s)) ?></option>
-                    <?php endforeach; ?>
+                    <php foreach ($statuses as $s): >
+                        <option value="<= e($s) >" <= $status === $s 'selected' : '' >><= e(appointment_status_label($s)) ></option>
+                    <php endforeach; >
                 </select>
             </div>
         </div>
@@ -53,35 +53,35 @@ $statuses = ['PLANIFIE','CONFIRME','TERMINE','ANNULE','NO_SHOW'];
                 </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
-                <?php if (!$appointments): ?>
+                <php if (!$appointments): >
                     <tr>
                         <td colspan="5" class="px-3 py-6 text-center text-sm text-slate-400">Aucun rendez-vous.</td>
                     </tr>
-                <?php else: ?>
-                    <?php foreach ($appointments as $appt): ?>
+                <php else: >
+                    <php foreach ($appointments as $appt): >
                         <tr class="odd:bg-slate-800/40">
-                            <td class="px-3 py-3 text-slate-100"><?= e($appt['patient_name']) ?></td>
-                            <td class="px-3 py-3 text-slate-300"><?= e($appt['starts_at']) ?></td>
-                            <td class="px-3 py-3 text-slate-300"><?= e($appt['ends_at']) ?></td>
-                            <td class="px-3 py-3 text-slate-300"><?= e(appointment_status_label($appt['status'])) ?></td>
+                            <td class="px-3 py-3 text-slate-100"><= e($appt['patient_name']) ></td>
+                            <td class="px-3 py-3 text-slate-300"><= e($appt['starts_at']) ></td>
+                            <td class="px-3 py-3 text-slate-300"><= e($appt['ends_at']) ></td>
+                            <td class="px-3 py-3 text-slate-300"><= e(appointment_status_label($appt['status'])) ></td>
                             <td class="px-3 py-3 text-right text-sm font-semibold">
-                                <a class="text-indigo-300 hover:text-indigo-200" href="r=appointments-edit&id=<?= e($appt['id']) ?>">Modifier</a>
-                                <?php if ($appt['status'] ?? !== 'ANNULE'): ?>
+                                <a class="text-indigo-300 hover:text-indigo-200" href="r=appointments-edit&id=<= e($appt['id']) >">Modifier</a>
+                                <php if ($appt['status'] !== 'ANNULE'): >
                                     <form method="post" action="r=appointments-cancel" class="inline" onsubmit="return confirm('Annuler ce rendez-vous') ">
-                                        <?= csrf_field() ?>
-                                        <input type="hidden" name="id" value="<?= e($appt['id']) ?>" />
+                                        <= csrf_field() >
+                                        <input type="hidden" name="id" value="<= e($appt['id']) >" />
                                         <button class="ml-3 text-rose-300 hover:text-rose-200">Annuler</button>
                                     </form>
-                                <?php endif; ?>
+                                <php endif; >
                             </td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <php endforeach; >
+                <php endif; >
             </tbody>
         </table>
     </div>
 </div>
-<?php
+<php
 $content = ob_get_clean();
 require __DIR__ . '/../../layout.php';
 >

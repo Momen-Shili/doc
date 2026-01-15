@@ -1,4 +1,4 @@
-<?php
+<php
 $title = 'Revenus';
 ob_start();
 >
@@ -8,7 +8,7 @@ ob_start();
             <h1 class="text-lg font-semibold text-white">Revenus (espèces)</h1>
             <p class="mt-1 text-sm text-slate-400">Vue globale des paiements.</p>
         </div>
-        <a class="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400" href="r=payments-export&from=<?= e($from) ?>&to=<?= e($to) ?>&doctor_id=<?= e($doctorId) ?>">Exporter CSV</a>
+        <a class="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400" href="r=payments-export&from=<= e($from) >&to=<= e($to) >&doctor_id=<= e($doctorId) >">Exporter CSV</a>
     </div>
 </div>
 
@@ -19,13 +19,13 @@ ob_start();
         <div>
             <label for="admin-payments-from" class="block text-sm font-medium text-slate-200">Du</label>
             <div class="mt-2">
-                <input id="admin-payments-from" type="date" name="from" value="<?= e($from) ?>" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
+                <input id="admin-payments-from" type="date" name="from" value="<= e($from) >" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
             </div>
         </div>
         <div>
             <label for="admin-payments-to" class="block text-sm font-medium text-slate-200">Au</label>
             <div class="mt-2">
-                <input id="admin-payments-to" type="date" name="to" value="<?= e($to) ?>" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
+                <input id="admin-payments-to" type="date" name="to" value="<= e($to) >" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
             </div>
         </div>
         <div>
@@ -33,9 +33,9 @@ ob_start();
             <div class="mt-2">
                 <select id="admin-payments-doctor" name="doctor_id" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500">
                     <option value="">Tous médecins</option>
-                    <?php foreach ($doctors as $doc): ?>
-                        <option value="<?= e($doc['id']) ?>" <?= (int)$doctorId === (int)$doc['id'] ? 'selected' : '' ?>><?= e($doc['full_name']) ?></option>
-                    <?php endforeach; ?>
+                    <php foreach ($doctors as $doc): >
+                        <option value="<= e($doc['id']) >" <= (int)$doctorId === (int)$doc['id'] 'selected' : '' >><= e($doc['full_name']) ></option>
+                    <php endforeach; >
                 </select>
             </div>
         </div>
@@ -58,33 +58,33 @@ ob_start();
                 </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
-                <?php if (!$payments): ?>
+                <php if (!$payments): >
                     <tr>
                         <td colspan="5" class="px-3 py-6 text-center text-sm text-slate-400">Aucun paiement.</td>
                     </tr>
-                <?php else: ?>
-                    <?php foreach ($payments as $payment): ?>
+                <php else: >
+                    <php foreach ($payments as $payment): >
                         <tr class="odd:bg-slate-800/40">
-                            <td class="px-3 py-3 text-slate-100"><?= e($payment['received_at']) ?></td>
-                            <td class="px-3 py-3 text-slate-300"><?= e($payment['doctor_name']) ?></td>
-                            <td class="px-3 py-3 text-slate-300"><?= e($payment['patient_name']) ?></td>
-                            <td class="px-3 py-3 text-slate-300"><?= e(format_tnd($payment['amount'])) ?></td>
-                            <td class="px-3 py-3 text-slate-300"><?= e($payment['reference']) ?></td>
+                            <td class="px-3 py-3 text-slate-100"><= e($payment['received_at']) ></td>
+                            <td class="px-3 py-3 text-slate-300"><= e($payment['doctor_name']) ></td>
+                            <td class="px-3 py-3 text-slate-300"><= e($payment['patient_name']) ></td>
+                            <td class="px-3 py-3 text-slate-300"><= e(format_tnd($payment['amount'])) ></td>
+                            <td class="px-3 py-3 text-slate-300"><= e($payment['reference']) ></td>
                         </tr>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <php endforeach; >
+                <php endif; >
             </tbody>
             <tfoot>
                 <tr>
                     <td colspan="3" class="px-3 py-3 text-sm font-semibold text-slate-100">Total période</td>
-                    <td class="px-3 py-3 text-sm font-semibold text-slate-100"><?= e(format_tnd($total)) ?></td>
+                    <td class="px-3 py-3 text-sm font-semibold text-slate-100"><= e(format_tnd($total)) ></td>
                     <td class="px-3 py-3"></td>
                 </tr>
             </tfoot>
         </table>
     </div>
 </div>
-<?php
+<php
 $content = ob_get_clean();
 require __DIR__ . '/../layout.php';
 >

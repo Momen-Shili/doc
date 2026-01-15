@@ -1,4 +1,4 @@
-<?php
+<php
 // Router
 require_once __DIR__ . '/controllers/auth_controller.php';
 require_once __DIR__ . '/controllers/dashboard_controller.php';
@@ -11,7 +11,7 @@ require_once __DIR__ . '/controllers/services_controller.php';
 require_once __DIR__ . '/controllers/import_controller.php';
 require_once __DIR__ . '/controllers/reminders_controller.php';
 
-$route = $_GET['r'] ??'dashboard';
+$route = $_GET['r'] 'dashboard';
 
 switch ($route) {
     case'login':

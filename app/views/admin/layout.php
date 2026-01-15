@@ -1,4 +1,4 @@
-<?php
+<php
 $admin = admin_user();
 $title = $title'Admin';
 >
@@ -7,7 +7,7 @@ $title = $title'Admin';
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= e($title) ?></title>
+    <title><= e($title) ></title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         a:focus-visible,
@@ -23,32 +23,32 @@ $title = $title'Admin';
 </head>
 <body class="h-full text-slate-100">
 <div>
-    <?php if ($admin): ?>
-        <?php require __DIR__ . '/partials/sidebar.php'; ?>
+    <php if ($admin): >
+        <php require __DIR__ . '/partials/sidebar.php'; >
         <div class="lg:pl-72">
-            <?php require __DIR__ . '/partials/topbar.php'; ?>
+            <php require __DIR__ . '/partials/topbar.php'; >
             <main class="py-10">
                 <div class="px-4 sm:px-6 lg:px-8">
-                    <?php require __DIR__ . '/../partials/flash.php'; ?>
-                    <?= $content ?>
+                    <php require __DIR__ . '/../partials/flash.php'; >
+                    <= $content >
                 </div>
             </main>
         </div>
-    <?php else: ?>
+    <php else: >
         <main class="min-h-screen flex items-center justify-center px-4 bg-slate-950">
-            <?= $content ?>
+            <= $content >
         </main>
-    <?php endif; ?>
+    <php endif; >
 </div>
 
     <script>
     document.addEventListener('submit', function (event) {
         var form = event.target;
-        if (!form || form.tagName !== 'FORM') ?? return;
-        if ((form.getAttribute('method') ?? || 'get').toLowerCase() ?? !== 'post') ?? return;
+        if (!form || form.tagName !== 'FORM') return;
+        if ((form.getAttribute('method') || 'get').toLowerCase() !== 'post') return;
         var buttons = form.querySelectorAll('button[type=\"submit\"], button:not([type]) ');
         buttons.forEach(function (btn) {
-            if (btn.disabled) ?? return;
+            if (btn.disabled) return;
             btn.dataset.originalText = btn.textContent;
             btn.textContent = btn.dataset.loadingText || 'Traitement...';
             btn.disabled = true;

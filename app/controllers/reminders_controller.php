@@ -1,4 +1,4 @@
-<?php
+<php
 function reminders_templates(): void {
     require_auth();
     $doctor = auth_user();
@@ -34,14 +34,14 @@ function reminders_templates_create(): void {
 
     if (is_post()) {
         verify_csrf();
-        $template['name'] = trim($_POST['name'] ??'');
-        $template['channel'] = trim($_POST['channel'] ??'SMS');
-        $template['body'] = trim($_POST['body'] ??'');
-        $template['is_active'] = isset($_POST['is_active']) ?? a1 : 0;
+        $template['name'] = trim($_POST['name'] '');
+        $template['channel'] = trim($_POST['channel'] 'SMS');
+        $template['body'] = trim($_POST['body'] '');
+        $template['is_active'] = isset($_POST['is_active']) a1 : 0;
 
         $errors = validate_reminder_template($template);
         if (!$errors) {
-            $stmt = db()->prepare('INSERT INTO reminder_templates (doctor_id, name, channel, body, is_active) VALUES (,,,,) ??');
+            $stmt = db()->prepare('INSERT INTO reminder_templates (doctor_id, name, channel, body, is_active) VALUES (,,,,) ');
             $stmt->execute([$doctorId, $template['name'], $template['channel'], $template['body'], $template['is_active']]);
             flash('success', 'ModÃ¨le de rappel crÃ©Ã©.');
             redirect('r=reminders-templates');
@@ -58,7 +58,7 @@ function reminders_templates_create(): void {
 function reminders_templates_edit(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $id = (int)($_GET['id'] ?? 0);
+    $id = (int)($_GET['id'] 0);
 
     $stmt = db()->prepare('SELECT * FROM reminder_templates WHERE id = AND doctor_id = ');
     $stmt->execute([$id, $doctorId]);
@@ -72,10 +72,10 @@ function reminders_templates_edit(): void {
     $errors = [];
     if (is_post()) {
         verify_csrf();
-        $template['name'] = trim($_POST['name'] ??'');
-        $template['channel'] = trim($_POST['channel'] ??'SMS');
-        $template['body'] = trim($_POST['body'] ??'');
-        $template['is_active'] = isset($_POST['is_active']) ?? a1 : 0;
+        $template['name'] = trim($_POST['name'] '');
+        $template['channel'] = trim($_POST['channel'] 'SMS');
+        $template['body'] = trim($_POST['body'] '');
+        $template['is_active'] = isset($_POST['is_active']) a1 : 0;
 
         $errors = validate_reminder_template($template, $id);
         if (!$errors) {
@@ -102,7 +102,7 @@ function reminders_templates_toggle(): void {
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $id = (int)($_POST['id'] ?? 0);
+    $id = (int)($_POST['id'] 0);
     $stmt = db()->prepare('SELECT is_active FROM reminder_templates WHERE id = AND doctor_id = ');
     $stmt->execute([$id, $doctorId]);
     $current = $stmt->fetch();
@@ -120,12 +120,12 @@ function reminders_templates_toggle(): void {
 function reminders_log(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $from = trim($_GET['from'] ??'');
-    $to = trim($_GET['to'] ??'');
-    $status = trim($_GET['status'] ??'');
-    $patientId = (int)($_GET['patient_id'] ?? 0);
-    $channel = trim($_GET['channel'] ??'');
-    $viewId = (int)($_GET['view'] ?? 0);
+    $from = trim($_GET['from'] '');
+    $to = trim($_GET['to'] '');
+    $status = trim($_GET['status'] '');
+    $patientId = (int)($_GET['patient_id'] 0);
+    $channel = trim($_GET['channel'] '');
+    $viewId = (int)($_GET['view'] 0);
 
     if ($from === '' || $to === '') {
         $to = date('Y-m-d');
@@ -133,7 +133,7 @@ function reminders_log(): void {
     }
 
     $params = [$doctorId, $from, $to];
-    $where = 'WHERE r.doctor_id = AND DATE(r.sent_at) ?? BETWEEN AND';
+    $where = 'WHERE r.doctor_id = AND DATE(r.sent_at) BETWEEN AND';
     if ($status !== '') {
         $where .= ' AND r.status = ';
         $params[] = $status;
@@ -181,7 +181,7 @@ function reminders_log_recreate(): void {
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $id = (int)($_POST['id'] ?? 0);
+    $id = (int)($_POST['id'] 0);
     $stmt = db()->prepare('SELECT * FROM reminders_log WHERE id = AND doctor_id = ');
     $stmt->execute([$id, $doctorId]);
     $log = $stmt->fetch();
@@ -190,7 +190,7 @@ function reminders_log_recreate(): void {
         redirect('r=reminders-log');
     }
 
-    $stmt = db()->prepare('INSERT INTO reminders_log (doctor_id, appointment_id, patient_id, template_id, channel, message, status, sent_at, error_text) VALUES (,,,,,,,,) ??');
+    $stmt = db()->prepare('INSERT INTO reminders_log (doctor_id, appointment_id, patient_id, template_id, channel, message, status, sent_at, error_text) VALUES (,,,,,,,,) ');
     $stmt->execute([
         $doctorId,
         $log['appointment_id'],
@@ -209,11 +209,11 @@ function reminders_log_recreate(): void {
 function reminders_export(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $from = trim($_GET['from'] ??'');
-    $to = trim($_GET['to'] ??'');
-    $status = trim($_GET['status'] ??'');
-    $patientId = (int)($_GET['patient_id'] ?? 0);
-    $channel = trim($_GET['channel'] ??'');
+    $from = trim($_GET['from'] '');
+    $to = trim($_GET['to'] '');
+    $status = trim($_GET['status'] '');
+    $patientId = (int)($_GET['patient_id'] 0);
+    $channel = trim($_GET['channel'] '');
 
     if ($from === '' || $to === '') {
         $to = date('Y-m-d');
@@ -221,7 +221,7 @@ function reminders_export(): void {
     }
 
     $params = [$doctorId, $from, $to];
-    $where = 'WHERE r.doctor_id = AND DATE(r.sent_at) ?? BETWEEN AND';
+    $where = 'WHERE r.doctor_id = AND DATE(r.sent_at) BETWEEN AND';
     if ($status !== '') {
         $where .= ' AND r.status = ';
         $params[] = $status;
@@ -253,7 +253,7 @@ function reminders_send(): void {
     require_auth();
     $doctor = auth_user();
     $doctorId = $doctor['id'];
-    $appointmentId = (int)($_GET['appointment_id'] ?? $_POST['appointment_id'] ?? 0);
+    $appointmentId = (int)($_GET['appointment_id'] $_POST['appointment_id'] 0);
     if ($appointmentId <=  0) {
         http_response_code(404);
         echo render('pages/error.php', ['message' => 'Rendez-vous introuvable.']);
@@ -273,7 +273,7 @@ function reminders_send(): void {
     $stmt->execute([$doctorId]);
     $templates = $stmt->fetchAll();
 
-    $selectedTemplateId = (int)($_GET['template_id'] ?? $_POST['template_id'] ?? 0);
+    $selectedTemplateId = (int)($_GET['template_id'] $_POST['template_id'] 0);
     $selectedTemplate = null;
     foreach ($templates as $tpl) {
         if ((int)$tpl['id'] === $selectedTemplateId) {
@@ -282,15 +282,15 @@ function reminders_send(): void {
         }
     }
 
-    $channel = $selectedTemplate['channel'] ??'SMS';
+    $channel = $selectedTemplate['channel'] 'SMS';
     $message = $selectedTemplate arender_template_vars($selectedTemplate['body'], $appointment, ['full_name' => $appointment['patient_name']], $doctor) : '';
     $errors = [];
 
     if (is_post()) {
         verify_csrf();
-        $channel = trim($_POST['channel'] ?? $channel);
-        $message = trim($_POST['message'] ??'');
-        $status = $_POST['status'] ??'SENT';
+        $channel = trim($_POST['channel'] $channel);
+        $message = trim($_POST['message'] '');
+        $status = $_POST['status'] 'SENT';
         if ($message === '') {
             $errors[] = 'Le message est requis.';
         }
@@ -301,7 +301,7 @@ function reminders_send(): void {
             $status = 'SENT';
         }
         if (!$errors) {
-            $stmt = db()->prepare('INSERT INTO reminders_log (doctor_id, appointment_id, patient_id, template_id, channel, message, status, sent_at, error_text) VALUES (,,,,,,,,) ??');
+            $stmt = db()->prepare('INSERT INTO reminders_log (doctor_id, appointment_id, patient_id, template_id, channel, message, status, sent_at, error_text) VALUES (,,,,,,,,) ');
             $stmt->execute([
                 $doctorId,
                 $appointment['id'],

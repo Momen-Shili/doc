@@ -1,4 +1,4 @@
-<?php
+<php
 $closure = $closure [];
 >
 <!doctype html>
@@ -22,20 +22,20 @@ $closure = $closure [];
 <body>
     <div class="card">
         <h1>Clôture de caisse</h1>
-        <div class="muted">Date : <?= e($closure['closure_date'] '') ?></div>
+        <div class="muted">Date : <= e($closure['closure_date'] '') ></div>
 
         <table>
-            <tr><td class="label">Cabinet</td><td><?= e($closure['doctor_name'] '') ?></td></tr>
-            <tr><td class="label">Spécialité</td><td><?= e($closure['specialty'] '') ?></td></tr>
-            <tr><td class="label">Téléphone</td><td><?= e($closure['phone'] '') ?></td></tr>
-            <tr><td class="label">Email</td><td><?= e($closure['email'] '') ?></td></tr>
+            <tr><td class="label">Cabinet</td><td><= e($closure['doctor_name'] '') ></td></tr>
+            <tr><td class="label">Spécialité</td><td><= e($closure['specialty'] '') ></td></tr>
+            <tr><td class="label">Téléphone</td><td><= e($closure['phone'] '') ></td></tr>
+            <tr><td class="label">Email</td><td><= e($closure['email'] '') ></td></tr>
         </table>
 
         <table>
-            <tr><td class="label">Total système</td><td><?= e(format_tnd($closure['total_system'] ?? 0)) ?></td></tr>
-            <tr><td class="label">Montant déclaré</td><td><?= e(format_tnd($closure['cash_declared'] ?? 0)) ?></td></tr>
-            <tr><td class="label">cart</td><td><?= e(format_tnd($closure['difference'] ?? 0)) ?></td></tr>
-            <tr><td class="label">Notes</td><td><?= e($closure['notes'] '') ?></td></tr>
+            <tr><td class="label">Total système</td><td><= e(format_tnd($closure['total_system'] 0)) ></td></tr>
+            <tr><td class="label">Montant déclaré</td><td><= e(format_tnd($closure['cash_declared'] 0)) ></td></tr>
+            <tr><td class="label">cart</td><td><= e(format_tnd($closure['difference'] 0)) ></td></tr>
+            <tr><td class="label">Notes</td><td><= e($closure['notes'] '') ></td></tr>
         </table>
 
         <div class="actions">

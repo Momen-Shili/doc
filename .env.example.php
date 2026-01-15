@@ -1,4 +1,4 @@
-<?php
+<php
 return [
     'app_name' => 'Cabinet SaaS',
     'app_url' => 'http://localhost:8000',

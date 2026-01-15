@@ -1,4 +1,4 @@
-<?php
+<php
 function import_index(): void {
     require_auth();
     $doctorId = auth_user()['id'];
@@ -43,7 +43,7 @@ function import_index(): void {
 
 function import_map(): void {
     require_auth();
-    $import = $_SESSION['import'] ?? null;
+    $import = $_SESSION['import'] null;
     if (!$import) {
         redirect('r=import');
     }
@@ -59,7 +59,7 @@ function import_map(): void {
         verify_csrf();
         $mapping = [];
         foreach ($fields as $field) {
-            $mapping[$field] = trim($_POST['map_' . $field] ??'');
+            $mapping[$field] = trim($_POST['map_' . $field] '');
         }
         $_SESSION['import']['mapping'] = $mapping;
         redirect('r=import-preview');
@@ -74,7 +74,7 @@ function import_map(): void {
 
 function import_preview(): void {
     require_auth();
-    $import = $_SESSION['import'] ?? null;
+    $import = $_SESSION['import'] null;
     if (!$import) {
         redirect('r=import');
     }
@@ -85,7 +85,7 @@ function import_preview(): void {
     echo render('pages/import/preview.php', [
         'rows' => $rows,
         'fields' => $fields,
-        'mapping' => $import['mapping'] ?? [],
+        'mapping' => $import['mapping'] [],
         'type' => $import['type'],
     ]);
 }
@@ -98,7 +98,7 @@ function import_validate(): void {
         return;
     }
     verify_csrf();
-    $import = $_SESSION['import'] ?? null;
+    $import = $_SESSION['import'] null;
     if (!$import) {
         redirect('r=import');
     }
@@ -117,7 +117,7 @@ function import_run(): void {
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $import = $_SESSION['import'] ?? null;
+    $import = $_SESSION['import'] null;
     if (!$import) {
         redirect('r=import');
     }
@@ -170,7 +170,7 @@ function import_fields(string $type): array {
 }
 
 function validate_import(array $import): array {
-    $mapping = $import['mapping'] ?? [];
+    $mapping = $import['mapping'] [];
     $errors = [];
     foreach ($mapping as $field => $col) {
         if ($field === 'external_id') {
@@ -187,7 +187,7 @@ function validate_import(array $import): array {
 }
 
 function run_import(int $doctorId, array $import): array {
-    $mapping = $import['mapping'] ?? [];
+    $mapping = $import['mapping'] [];
     $path = $import['path'];
     $type = $import['type'];
 
@@ -251,13 +251,13 @@ function run_import(int $doctorId, array $import): array {
 function map_row(array $assoc, array $mapping): array {
     $data = [];
     foreach ($mapping as $field => $column) {
-        $data[$field] = $column !== '' atrim($assoc[$column] ??'') : '';
+        $data[$field] = $column !== '' atrim($assoc[$column] '') : '';
     }
     return $data;
 }
 
 function import_patient_row(int $doctorId, array $data) {
-    if (($data['full_name'] ??'') === '') {
+    if (($data['full_name'] '') === '') {
         return null;
     }
     if (!empty($data['external_id'])) {
@@ -267,7 +267,7 @@ function import_patient_row(int $doctorId, array $data) {
             return false;
         }
     }
-    $stmt = db()->prepare('INSERT INTO patients (doctor_id, external_id, full_name, phone, email, dob, notes) VALUES (,,,,,,) ??');
+    $stmt = db()->prepare('INSERT INTO patients (doctor_id, external_id, full_name, phone, email, dob, notes) VALUES (,,,,,,) ');
     $stmt->execute([
         $doctorId,
         $data['external_id'] : null,
@@ -281,7 +281,7 @@ function import_patient_row(int $doctorId, array $data) {
 }
 
 function import_appointment_row(int $doctorId, array $data) {
-    if (($data['starts_at'] ??'') === '' || ($data['ends_at'] ??'') === '') {
+    if (($data['starts_at'] '') === '' || ($data['ends_at'] '') === '') {
         return null;
     }
     $patientId = resolve_patient_id($doctorId, $data);
@@ -303,7 +303,7 @@ function import_appointment_row(int $doctorId, array $data) {
     if (!in_array($status, $allowed, true)) {
         $status = 'PLANIFIE';
     }
-    $stmt = db()->prepare('INSERT INTO appointments (doctor_id, external_id, patient_id, starts_at, ends_at, status, reason, notes) VALUES (,,,,,,,) ??');
+    $stmt = db()->prepare('INSERT INTO appointments (doctor_id, external_id, patient_id, starts_at, ends_at, status, reason, notes) VALUES (,,,,,,,) ');
     $stmt->execute([
         $doctorId,
         $data['external_id'] : null,
@@ -318,7 +318,7 @@ function import_appointment_row(int $doctorId, array $data) {
 }
 
 function import_payment_row(int $doctorId, array $data) {
-    if (($data['received_at'] ??'') === '' || ($data['amount'] ??'') === '') {
+    if (($data['received_at'] '') === '' || ($data['amount'] '') === '') {
         return null;
     }
     $patientId = resolve_patient_id($doctorId, $data);
@@ -335,7 +335,7 @@ function import_payment_row(int $doctorId, array $data) {
         }
     }
 
-    $stmt = db()->prepare('INSERT INTO payments (doctor_id, external_id, patient_id, appointment_id, received_at, amount, reference, notes) VALUES (,,,,,,,) ??');
+    $stmt = db()->prepare('INSERT INTO payments (doctor_id, external_id, patient_id, appointment_id, received_at, amount, reference, notes) VALUES (,,,,,,,) ');
     $stmt->execute([
         $doctorId,
         $data['external_id'] : null,
