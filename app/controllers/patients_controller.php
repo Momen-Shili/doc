@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 function patients_index(): void {
     require_auth();
     $doctor = auth_user();
@@ -65,7 +65,7 @@ function patients_create(): void {
                 $data['dob'] !== '' ? $data['dob'] : null,
                 $data['notes'] !== '' ? $data['notes'] : null,
             ]);
-            flash('success', 'Patient ajouté.');
+            flash('success', 'Patient ajoutÃ©.');
             redirect('?r=patients');
         }
         set_old($data);
@@ -115,7 +115,7 @@ function patients_edit(): void {
                 $id,
                 $doctorId,
             ]);
-            flash('success', 'Patient mis à jour.');
+            flash('success', 'Patient mis Ã  jour.');
             redirect('?r=patients');
         }
         $patient = array_merge($patient, $data);
@@ -128,7 +128,7 @@ function patients_delete(): void {
     require_auth();
     if (!is_post()) {
         http_response_code(405);
-        echo render('pages/error.php', ['message' => 'Méthode non autorisée.']);
+        echo render('pages/error.php', ['message' => 'MÃ©thode non autorisÃ©e.']);
         return;
     }
     verify_csrf();
@@ -136,8 +136,49 @@ function patients_delete(): void {
     $id = (int)($_POST['id'] ?? 0);
     $stmt = db()->prepare('DELETE FROM patients WHERE id = ? AND doctor_id = ?');
     $stmt->execute([$id, $doctorId]);
-    flash('success', 'Patient supprimé.');
+    flash('success', 'Patient supprimÃ©.');
     redirect('?r=patients');
+}
+
+function patients_update_consents(): void {
+    require_auth();
+    if (!is_post()) {
+        http_response_code(405);
+        echo render('pages/error.php', ['message' => 'MÃ©thode non autorisÃ©e.']);
+        return;
+    }
+    verify_csrf();
+    $doctorId = auth_user()['id'];
+    $patientId = (int)($_POST['patient_id'] ?? 0);
+
+    $patient = patient_or_404($doctorId, $patientId, false);
+    if (!$patient) {
+        flash('error', 'Patient introuvable.');
+        redirect('?r=patients');
+    }
+
+    $whatsappPhone = trim($_POST['whatsapp_phone'] ?? '');
+    $normalizedWhatsapp = $whatsappPhone !== '' ? normalize_tn_phone($whatsappPhone) : null;
+    if ($whatsappPhone !== '' && !$normalizedWhatsapp) {
+        flash('error', 'NumÃ©ro WhatsApp invalide. Format attendu: +216XXXXXXXX.');
+        redirect('?r=patient&id=' . $patientId);
+    }
+
+    $consentEmail = isset($_POST['consent_email']) ? 1 : 0;
+    $consentSms = isset($_POST['consent_sms']) ? 1 : 0;
+    $consentWhatsapp = isset($_POST['consent_whatsapp']) ? 1 : 0;
+
+    $stmt = db()->prepare('UPDATE patients SET consent_email = ?, consent_sms = ?, consent_whatsapp = ?, whatsapp_phone = ? WHERE id = ? AND doctor_id = ?');
+    $stmt->execute([
+        $consentEmail,
+        $consentSms,
+        $consentWhatsapp,
+        $normalizedWhatsapp,
+        $patientId,
+        $doctorId,
+    ]);
+    flash('success', 'Consentements mis Ã  jour.');
+    redirect('?r=patient&id=' . $patientId);
 }
 
 function patients_show(): void {
@@ -202,7 +243,7 @@ function notes_create(): void {
     require_auth();
     if (!is_post()) {
         http_response_code(405);
-        echo render('pages/error.php', ['message' => 'Méthode non autorisée.']);
+        echo render('pages/error.php', ['message' => 'MÃ©thode non autorisÃ©e.']);
         return;
     }
     verify_csrf();
@@ -222,7 +263,7 @@ function notes_create(): void {
 
     $stmt = db()->prepare('INSERT INTO clinical_notes (doctor_id, patient_id, note_text) VALUES (?,?,?)');
     $stmt->execute([$doctorId, $patientId, $noteText]);
-    flash('success', 'Note clinique ajoutée.');
+    flash('success', 'Note clinique ajoutÃ©e.');
     redirect('?r=patient&id=' . $patientId . '&tab=notes');
 }
 
@@ -230,7 +271,7 @@ function notes_edit(): void {
     require_auth();
     if (!is_post()) {
         http_response_code(405);
-        echo render('pages/error.php', ['message' => 'Méthode non autorisée.']);
+        echo render('pages/error.php', ['message' => 'MÃ©thode non autorisÃ©e.']);
         return;
     }
     verify_csrf();
@@ -246,7 +287,7 @@ function notes_edit(): void {
 
     $stmt = db()->prepare('UPDATE clinical_notes SET note_text = ? WHERE id = ? AND doctor_id = ? AND patient_id = ?');
     $stmt->execute([$noteText, $noteId, $doctorId, $patientId]);
-    flash('success', 'Note clinique mise à jour.');
+    flash('success', 'Note clinique mise Ã  jour.');
     redirect('?r=patient&id=' . $patientId . '&tab=notes');
 }
 
@@ -254,7 +295,7 @@ function notes_delete(): void {
     require_auth();
     if (!is_post()) {
         http_response_code(405);
-        echo render('pages/error.php', ['message' => 'Méthode non autorisée.']);
+        echo render('pages/error.php', ['message' => 'MÃ©thode non autorisÃ©e.']);
         return;
     }
     verify_csrf();
@@ -264,7 +305,7 @@ function notes_delete(): void {
 
     $stmt = db()->prepare('DELETE FROM clinical_notes WHERE id = ? AND doctor_id = ? AND patient_id = ?');
     $stmt->execute([$noteId, $doctorId, $patientId]);
-    flash('success', 'Note clinique supprimée.');
+    flash('success', 'Note clinique supprimÃ©e.');
     redirect('?r=patient&id=' . $patientId . '&tab=notes');
 }
 
@@ -272,7 +313,7 @@ function tags_add(): void {
     require_auth();
     if (!is_post()) {
         http_response_code(405);
-        echo render('pages/error.php', ['message' => 'Méthode non autorisée.']);
+        echo render('pages/error.php', ['message' => 'MÃ©thode non autorisÃ©e.']);
         return;
     }
     verify_csrf();
@@ -304,7 +345,7 @@ function tags_add(): void {
 
     $stmt = db()->prepare('INSERT IGNORE INTO patient_tags (patient_id, tag_id) VALUES (?, ?)');
     $stmt->execute([$patientId, $tagId]);
-    flash('success', 'Tag ajouté.');
+    flash('success', 'Tag ajoutÃ©.');
     redirect('?r=patient&id=' . $patientId);
 }
 
@@ -312,7 +353,7 @@ function tags_remove(): void {
     require_auth();
     if (!is_post()) {
         http_response_code(405);
-        echo render('pages/error.php', ['message' => 'Méthode non autorisée.']);
+        echo render('pages/error.php', ['message' => 'MÃ©thode non autorisÃ©e.']);
         return;
     }
     verify_csrf();
@@ -322,7 +363,7 @@ function tags_remove(): void {
 
     $stmt = db()->prepare('DELETE pt FROM patient_tags pt JOIN tags t ON t.id = pt.tag_id WHERE pt.patient_id = ? AND pt.tag_id = ? AND t.doctor_id = ?');
     $stmt->execute([$patientId, $tagId, $doctorId]);
-    flash('success', 'Tag retiré.');
+    flash('success', 'Tag retirÃ©.');
     redirect('?r=patient&id=' . $patientId);
 }
 
@@ -330,7 +371,7 @@ function documents_upload(): void {
     require_auth();
     if (!is_post()) {
         http_response_code(405);
-        echo render('pages/error.php', ['message' => 'Méthode non autorisée.']);
+        echo render('pages/error.php', ['message' => 'MÃ©thode non autorisÃ©e.']);
         return;
     }
     verify_csrf();
@@ -350,7 +391,7 @@ function documents_upload(): void {
 
     $file = $_FILES['document'];
     if ($file['error'] !== UPLOAD_ERR_OK) {
-        flash('error', 'Erreur de téléchargement.');
+        flash('error', 'Erreur de tÃ©lÃ©chargement.');
         redirect('?r=patient&id=' . $patientId . '&tab=documents');
     }
     if ($file['size'] > 10 * 1024 * 1024) {
@@ -362,7 +403,7 @@ function documents_upload(): void {
     $ext = strtolower(pathinfo($original, PATHINFO_EXTENSION));
     $allowedExt = ['pdf', 'jpg', 'jpeg', 'png'];
     if (!in_array($ext, $allowedExt, true)) {
-        flash('error', 'Extension de fichier non autorisée.');
+        flash('error', 'Extension de fichier non autorisÃ©e.');
         redirect('?r=patient&id=' . $patientId . '&tab=documents');
     }
 
@@ -374,11 +415,11 @@ function documents_upload(): void {
         'image/png' => 'png',
     ];
     if (!isset($mimeMap[$mime])) {
-        flash('error', 'Format de fichier non autorisé.');
+        flash('error', 'Format de fichier non autorisÃ©.');
         redirect('?r=patient&id=' . $patientId . '&tab=documents');
     }
     if ($mimeMap[$mime] !== $ext && !($mimeMap[$mime] === 'jpg' && $ext === 'jpeg')) {
-        flash('error', 'Le type de fichier ne correspond pas à l\'extension.');
+        flash('error', 'Le type de fichier ne correspond pas Ã  l\'extension.');
         redirect('?r=patient&id=' . $patientId . '&tab=documents');
     }
 
@@ -398,7 +439,7 @@ function documents_upload(): void {
     $stmt = db()->prepare('INSERT INTO documents (doctor_id, patient_id, file_name, file_path, mime_type, size_bytes, note) VALUES (?,?,?,?,?,?,?)');
     $stmt->execute([$doctorId, $patientId, $original, $relativePath, $mime, (int)$file['size'], $note !== '' ? $note : null]);
 
-    flash('success', 'Document ajouté.');
+    flash('success', 'Document ajoutÃ©.');
     redirect('?r=patient&id=' . $patientId . '&tab=documents');
 }
 
@@ -406,7 +447,7 @@ function documents_delete(): void {
     require_auth();
     if (!is_post()) {
         http_response_code(405);
-        echo render('pages/error.php', ['message' => 'Méthode non autorisée.']);
+        echo render('pages/error.php', ['message' => 'MÃ©thode non autorisÃ©e.']);
         return;
     }
     verify_csrf();
@@ -424,7 +465,7 @@ function documents_delete(): void {
         }
         $stmt = db()->prepare('DELETE FROM documents WHERE id = ? AND doctor_id = ? AND patient_id = ?');
         $stmt->execute([$docId, $doctorId, $patientId]);
-        flash('success', 'Document supprimé.');
+        flash('success', 'Document supprimÃ©.');
     }
     redirect('?r=patient&id=' . $patientId . '&tab=documents');
 }
@@ -447,7 +488,7 @@ function documents_download(): void {
         echo render('pages/error.php', ['message' => 'Fichier introuvable.']);
         return;
     }
-    $safeName = str_replace(["\r", "\n", "\""], '', $doc['file_name']);
+    $safeName = str_replace(["\r", "\n", '"'], '', $doc['file_name']);
     header('Content-Type: ' . $doc['mime_type']);
     header('Content-Disposition: attachment; filename="' . $safeName . '"');
     readfile($path);

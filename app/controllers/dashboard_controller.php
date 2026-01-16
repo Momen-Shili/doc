@@ -88,9 +88,16 @@ function dashboard_index(): void {
 
     $now = date('Y-m-d H:i:s');
     $nextDay = date('Y-m-d H:i:s', strtotime('+1 day'));
-    $stmt = db()->prepare("SELECT a.id, a.starts_at, a.ends_at, p.full_name AS patient_name FROM appointments a JOIN patients p ON p.id = a.patient_id WHERE a.doctor_id = ? AND a.starts_at BETWEEN ? AND ? AND a.status IN ('PLANIFIE','CONFIRME') AND NOT EXISTS (SELECT 1 FROM reminders_log r WHERE r.doctor_id = a.doctor_id AND r.appointment_id = a.id AND r.status = 'SENT') ORDER BY a.starts_at");
+    $stmt = db()->prepare("SELECT a.id, a.starts_at, a.ends_at, p.full_name AS patient_name, p.email, p.phone, p.whatsapp_phone, p.consent_email, p.consent_sms, p.consent_whatsapp FROM appointments a JOIN patients p ON p.id = a.patient_id WHERE a.doctor_id = ? AND a.starts_at BETWEEN ? AND ? AND a.status IN ('PLANIFIE','CONFIRME') AND NOT EXISTS (SELECT 1 FROM reminders_log r WHERE r.doctor_id = a.doctor_id AND r.appointment_id = a.id AND r.status = 'SENT') ORDER BY a.starts_at");
     $stmt->execute([$doctor['id'], $now, $nextDay]);
     $remindersDue = $stmt->fetchAll();
+
+    $notifSettings = notifications_load_settings($doctor['id']);
+    $notifConfig = [
+        'email' => !empty($notifSettings['smtp_host']) && !empty($notifSettings['smtp_username']) && !empty($notifSettings['smtp_password_enc']) && !empty($notifSettings['smtp_from_email']),
+        'sms' => !empty($notifSettings['infobip_api_key_enc']) && !empty($notifSettings['infobip_sms_sender']),
+        'whatsapp' => !empty($notifSettings['infobip_api_key_enc']) && !empty($notifSettings['infobip_whatsapp_sender']),
+    ];
 
     echo render('pages/dashboard.php', [
         'doctor' => $doctor,
@@ -111,5 +118,6 @@ function dashboard_index(): void {
         'recentPatients' => $recentPatients,
         'miniRevenue' => $miniRevenue,
         'remindersDue' => $remindersDue,
+        'notifConfig' => $notifConfig,
     ]);
 }

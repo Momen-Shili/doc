@@ -1,14 +1,16 @@
 <?php
 $admin = admin_user();
 $title = $title ?? 'Admin';
+$theme = current_theme();
 ?>
 <!doctype html>
-<html class="h-full bg-slate-950" lang="fr">
+<html class="h-full" lang="fr" data-theme="<?= e($theme) ?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?= e($title) ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="<?= e(asset_url('UI/assets/theme.css')) ?>">
     <style>
         a:focus-visible,
         button:focus-visible,
@@ -16,7 +18,7 @@ $title = $title ?? 'Admin';
         select:focus-visible,
         textarea:focus-visible,
         [tabindex]:focus-visible {
-            outline: 2px solid #818cf8;
+            outline: 2px solid var(--ring);
             outline-offset: 2px;
         }
     </style>

@@ -1,16 +1,16 @@
-<?php
+ï»¿<?php
 $title = 'Rappels';
 ob_start();
 ?>
 <div class="rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h1 class="text-lg font-semibold text-white">Modèles de rappels</h1>
-            <p class="mt-1 text-sm text-slate-400">Créez des modèles pour vos rendez-vous.</p>
+            <h1 class="text-lg font-semibold text-white">ModÃ¨les de rappels</h1>
+            <p class="mt-1 text-sm text-slate-400">CrÃ©ez des modÃ¨les pour vos rendez-vous.</p>
         </div>
         <div class="flex flex-wrap gap-2">
             <a class="inline-flex items-center rounded-md bg-slate-800 px-3 py-2 text-sm font-semibold text-slate-100 ring-1 ring-white/10 hover:bg-slate-700" href="?r=reminders-log">Journal</a>
-            <a class="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400" href="?r=reminders-templates-create">Nouveau modèle</a>
+            <a class="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400" href="?r=reminders-templates-create">Nouveau modÃ¨le</a>
         </div>
     </div>
 </div>
@@ -33,7 +33,8 @@ ob_start();
                 <tr>
                     <th class="px-3 py-2 text-left" scope="col">Nom</th>
                     <th class="px-3 py-2 text-left" scope="col">Canal</th>
-                    <th class="px-3 py-2 text-left" scope="col">Aperçu</th>
+                    <th class="px-3 py-2 text-left" scope="col">AperÃ§u</th>
+                    <th class="px-3 py-2 text-left" scope="col">WhatsApp</th>
                     <th class="px-3 py-2 text-left" scope="col">Actif</th>
                     <th class="px-3 py-2 text-right" scope="col">Actions</th>
                 </tr>
@@ -41,7 +42,7 @@ ob_start();
             <tbody class="divide-y divide-white/5">
                 <?php if (empty($templates)): ?>
                     <tr>
-                        <td colspan="5" class="px-3 py-6 text-center text-sm text-slate-400">Aucun modèle pour le moment.</td>
+                        <td colspan="6" class="px-3 py-6 text-center text-sm text-slate-400">Aucun modÃ¨le pour le moment.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($templates as $template): ?>
@@ -59,6 +60,9 @@ ob_start();
                                 ?>
                                 <?= e($short) ?>
                             </td>
+                            <td class="px-3 py-3 text-slate-300">
+                                <?= !empty($template['wa_template_name']) ? e($template['wa_template_name']) : '-' ?>
+                            </td>
                             <td class="px-3 py-3">
                                 <span class="rounded-full px-2 py-1 text-xs font-semibold <?= (int)$template['is_active'] === 1 ? 'bg-emerald-500/20 text-emerald-200' : 'bg-slate-700 text-slate-300' ?>">
                                     <?= (int)$template['is_active'] === 1 ? 'Actif' : 'Inactif' ?>
@@ -66,10 +70,10 @@ ob_start();
                             </td>
                             <td class="px-3 py-3 text-right text-sm font-semibold">
                                 <a class="text-indigo-300 hover:text-indigo-200" href="?r=reminders-templates-edit&id=<?= e($template['id']) ?>">Modifier</a>
-                                <form method="post" action="?r=reminders-templates-toggle" class="inline" onsubmit="return confirm('Changer le statut de ce modèle ?');">
+                                <form method="post" action="?r=reminders-templates-toggle" class="inline" onsubmit="return confirm('Changer le statut de ce modÃ¨le ?');">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="id" value="<?= e($template['id']) ?>" />
-                                    <button class="ml-3 text-slate-300 hover:text-white"><?= (int)$template['is_active'] === 1 ? 'Désactiver' : 'Activer' ?></button>
+                                    <button class="ml-3 text-slate-300 hover:text-white"><?= (int)$template['is_active'] === 1 ? 'DÃ©sactiver' : 'Activer' ?></button>
                                 </form>
                             </td>
                         </tr>

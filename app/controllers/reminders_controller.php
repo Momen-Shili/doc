@@ -1,11 +1,11 @@
-<?php
+ï»¿<?php
 function reminders_templates(): void {
     require_auth();
     $doctor = auth_user();
     $doctorId = $doctor['id'];
 
-    $stmt = db()->prepare('SELECT * FROM reminder_templates WHERE doctor_id = ? ORDER BY created_at DESC');
-    $stmt->execute([$doctorId]);
+    $stmt = db()->prepare('SELECT t.*, w.template_name AS wa_template_name, w.language_code AS wa_language_code FROM reminder_templates t LEFT JOIN whatsapp_template_map w ON w.reminder_template_id = t.id AND w.doctor_id = ? WHERE t.doctor_id = ? ORDER BY t.created_at DESC');
+    $stmt->execute([$doctorId, $doctorId]);
     $templates = $stmt->fetchAll();
 
     $previewAppointment = ['starts_at' => date('Y-m-d 09:00:00')];
@@ -31,6 +31,7 @@ function reminders_templates_create(): void {
         'body' => '',
         'is_active' => 1,
     ];
+    $waMap = ['template_name' => '', 'language_code' => 'fr'];
 
     if (is_post()) {
         verify_csrf();
@@ -38,18 +39,23 @@ function reminders_templates_create(): void {
         $template['channel'] = trim($_POST['channel'] ?? 'SMS');
         $template['body'] = trim($_POST['body'] ?? '');
         $template['is_active'] = isset($_POST['is_active']) ? 1 : 0;
+        $waMap['template_name'] = trim($_POST['wa_template_name'] ?? '');
+        $waMap['language_code'] = trim($_POST['wa_language_code'] ?? 'fr');
 
         $errors = validate_reminder_template($template);
         if (!$errors) {
             $stmt = db()->prepare('INSERT INTO reminder_templates (doctor_id, name, channel, body, is_active) VALUES (?,?,?,?,?)');
             $stmt->execute([$doctorId, $template['name'], $template['channel'], $template['body'], $template['is_active']]);
-            flash('success', 'Modèle de rappel créé.');
+            $templateId = (int)db()->lastInsertId();
+            upsert_whatsapp_map($doctorId, $templateId, $waMap['template_name'], $waMap['language_code']);
+            flash('success', 'ModÃ¨le de rappel crÃ©Ã©.');
             redirect('?r=reminders-templates');
         }
     }
 
     echo render('pages/reminders/template_form.php', [
         'template' => $template,
+        'waMap' => $waMap,
         'errors' => $errors,
         'mode' => 'create',
     ]);
@@ -60,34 +66,42 @@ function reminders_templates_edit(): void {
     $doctorId = auth_user()['id'];
     $id = (int)($_GET['id'] ?? 0);
 
-    $stmt = db()->prepare('SELECT * FROM reminder_templates WHERE id = ? AND doctor_id = ?');
-    $stmt->execute([$id, $doctorId]);
+    $stmt = db()->prepare('SELECT t.*, w.template_name AS wa_template_name, w.language_code AS wa_language_code FROM reminder_templates t LEFT JOIN whatsapp_template_map w ON w.reminder_template_id = t.id AND w.doctor_id = ? WHERE t.id = ? AND t.doctor_id = ?');
+    $stmt->execute([$doctorId, $id, $doctorId]);
     $template = $stmt->fetch();
     if (!$template) {
         http_response_code(404);
-        echo render('pages/error.php', ['message' => 'Modèle introuvable.']);
+        echo render('pages/error.php', ['message' => 'ModÃ¨le introuvable.']);
         return;
     }
 
     $errors = [];
+    $waMap = [
+        'template_name' => $template['wa_template_name'] ?? '',
+        'language_code' => $template['wa_language_code'] ?? 'fr',
+    ];
     if (is_post()) {
         verify_csrf();
         $template['name'] = trim($_POST['name'] ?? '');
         $template['channel'] = trim($_POST['channel'] ?? 'SMS');
         $template['body'] = trim($_POST['body'] ?? '');
         $template['is_active'] = isset($_POST['is_active']) ? 1 : 0;
+        $waMap['template_name'] = trim($_POST['wa_template_name'] ?? '');
+        $waMap['language_code'] = trim($_POST['wa_language_code'] ?? 'fr');
 
         $errors = validate_reminder_template($template, $id);
         if (!$errors) {
             $stmt = db()->prepare('UPDATE reminder_templates SET name = ?, channel = ?, body = ?, is_active = ? WHERE id = ? AND doctor_id = ?');
             $stmt->execute([$template['name'], $template['channel'], $template['body'], $template['is_active'], $id, $doctorId]);
-            flash('success', 'Modèle mis à jour.');
+            upsert_whatsapp_map($doctorId, $id, $waMap['template_name'], $waMap['language_code']);
+            flash('success', 'ModÃ¨le mis Ã  jour.');
             redirect('?r=reminders-templates');
         }
     }
 
     echo render('pages/reminders/template_form.php', [
         'template' => $template,
+        'waMap' => $waMap,
         'errors' => $errors,
         'mode' => 'edit',
     ]);
@@ -97,7 +111,7 @@ function reminders_templates_toggle(): void {
     require_auth();
     if (!is_post()) {
         http_response_code(405);
-        echo render('pages/error.php', ['message' => 'Méthode non autorisée.']);
+        echo render('pages/error.php', ['message' => 'MÃ©thode non autorisÃ©e.']);
         return;
     }
     verify_csrf();
@@ -107,13 +121,13 @@ function reminders_templates_toggle(): void {
     $stmt->execute([$id, $doctorId]);
     $current = $stmt->fetch();
     if (!$current) {
-        flash('error', 'Modèle introuvable.');
+        flash('error', 'ModÃ¨le introuvable.');
         redirect('?r=reminders-templates');
     }
     $newValue = (int)!((int)$current['is_active']);
     $stmt = db()->prepare('UPDATE reminder_templates SET is_active = ? WHERE id = ? AND doctor_id = ?');
     $stmt->execute([$newValue, $id, $doctorId]);
-    flash('success', $newValue ? 'Modèle activé.' : 'Modèle désactivé.');
+    flash('success', $newValue ? 'ModÃ¨le activÃ©.' : 'ModÃ¨le dÃ©sactivÃ©.');
     redirect('?r=reminders-templates');
 }
 
@@ -176,7 +190,7 @@ function reminders_log_recreate(): void {
     require_auth();
     if (!is_post()) {
         http_response_code(405);
-        echo render('pages/error.php', ['message' => 'Méthode non autorisée.']);
+        echo render('pages/error.php', ['message' => 'MÃ©thode non autorisÃ©e.']);
         return;
     }
     verify_csrf();
@@ -202,7 +216,7 @@ function reminders_log_recreate(): void {
         date('Y-m-d H:i:s'),
         null,
     ]);
-    flash('success', 'Rappel recréé en brouillon.');
+    flash('success', 'Rappel recrÃ©Ã© en brouillon.');
     redirect('?r=reminders-log');
 }
 
@@ -260,7 +274,7 @@ function reminders_send(): void {
         return;
     }
 
-    $stmt = db()->prepare('SELECT a.*, p.full_name AS patient_name, p.phone AS patient_phone, p.email AS patient_email FROM appointments a JOIN patients p ON p.id = a.patient_id WHERE a.id = ? AND a.doctor_id = ?');
+    $stmt = db()->prepare('SELECT a.*, p.full_name AS patient_name, p.phone AS patient_phone, p.email AS patient_email, p.whatsapp_phone, p.consent_email, p.consent_sms, p.consent_whatsapp FROM appointments a JOIN patients p ON p.id = a.patient_id WHERE a.id = ? AND a.doctor_id = ?');
     $stmt->execute([$appointmentId, $doctorId]);
     $appointment = $stmt->fetch();
     if (!$appointment) {
@@ -283,23 +297,85 @@ function reminders_send(): void {
     }
 
     $channel = $selectedTemplate['channel'] ?? 'SMS';
+    $requestedChannel = trim($_GET['channel'] ?? '');
+    if (in_array($requestedChannel, ['SMS', 'WHATSAPP', 'EMAIL'], true)) {
+        $channel = $requestedChannel;
+    }
     $message = $selectedTemplate ? render_template_vars($selectedTemplate['body'], $appointment, ['full_name' => $appointment['patient_name']], $doctor) : '';
     $errors = [];
+
+    $settings = load_doctor_notification_settings($doctorId);
+    $smtpConfigured = !empty($settings['smtp_host']) && !empty($settings['smtp_username']) && !empty($settings['smtp_password_enc']) && !empty($settings['smtp_from_email']);
+    $smsConfigured = !empty($settings['infobip_api_key_enc']) && !empty($settings['infobip_sms_sender']);
+    $waConfigured = !empty($settings['infobip_api_key_enc']) && !empty($settings['infobip_whatsapp_sender']);
+
+    $waMap = null;
+    if ($selectedTemplateId > 0) {
+        $stmt = db()->prepare('SELECT * FROM whatsapp_template_map WHERE doctor_id = ? AND reminder_template_id = ?');
+        $stmt->execute([$doctorId, $selectedTemplateId]);
+        $waMap = $stmt->fetch();
+    }
 
     if (is_post()) {
         verify_csrf();
         $channel = trim($_POST['channel'] ?? $channel);
         $message = trim($_POST['message'] ?? '');
-        $status = $_POST['status'] ?? 'SENT';
+
         if ($message === '') {
             $errors[] = 'Le message est requis.';
         }
-        if (!in_array($channel, ['SMS', 'WHATSAPP', 'EMAIL', 'AUTRE'], true)) {
+        if (!in_array($channel, ['SMS', 'WHATSAPP', 'EMAIL'], true)) {
             $errors[] = 'Canal invalide.';
         }
-        if (!in_array($status, ['SENT', 'DRAFT'], true)) {
-            $status = 'SENT';
+
+        $toAddress = '';
+        $subject = 'Rappel de rendez-vous';
+
+        if ($channel === 'EMAIL') {
+            if (!$smtpConfigured) {
+                $errors[] = 'Configuration email incomplÃ¨te.';
+            }
+            if (empty($appointment['patient_email'])) {
+                $errors[] = 'Email patient manquant.';
+            }
+            if (empty($appointment['consent_email'])) {
+                $errors[] = 'Consentement email non accordÃ©.';
+            }
+            $toAddress = $appointment['patient_email'] ?? '';
+        } elseif ($channel === 'SMS') {
+            if (!$smsConfigured) {
+                $errors[] = 'Configuration SMS incomplÃ¨te.';
+            }
+            if (empty($appointment['patient_phone'])) {
+                $errors[] = 'TÃ©lÃ©phone patient manquant.';
+            }
+            if (empty($appointment['consent_sms'])) {
+                $errors[] = 'Consentement SMS non accordÃ©.';
+            }
+            $toAddress = normalize_tn_phone($appointment['patient_phone'] ?? '') ?? '';
+            if ($toAddress === '') {
+                $errors[] = 'NumÃ©ro SMS invalide.';
+            }
+        } elseif ($channel === 'WHATSAPP') {
+            if (!$waConfigured) {
+                $errors[] = 'Configuration WhatsApp incomplÃ¨te.';
+            }
+            if (empty($appointment['consent_whatsapp'])) {
+                $errors[] = 'Consentement WhatsApp non accordÃ©.';
+            }
+            $phone = $appointment['whatsapp_phone'] ?: $appointment['patient_phone'];
+            if (empty($phone)) {
+                $errors[] = 'NumÃ©ro WhatsApp manquant.';
+            }
+            $toAddress = normalize_tn_phone($phone ?? '') ?? '';
+            if ($toAddress === '') {
+                $errors[] = 'NumÃ©ro WhatsApp invalide.';
+            }
+            if (!$waMap || empty($waMap['template_name'])) {
+                $errors[] = 'Template WhatsApp non configurÃ© pour ce modÃ¨le.';
+            }
         }
+
         if (!$errors) {
             $stmt = db()->prepare('INSERT INTO reminders_log (doctor_id, appointment_id, patient_id, template_id, channel, message, status, sent_at, error_text) VALUES (?,?,?,?,?,?,?,?,?)');
             $stmt->execute([
@@ -309,11 +385,37 @@ function reminders_send(): void {
                 $selectedTemplateId > 0 ? $selectedTemplateId : null,
                 $channel,
                 $message,
-                $status,
+                'DRAFT',
                 date('Y-m-d H:i:s'),
                 null,
             ]);
-            flash('success', $status === 'SENT' ? 'Rappel enregistré comme envoyé.' : 'Rappel enregistré en brouillon.');
+            $logId = (int)db()->lastInsertId();
+
+            $payload = [
+                'doctor_id' => $doctorId,
+                'patient_id' => $appointment['patient_id'],
+                'appointment_id' => $appointment['id'],
+                'reminder_log_id' => $logId,
+                'channel' => $channel,
+                'message' => $message,
+                'subject' => $subject,
+            ];
+            if ($channel === 'WHATSAPP' && $waMap) {
+                $payload['template_name'] = $waMap['template_name'];
+                $payload['language_code'] = $waMap['language_code'] ?? 'fr';
+                $payload['template_params'] = [$message];
+            }
+
+            $stmt = db()->prepare('INSERT INTO notifications_outbox (doctor_id, reminder_log_id, channel, to_address, payload_json) VALUES (?,?,?,?,?)');
+            $stmt->execute([
+                $doctorId,
+                $logId,
+                $channel,
+                $toAddress,
+                json_encode($payload, JSON_UNESCAPED_UNICODE),
+            ]);
+
+            flash('success', 'Rappel mis en file d\'attente. Pour envoyer: php tools/worker_send_notifications.php');
             redirect('?r=appointments-edit&id=' . $appointment['id']);
         }
     }
@@ -327,6 +429,10 @@ function reminders_send(): void {
         'errors' => $errors,
         'doctor' => $doctor,
         'alreadySent' => reminder_already_sent($doctorId, $appointmentId),
+        'smtpConfigured' => $smtpConfigured,
+        'smsConfigured' => $smsConfigured,
+        'waConfigured' => $waConfigured,
+        'waMap' => $waMap,
     ]);
 }
 
@@ -338,7 +444,7 @@ function validate_reminder_template(array $template, int $ignoreId = 0): array {
     if ($template['body'] === '') {
         $errors[] = 'Le message est requis.';
     }
-    if (!in_array($template['channel'], ['SMS', 'WHATSAPP', 'EMAIL', 'AUTRE'], true)) {
+    if (!in_array($template['channel'], ['SMS', 'WHATSAPP', 'EMAIL'], true)) {
         $errors[] = 'Canal invalide.';
     }
     if (!$errors) {
@@ -352,8 +458,45 @@ function validate_reminder_template(array $template, int $ignoreId = 0): array {
         $stmt = db()->prepare($sql);
         $stmt->execute($params);
         if ($stmt->fetch()) {
-            $errors[] = 'Un modèle avec ce nom existe déjà.';
+            $errors[] = 'Un modÃ¨le avec ce nom existe dÃ©jÃ .';
         }
     }
     return $errors;
+}
+
+function upsert_whatsapp_map(int $doctorId, int $templateId, string $templateName, string $languageCode): void {
+    $templateName = trim($templateName);
+    $languageCode = trim($languageCode) !== '' ? trim($languageCode) : 'fr';
+    if ($templateName === '') {
+        $stmt = db()->prepare('DELETE FROM whatsapp_template_map WHERE doctor_id = ? AND reminder_template_id = ?');
+        $stmt->execute([$doctorId, $templateId]);
+        return;
+    }
+
+    $stmt = db()->prepare('SELECT id FROM whatsapp_template_map WHERE doctor_id = ? AND reminder_template_id = ?');
+    $stmt->execute([$doctorId, $templateId]);
+    $existing = $stmt->fetch();
+    if ($existing) {
+        $stmt = db()->prepare('UPDATE whatsapp_template_map SET template_name = ?, language_code = ? WHERE id = ?');
+        $stmt->execute([$templateName, $languageCode, $existing['id']]);
+    } else {
+        $stmt = db()->prepare('INSERT INTO whatsapp_template_map (doctor_id, reminder_template_id, template_name, language_code) VALUES (?,?,?,?)');
+        $stmt->execute([$doctorId, $templateId, $templateName, $languageCode]);
+    }
+}
+
+function load_doctor_notification_settings(int $doctorId): array {
+    $stmt = db()->prepare('SELECT * FROM doctor_notification_settings WHERE doctor_id = ?');
+    $stmt->execute([$doctorId]);
+    $settings = $stmt->fetch();
+    if (!$settings) {
+        return [
+            'doctor_id' => $doctorId,
+            'infobip_base_url' => INFOBIP_BASE_URL,
+        ];
+    }
+    if (empty($settings['infobip_base_url'])) {
+        $settings['infobip_base_url'] = INFOBIP_BASE_URL;
+    }
+    return $settings;
 }

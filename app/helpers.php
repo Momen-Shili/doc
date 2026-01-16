@@ -31,6 +31,126 @@ function format_tnd($amount): string {
     return number_format($value, 3, ',', ' ') . ' TND';
 }
 
+function encrypt_secret(string $plaintext): string {
+    $key = APP_KEY;
+    if ($key === '') {
+        throw new RuntimeException('APP_KEY manquant.');
+    }
+    if (str_starts_with($key, 'base64:')) {
+        $key = base64_decode(substr($key, 7)) ?: '';
+    }
+    $iv = random_bytes(12);
+    $tag = '';
+    $cipher = openssl_encrypt($plaintext, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag);
+    if ($cipher === false) {
+        throw new RuntimeException('Chiffrement impossible.');
+    }
+    return base64_encode($iv . $tag . $cipher);
+}
+
+function decrypt_secret(?string $ciphertext): string {
+    if (!$ciphertext) {
+        return '';
+    }
+    $key = APP_KEY;
+    if ($key === '') {
+        throw new RuntimeException('APP_KEY manquant.');
+    }
+    if (str_starts_with($key, 'base64:')) {
+        $key = base64_decode(substr($key, 7)) ?: '';
+    }
+    $raw = base64_decode($ciphertext, true);
+    if ($raw === false || strlen($raw) < 28) {
+        return '';
+    }
+    $iv = substr($raw, 0, 12);
+    $tag = substr($raw, 12, 16);
+    $cipher = substr($raw, 28);
+    $plain = openssl_decrypt($cipher, 'aes-256-gcm', $key, OPENSSL_RAW_DATA, $iv, $tag);
+    return $plain !== false ? $plain : '';
+}
+
+function normalize_tn_phone(string $phone): ?string {
+    $digits = preg_replace('/\D+/', '', $phone);
+    if ($digits === null || $digits === '') {
+        return null;
+    }
+    if (strlen($digits) === 8) {
+        return '+216' . $digits;
+    }
+    if (strlen($digits) === 11 && str_starts_with($digits, '216')) {
+        return '+216' . substr($digits, 3);
+    }
+    if (strlen($digits) === 12 && str_starts_with($digits, '216')) {
+        return '+' . $digits;
+    }
+    if (str_starts_with($phone, '+216') && strlen($digits) === 11) {
+        return '+216' . substr($digits, 3);
+    }
+    return null;
+}
+
+function set_theme_cookie(string $theme): void {
+    $value = ($theme === 'light') ? 'light' : 'dark';
+    $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+    setcookie('theme', $value, [
+        'expires' => time() + 31536000,
+        'path' => '/',
+        'samesite' => 'Lax',
+        'secure' => $secure,
+    ]);
+}
+
+function current_theme(): string {
+    static $theme;
+    if ($theme) {
+        return $theme;
+    }
+    $doctor = auth_user();
+    if ($doctor && !empty($doctor['theme_preference'])) {
+        $theme = $doctor['theme_preference'];
+        return $theme;
+    }
+    $admin = admin_user();
+    if ($admin && !empty($admin['theme_preference'])) {
+        $theme = $admin['theme_preference'];
+        return $theme;
+    }
+    $cookie = $_COOKIE['theme'] ?? '';
+    if ($cookie === 'light' || $cookie === 'dark') {
+        $theme = $cookie;
+        return $theme;
+    }
+    $theme = 'dark';
+    return $theme;
+}
+
+function asset_url(string $path): string {
+    $scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? ''));
+    if (str_ends_with($scriptDir, '/admin')) {
+        $scriptDir = substr($scriptDir, 0, -strlen('/admin'));
+    }
+    if (str_ends_with($scriptDir, '/public')) {
+        $scriptDir = substr($scriptDir, 0, -strlen('/public'));
+    }
+    $scriptDir = rtrim($scriptDir, '/');
+    return $scriptDir . '/' . ltrim($path, '/');
+}
+
+function safe_redirect_path(string $path, string $default = '?r=dashboard'): string {
+    $path = trim($path);
+    if ($path === '') {
+        return $default;
+    }
+    if (preg_match('/^\s*https?:/i', $path)) {
+        return $default;
+    }
+    if (str_contains($path, "\n") || str_contains($path, "\r")) {
+        return $default;
+    }
+    return $path;
+}
+
 function appointment_status_label(string $status): string {
     if ($status === 'NO_SHOW') {
         return 'ABSENT';

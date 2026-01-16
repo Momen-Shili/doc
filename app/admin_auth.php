@@ -8,7 +8,7 @@ function admin_user(): ?array {
     if ($admin) {
         return $admin;
     }
-    $stmt = db()->prepare('SELECT id, name, email, is_active FROM admins WHERE id = ?');
+    $stmt = db()->prepare('SELECT id, name, email, is_active, theme_preference FROM admins WHERE id = ?');
     $stmt->execute([$_SESSION['admin_id']]);
     $admin = $stmt->fetch();
     return $admin ? $admin : null;

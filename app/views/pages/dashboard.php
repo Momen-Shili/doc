@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 $title = 'Tableau de bord';
 ob_start();
 $statusColors = [
@@ -9,13 +9,14 @@ $statusColors = [
   'NO_SHOW' => 'bg-amber-500/15 text-amber-200 ring-amber-500/30',
 ];
 $views = ['day' => 'Jour', 'week' => 'Semaine', 'month' => 'Mois'];
+$notifConfig = $notifConfig ?? ['email' => false, 'sms' => false, 'whatsapp' => false];
 ?>
 <div class="grid grid-cols-1 gap-6 xl:grid-cols-12">
   <div class="xl:col-span-8 space-y-6">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
       <div>
-        <h1 class="text-lg font-semibold text-white">Bienvenue, Dr. <?= e($doctor['full_name'] ?? '')    ?></h1>
-        <p class="text-sm text-slate-300"><?= e(date('d/m/Y'))    ?> Â· Vue dâ€™ensemble de votre cabinet</p>
+        <h1 class="text-lg font-semibold text-white">Bienvenue, Dr. <?= e($doctor['full_name'] ?? '') ?></h1>
+        <p class="text-sm text-slate-300"><?= e(date('d/m/Y')) ?> - Vue d'ensemble de votre cabinet</p>
       </div>
       <div class="flex flex-wrap gap-2">
         <a class="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400" href="?r=patients-create">Ajouter un patient</a>
@@ -26,18 +27,18 @@ $views = ['day' => 'Jour', 'week' => 'Semaine', 'month' => 'Mois'];
     <div class="rounded-2xl bg-gradient-to-r from-indigo-600/80 to-indigo-500/70 p-6 text-white shadow-lg">
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 class="text-xl font-semibold">Bonjour <?= e($doctor['full_name'] ?? '')    ?></h2>
-          <p class="mt-1 text-sm text-indigo-100">Planifiez votre journée et suivez vos revenus en temps réel.</p>
+          <h2 class="text-xl font-semibold">Bonjour <?= e($doctor['full_name'] ?? '') ?></h2>
+          <p class="mt-1 text-sm text-indigo-100">Planifiez votre journÃ©e et suivez vos revenus en temps rÃ©el.</p>
         </div>
         <div class="flex items-center gap-4 text-sm text-indigo-100">
           <div>
-            <div class="text-xs uppercase tracking-wide">Revenus aujourdâ€™hui</div>
-            <div class="text-lg font-semibold"><?= e(format_tnd($todayRevenue))    ?></div>
+            <div class="text-xs uppercase tracking-wide">Revenus aujourd'hui</div>
+            <div class="text-lg font-semibold"><?= e(format_tnd($todayRevenue)) ?></div>
           </div>
           <div class="h-10 w-px bg-indigo-200/40"></div>
           <div>
             <div class="text-xs uppercase tracking-wide">Rendez-vous</div>
-            <div class="text-lg font-semibold"><?= e($appointmentsToday)    ?></div>
+            <div class="text-lg font-semibold"><?= e($appointmentsToday) ?></div>
           </div>
         </div>
       </div>
@@ -45,24 +46,24 @@ $views = ['day' => 'Jour', 'week' => 'Semaine', 'month' => 'Mois'];
 
     <dl class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
       <div class="rounded-2xl bg-slate-900/60 p-4 ring-1 ring-white/10">
-        <dt class="text-xs uppercase tracking-wide text-slate-400">Cash aujourdâ€™hui</dt>
-        <dd class="mt-2 text-lg font-semibold text-white"><?= e(format_tnd($todayRevenue))    ?></dd>
+        <dt class="text-xs uppercase tracking-wide text-slate-400">Cash aujourd'hui</dt>
+        <dd class="mt-2 text-lg font-semibold text-white"><?= e(format_tnd($todayRevenue)) ?></dd>
       </div>
       <div class="rounded-2xl bg-slate-900/60 p-4 ring-1 ring-white/10">
         <dt class="text-xs uppercase tracking-wide text-slate-400">Cash du mois</dt>
-        <dd class="mt-2 text-lg font-semibold text-white"><?= e(format_tnd($monthRevenue))    ?></dd>
+        <dd class="mt-2 text-lg font-semibold text-white"><?= e(format_tnd($monthRevenue)) ?></dd>
       </div>
       <div class="rounded-2xl bg-slate-900/60 p-4 ring-1 ring-white/10">
         <dt class="text-xs uppercase tracking-wide text-slate-400">Annulations/Absents (7j)</dt>
-        <dd class="mt-2 text-lg font-semibold text-white"><?= e($cancellationsWeek)    ?></dd>
+        <dd class="mt-2 text-lg font-semibold text-white"><?= e($cancellationsWeek) ?></dd>
       </div>
       <div class="rounded-2xl bg-slate-900/60 p-4 ring-1 ring-white/10">
         <dt class="text-xs uppercase tracking-wide text-slate-400">Nouveaux patients (mois)</dt>
-        <dd class="mt-2 text-lg font-semibold text-white"><?= e($newPatientsMonth)    ?></dd>
+        <dd class="mt-2 text-lg font-semibold text-white"><?= e($newPatientsMonth) ?></dd>
       </div>
       <div class="rounded-2xl bg-slate-900/60 p-4 ring-1 ring-white/10">
         <dt class="text-xs uppercase tracking-wide text-slate-400">Ticket moyen</dt>
-        <dd class="mt-2 text-lg font-semibold text-white"><?= e(format_tnd($avgTicket))    ?></dd>
+        <dd class="mt-2 text-lg font-semibold text-white"><?= e(format_tnd($avgTicket)) ?></dd>
       </div>
     </dl>
 
@@ -74,28 +75,28 @@ $views = ['day' => 'Jour', 'week' => 'Semaine', 'month' => 'Mois'];
         </div>
         <div class="flex items-center gap-2">
           <?php foreach ($views as $key => $label): ?>
-            <a class="rounded-md px-3 py-2 text-sm font-semibold <?= $view === $key ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-200 hover:bg-slate-700'    ?>" href="?r=dashboard&view=<?= e($key)    ?>&date=<?= e($date)    ?>">
-              <?= e($label)    ?>
+            <a class="rounded-md px-3 py-2 text-sm font-semibold <?= $view === $key ? 'bg-indigo-500 text-white' : 'bg-slate-800 text-slate-200 hover:bg-slate-700' ?>" href="?r=dashboard&view=<?= e($key) ?>&date=<?= e($date) ?>">
+              <?= e($label) ?>
             </a>
           <?php endforeach; ?>
         </div>
       </div>
       <div class="mt-6">
         <div class="flex items-center justify-between text-sm text-slate-400">
-          <div><?= e($rangeStart)    ?> â†’ <?= e($rangeEnd)    ?></div>
+          <div><?= e($rangeStart) ?> - <?= e($rangeEnd) ?></div>
           <div class="flex gap-2">
-            <a class="text-slate-300 hover:text-white" aria-label="Période précédente" href="?r=dashboard&view=<?= e($view)    ?>&date=<?= e(date('Y-m-d', strtotime($date . ' -1 day')))    ?>">&larr;</a>
-            <a class="text-slate-300 hover:text-white" aria-label="Période suivante" href="?r=dashboard&view=<?= e($view)    ?>&date=<?= e(date('Y-m-d', strtotime($date . ' +1 day')))    ?>">&rarr;</a>
+            <a class="text-slate-300 hover:text-white" aria-label="PÃ©riode prÃ©cÃ©dente" href="?r=dashboard&view=<?= e($view) ?>&date=<?= e(date('Y-m-d', strtotime($date . ' -1 day'))) ?>">&larr;</a>
+            <a class="text-slate-300 hover:text-white" aria-label="PÃ©riode suivante" href="?r=dashboard&view=<?= e($view) ?>&date=<?= e(date('Y-m-d', strtotime($date . ' +1 day'))) ?>">&rarr;</a>
           </div>
         </div>
 
         <?php if (empty($appointmentsByDate)): ?>
-          <div class="mt-6 rounded-xl border border-dashed border-slate-700 p-6 text-center text-sm text-slate-400">Aucun rendez-vous sur cette période.</div>
+          <div class="mt-6 rounded-xl border border-dashed border-slate-700 p-6 text-center text-sm text-slate-400">Aucun rendez-vous sur cette pÃ©riode.</div>
         <?php else: ?>
           <div class="mt-6 space-y-4">
             <?php foreach ($appointmentsByDate as $day => $items): ?>
               <div>
-                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400"><?= e($day)    ?></h3>
+                <h3 class="text-xs font-semibold uppercase tracking-wide text-slate-400"><?= e($day) ?></h3>
                 <div class="mt-3 space-y-3">
                   <?php foreach ($items as $appt): ?>
                     <?php $badge = $statusColors[$appt['status']] ?? 'bg-slate-500/20 text-slate-200 ring-slate-500/30'; ?>
@@ -106,21 +107,21 @@ $views = ['day' => 'Jour', 'week' => 'Semaine', 'month' => 'Mois'];
                       $serviceTotal += (float)$srv['default_price'] * (int)$srv['qty'];
                     }
                     ?>
-                    <button type="button" class="w-full rounded-xl bg-slate-800/70 p-4 text-left ring-1 ring-white/5 hover:ring-indigo-400/40" data-drawer="open" aria-controls="appointment-drawer" data-appointment-id="<?= e($appt['id'])    ?>" data-patient="<?= e($appt['patient_name'])    ?>" data-time="<?= e(date('H:i', strtotime($appt['starts_at'])))    ?> - <?= e(date('H:i', strtotime($appt['ends_at'])))    ?>" data-status="<?= e(appointment_status_label($appt['status']))    ?>" data-reason="<?= e($appt['reason'])    ?>" data-notes="<?= e($appt['notes'])    ?>" data-services="<?= e(implode(', ', array_map(function ($s) { return $s['name']; }, $services)))    ?>" data-total="<?= e(format_tnd($serviceTotal))    ?>">
+                    <button type="button" class="w-full rounded-xl bg-slate-800/70 p-4 text-left ring-1 ring-white/5 hover:ring-indigo-400/40" data-drawer="open" aria-controls="appointment-drawer" data-appointment-id="<?= e($appt['id']) ?>" data-patient="<?= e($appt['patient_name']) ?>" data-time="<?= e(date('H:i', strtotime($appt['starts_at']))) ?> - <?= e(date('H:i', strtotime($appt['ends_at']))) ?>" data-status="<?= e(appointment_status_label($appt['status'])) ?>" data-reason="<?= e($appt['reason']) ?>" data-notes="<?= e($appt['notes']) ?>" data-services="<?= e(implode(', ', array_map(function ($s) { return $s['name']; }, $services))) ?>" data-total="<?= e(format_tnd($serviceTotal)) ?>">
                       <div class="flex items-center justify-between">
                         <div>
-                          <div class="text-sm font-semibold text-white"><?= e($appt['patient_name'])    ?></div>
-                          <div class="text-xs text-slate-400"><?= e(date('H:i', strtotime($appt['starts_at'])))    ?> â€“ <?= e(date('H:i', strtotime($appt['ends_at'])))    ?></div>
+                          <div class="text-sm font-semibold text-white"><?= e($appt['patient_name']) ?></div>
+                          <div class="text-xs text-slate-400"><?= e(date('H:i', strtotime($appt['starts_at']))) ?> - <?= e(date('H:i', strtotime($appt['ends_at']))) ?></div>
                           <?php if ($services): ?>
                             <div class="mt-2 flex flex-wrap gap-2">
                               <?php foreach ($services as $srv): ?>
-                                <span class="rounded-full bg-slate-700 px-2 py-1 text-xs text-slate-200"><?= e($srv['name'])    ?> x<?= e($srv['qty'])    ?></span>
+                                <span class="rounded-full bg-slate-700 px-2 py-1 text-xs text-slate-200"><?= e($srv['name']) ?> x<?= e($srv['qty']) ?></span>
                               <?php endforeach; ?>
                             </div>
                           <?php endif; ?>
                         </div>
-                        <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset <?= e($badge)    ?>">
-                          <?= e(appointment_status_label($appt['status']))    ?>
+                        <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset <?= e($badge) ?>">
+                          <?= e(appointment_status_label($appt['status'])) ?>
                         </span>
                       </div>
                     </button>
@@ -147,8 +148,8 @@ $views = ['day' => 'Jour', 'week' => 'Semaine', 'month' => 'Mois'];
       <div class="flex items-center justify-between">
         <div>
           <p class="text-xs uppercase tracking-wide text-slate-400">Mon profil</p>
-          <p class="mt-2 text-base font-semibold text-white"><?= e($doctor['full_name'] ?? '')    ?></p>
-          <p class="text-sm text-slate-400"><?= e($doctor['specialty'] ?? 'Médecin')    ?></p>
+          <p class="mt-2 text-base font-semibold text-white"><?= e($doctor['full_name'] ?? '') ?></p>
+          <p class="text-sm text-slate-400"><?= e($doctor['specialty'] ?? 'MÃ©decin') ?></p>
         </div>
         <div class="h-12 w-12 rounded-full bg-indigo-500/30 flex items-center justify-center text-indigo-200">
           <span class="text-sm font-semibold">Dr</span>
@@ -175,16 +176,16 @@ $views = ['day' => 'Jour', 'week' => 'Semaine', 'month' => 'Mois'];
 
     <div class="rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
       <h2 class="text-base font-semibold text-white">Derniers patients</h2>
-      <p class="mt-1 text-sm text-slate-400">Nouveaux patients enregistrés.</p>
+      <p class="mt-1 text-sm text-slate-400">Nouveaux patients enregistrÃ©s.</p>
       <div class="mt-4 space-y-3">
         <?php if (!$recentPatients): ?>
-          <p class="text-sm text-slate-400">Aucun patient récent.</p>
+          <p class="text-sm text-slate-400">Aucun patient rÃ©cent.</p>
         <?php else: ?>
           <?php foreach ($recentPatients as $patient): ?>
             <div class="flex items-center justify-between rounded-lg bg-slate-800/70 p-3">
               <div>
-                <div class="text-sm font-semibold text-white"><?= e($patient['full_name'])    ?></div>
-                <div class="text-xs text-slate-400">ID #<?= e($patient['id'])    ?></div>
+                <div class="text-sm font-semibold text-white"><?= e($patient['full_name']) ?></div>
+                <div class="text-xs text-slate-400">ID #<?= e($patient['id']) ?></div>
               </div>
               <a class="text-xs font-semibold text-indigo-300 hover:text-indigo-200" href="?r=patients-edit&id=<?= e($patient['id']) ?>">Voir</a>
             </div>
@@ -207,22 +208,41 @@ $views = ['day' => 'Jour', 'week' => 'Semaine', 'month' => 'Mois'];
     <div class="rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
       <div class="flex items-center justify-between">
         <div>
-          <h2 class="text-base font-semibold text-white">Rappels à envoyer</h2>
+          <h2 class="text-base font-semibold text-white">Rappels Ã  envoyer</h2>
           <p class="mt-1 text-sm text-slate-400">Rendez-vous dans les prochaines 24h.</p>
         </div>
         <a class="text-sm font-semibold text-indigo-300 hover:text-indigo-200" href="?r=reminders-log">Journal</a>
       </div>
       <div class="mt-4 space-y-3">
         <?php if (empty($remindersDue)): ?>
-          <p class="text-sm text-slate-400">Aucun rappel à préparer.</p>
+          <p class="text-sm text-slate-400">Aucun rappel Ã  prÃ©parer.</p>
         <?php else: ?>
           <?php foreach ($remindersDue as $reminder): ?>
-            <div class="flex items-center justify-between rounded-lg bg-slate-800/70 p-3">
-              <div>
-                <div class="text-sm font-semibold text-white"><?= e($reminder['patient_name'])    ?></div>
-                <div class="text-xs text-slate-400"><?= e(date('d/m/Y ? H : i', strtotime($reminder['starts_at'])))    ?></div>
+            <?php
+              $canEmail = $notifConfig['email'] && !empty($reminder['consent_email']) && !empty($reminder['email']);
+              $canSms = $notifConfig['sms'] && !empty($reminder['consent_sms']) && !empty($reminder['phone']) && normalize_tn_phone($reminder['phone']);
+              $waPhone = $reminder['whatsapp_phone'] ?: $reminder['phone'];
+              $canWhatsapp = $notifConfig['whatsapp'] && !empty($reminder['consent_whatsapp']) && !empty($waPhone) && normalize_tn_phone($waPhone);
+            ?>
+            <div class="rounded-lg bg-slate-800/70 p-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-sm font-semibold text-white"><?= e($reminder['patient_name']) ?></div>
+                  <div class="text-xs text-slate-400"><?= e(date('d/m/Y H:i', strtotime($reminder['starts_at']))) ?></div>
+                </div>
+                <a class="text-xs font-semibold text-indigo-300 hover:text-indigo-200" href="?r=reminders-send&appointment_id=<?= e($reminder['id']) ?>">PrÃ©parer</a>
               </div>
-              <a class="text-xs font-semibold text-indigo-300 hover:text-indigo-200" href="?r=reminders-send&appointment_id=<?= e($reminder['id'])    ?>">Préparer</a>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <?php if ($canEmail): ?>
+                  <a class="text-xs font-semibold text-slate-100 rounded-md bg-slate-700 px-2 py-1" href="?r=reminders-send&appointment_id=<?= e($reminder['id']) ?>&channel=EMAIL">Email</a>
+                <?php endif; ?>
+                <?php if ($canSms): ?>
+                  <a class="text-xs font-semibold text-slate-100 rounded-md bg-slate-700 px-2 py-1" href="?r=reminders-send&appointment_id=<?= e($reminder['id']) ?>&channel=SMS">SMS</a>
+                <?php endif; ?>
+                <?php if ($canWhatsapp): ?>
+                  <a class="text-xs font-semibold text-slate-100 rounded-md bg-slate-700 px-2 py-1" href="?r=reminders-send&appointment_id=<?= e($reminder['id']) ?>&channel=WHATSAPP">WhatsApp</a>
+                <?php endif; ?>
+              </div>
             </div>
           <?php endforeach; ?>
         <?php endif; ?>
@@ -239,7 +259,7 @@ $views = ['day' => 'Jour', 'week' => 'Semaine', 'month' => 'Mois'];
         <h2 class="text-base font-semibold text-white" id="drawer-patient">Rendez-vous</h2>
         <p class="text-sm text-slate-400" id="drawer-time"></p>
       </div>
-      <button class="text-slate-400 hover:text-white" data-drawer="close" aria-label="Fermer le panneau">âœ•</button>
+      <button class="text-slate-400 hover:text-white" data-drawer="close" aria-label="Fermer le panneau">X</button>
     </div>
     <div class="mt-6 space-y-4">
       <div>
@@ -251,7 +271,7 @@ $views = ['day' => 'Jour', 'week' => 'Semaine', 'month' => 'Mois'];
         <p class="mt-1 text-sm text-slate-200" id="drawer-services"></p>
       </div>
       <div>
-        <p class="text-xs uppercase tracking-wide text-slate-500">Total suggéré</p>
+        <p class="text-xs uppercase tracking-wide text-slate-500">Total suggÃ©rÃ©</p>
         <p class="mt-1 text-sm text-slate-200" id="drawer-total"></p>
       </div>
       <div>
@@ -277,13 +297,13 @@ function openDrawer(trigger) {
   document.getElementById('drawer-patient').textContent = trigger.dataset.patient || 'Rendez-vous';
   document.getElementById('drawer-time').textContent = trigger.dataset.time || '';
   document.getElementById('drawer-status').textContent = trigger.dataset.status || '';
-  document.getElementById('drawer-services').textContent = trigger.dataset.services || 'â€”';
+  document.getElementById('drawer-services').textContent = trigger.dataset.services || '-';
   document.getElementById('drawer-total').textContent = trigger.dataset.total || '-';
   document.getElementById('drawer-reason').textContent = trigger.dataset.reason || '-';
   document.getElementById('drawer-notes').textContent = trigger.dataset.notes || '-';
   var reminderLink = document.getElementById('drawer-reminder-link');
   if (reminderLink && trigger.dataset.appointmentId) {
-    reminderLink.href = 'r=reminders-send&appointment_id=' + encodeURIComponent(trigger.dataset.appointmentId);
+    reminderLink.href = '?r=reminders-send&appointment_id=' + encodeURIComponent(trigger.dataset.appointmentId);
   }
   drawer.classList.remove('hidden');
   drawer.setAttribute('aria-hidden', 'false');

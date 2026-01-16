@@ -1,17 +1,17 @@
-<?php
+ï»¿<?php
 $title = 'Journal des rappels';
 ob_start();
-$statuses = ['DRAFT' => 'Brouillon', 'SENT' => 'Envoyé', 'FAILED' => 'Échec'];
-$channels = ['SMS', 'WHATSAPP', 'EMAIL', 'AUTRE'];
+$statuses = ['DRAFT' => 'Brouillon', 'SENT' => 'EnvoyÃ©', 'FAILED' => 'Ã‰chec'];
+$channels = ['SMS', 'WHATSAPP', 'EMAIL'];
 ?>
 <div class="rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="text-lg font-semibold text-white">Journal des rappels</h1>
-            <p class="mt-1 text-sm text-slate-400">Historique des rappels enregistrés.</p>
+            <p class="mt-1 text-sm text-slate-400">Historique des rappels enregistrÃ©s.</p>
         </div>
         <div class="flex flex-wrap gap-2">
-            <a class="inline-flex items-center rounded-md bg-slate-800 px-3 py-2 text-sm font-semibold text-slate-100 ring-1 ring-white/10 hover:bg-slate-700" href="?r=reminders-templates">Modèles</a>
+            <a class="inline-flex items-center rounded-md bg-slate-800 px-3 py-2 text-sm font-semibold text-slate-100 ring-1 ring-white/10 hover:bg-slate-700" href="?r=reminders-templates">ModÃ¨les</a>
             <a class="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400" href="?r=reminders-export&from=<?= e($from) ?>&to=<?= e($to) ?>&status=<?= e($status) ?>&patient_id=<?= e($patientId) ?>&channel=<?= e($channel) ?>">Exporter CSV</a>
         </div>
     </div>
@@ -73,7 +73,7 @@ $channels = ['SMS', 'WHATSAPP', 'EMAIL', 'AUTRE'];
 
 <?php if (!empty($detail)): ?>
     <div class="mt-6 rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
-        <h2 class="text-base font-semibold text-white">Détail du rappel</h2>
+        <h2 class="text-base font-semibold text-white">DÃ©tail du rappel</h2>
         <dl class="mt-4 space-y-2 text-sm">
             <div class="flex items-center justify-between">
                 <dt class="text-slate-400">Date</dt>
@@ -118,7 +118,7 @@ $channels = ['SMS', 'WHATSAPP', 'EMAIL', 'AUTRE'];
             <tbody class="divide-y divide-white/5">
                 <?php if (empty($logs)): ?>
                     <tr>
-                        <td colspan="6" class="px-3 py-6 text-center text-sm text-slate-400">Aucun rappel pour la période.</td>
+                        <td colspan="6" class="px-3 py-6 text-center text-sm text-slate-400">Aucun rappel pour la pÃ©riode.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($logs as $log): ?>
@@ -130,10 +130,10 @@ $channels = ['SMS', 'WHATSAPP', 'EMAIL', 'AUTRE'];
                             <td class="px-3 py-3 text-slate-300"><?= e($statuses[$log['status']] ?? $log['status']) ?></td>
                             <td class="px-3 py-3 text-right text-sm font-semibold">
                                 <a class="text-indigo-300 hover:text-indigo-200" href="?r=reminders-log&view=<?= e($log['id']) ?>&from=<?= e($from) ?>&to=<?= e($to) ?>&status=<?= e($status) ?>&patient_id=<?= e($patientId) ?>&channel=<?= e($channel) ?>">Voir</a>
-                                <form method="post" action="?r=reminders-log-recreate" class="inline" onsubmit="return confirm('Recréer ce rappel en brouillon ?');">
+                                <form method="post" action="?r=reminders-log-recreate" class="inline" onsubmit="return confirm('RecrÃ©er ce rappel en brouillon ?');">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="id" value="<?= e($log['id']) ?>" />
-                                    <button class="ml-3 text-slate-300 hover:text-white">Recréer</button>
+                                    <button class="ml-3 text-slate-300 hover:text-white">RecrÃ©er</button>
                                 </form>
                             </td>
                         </tr>

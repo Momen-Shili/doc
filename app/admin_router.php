@@ -5,6 +5,7 @@ require_once __DIR__ . '/controllers/admin_dashboard_controller.php';
 require_once __DIR__ . '/controllers/admin_doctors_controller.php';
 require_once __DIR__ . '/controllers/admin_payments_controller.php';
 require_once __DIR__ . '/controllers/admin_settings_controller.php';
+require_once __DIR__ . '/controllers/theme_controller.php';
 
 $route = $_GET['r'] ?? 'dashboard';
 
@@ -38,6 +39,9 @@ switch ($route) {
         break;
     case'settings':
         admin_settings();
+        break;
+    case'theme-toggle':
+        admin_theme_toggle();
         break;
     default:
         http_response_code(404);

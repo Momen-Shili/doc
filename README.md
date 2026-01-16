@@ -41,7 +41,22 @@
 - Devise : TND (3 decimales, millimes).
 
 ## Nouvelles tables
-- `clinical_notes` (notes cliniques) - `tags` + `patient_tags` (tags patients) - `documents` (documents patients) - `reminder_templates` (modeles de rappels) - `reminders_log` (journal des rappels) - `cash_closures` (clotures de caisse) - `services` (catalogue des services) - `appointment_services` (liaisons rendez-vous/services) - `payment_items` (details des paiements) ## Migration manuelle (DB existante) ```
+- `clinical_notes` (notes cliniques) - `tags` + `patient_tags` (tags patients) - `documents` (documents patients) - `reminder_templates` (modeles de rappels) - `reminders_log` (journal des rappels) - `doctor_notification_settings` (parametres notifications) - `notifications_outbox` (file d'envoi) - `whatsapp_template_map` (mapping templates WA) - `cash_closures` (clotures de caisse) - `services` (catalogue des services) - `appointment_services` (liaisons rendez-vous/services) - `payment_items` (details des paiements)
+
+## Migration manuelle (DB existante)
+```
+ALTER TABLE doctors
+  ADD COLUMN theme_preference ENUM('dark','light') NOT NULL DEFAULT 'dark';
+
+ALTER TABLE admins
+  ADD COLUMN theme_preference ENUM('dark','light') NOT NULL DEFAULT 'dark';
+
+ALTER TABLE patients
+  ADD COLUMN consent_email TINYINT(1) NOT NULL DEFAULT 0,
+  ADD COLUMN consent_sms TINYINT(1) NOT NULL DEFAULT 0,
+  ADD COLUMN consent_whatsapp TINYINT(1) NOT NULL DEFAULT 0,
+  ADD COLUMN whatsapp_phone VARCHAR(30) NULL;
+
 ALTER TABLE payments
   ADD COLUMN receipt_number VARCHAR(30) NULL,
   ADD COLUMN created_by INT UNSIGNED NULL,
@@ -124,6 +139,50 @@ CREATE TABLE reminders_log (
   CONSTRAINT fk_reminders_log_patient FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE,
   CONSTRAINT fk_reminders_log_template FOREIGN KEY (template_id) REFERENCES reminder_templates(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
+
+CREATE TABLE doctor_notification_settings (
+  doctor_id BIGINT UNSIGNED PRIMARY KEY,
+  smtp_host VARCHAR(190) NULL,
+  smtp_port INT NULL,
+  smtp_secure ENUM('tls','ssl','none') NOT NULL DEFAULT 'tls',
+  smtp_username VARCHAR(190) NULL,
+  smtp_password_enc TEXT NULL,
+  smtp_from_email VARCHAR(190) NULL,
+  smtp_from_name VARCHAR(190) NULL,
+  infobip_base_url VARCHAR(255) NOT NULL DEFAULT 'https://6zjpx5.api.infobip.com',
+  infobip_api_key_enc TEXT NULL,
+  infobip_sms_sender VARCHAR(20) NULL,
+  infobip_whatsapp_sender VARCHAR(50) NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE notifications_outbox (
+  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  doctor_id BIGINT UNSIGNED NOT NULL,
+  reminder_log_id BIGINT UNSIGNED NOT NULL,
+  channel ENUM('EMAIL','SMS','WHATSAPP') NOT NULL,
+  to_address VARCHAR(255) NOT NULL,
+  payload_json JSON NOT NULL,
+  status ENUM('PENDING','SENT','FAILED') NOT NULL DEFAULT 'PENDING',
+  tries INT NOT NULL DEFAULT 0,
+  last_error TEXT NULL,
+  next_retry_at DATETIME NULL,
+  external_id VARCHAR(120) NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY idx_outbox_status_next (status, next_retry_at)
+) ENGINE=InnoDB;
+
+CREATE TABLE whatsapp_template_map (
+  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  doctor_id BIGINT UNSIGNED NOT NULL,
+  reminder_template_id BIGINT UNSIGNED NOT NULL,
+  template_name VARCHAR(120) NOT NULL,
+  language_code VARCHAR(10) NOT NULL DEFAULT 'fr',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_wa_map (doctor_id, reminder_template_id)
+) ENGINE=InnoDB;
 ```
 
 - Upload CSV securise dans `storage/uploads/doctor_{id}/`.
@@ -140,6 +199,16 @@ CREATE TABLE reminders_log (
 
 ## Logs
 - Erreurs applicatives : `storage/logs/app.log`
+
+## Notifications (Email/SMS/WhatsApp)
+- Generez une cle APP_KEY:
+  `php -r "echo 'base64:' . base64_encode(random_bytes(32)) . PHP_EOL;"`
+- Renseignez `app_key` dans `.env.php`.
+- SMTP: utilisez un mot de passe d'application si necessaire (Gmail/Outlook).
+- Infobip: Base URL + API Key + Sender SMS + Sender WhatsApp.
+- WhatsApp: associez un template Infobip a chaque modele (dans les modeles de rappels).
+- Envoi via worker:
+  `php tools/worker_send_notifications.php`
 
 ## Checklist tests (manuel) - Creer un service, verifier l'affichage dans la liste.
 - Creer un rendez-vous avec services et valider le total et la duree suggeres.
@@ -192,3 +261,14 @@ CREATE TABLE reminders_log (
 - Focus visible : boutons, liens, champs, onglets, drawer et modals
 - Modals/drawers : focus initial, piege de tabulation, ESC pour fermer, focus retour
 - Formulaires : labels associes, erreurs annoncees (role="alert" / aria-describedby) - Tableaux : entetes <th scope="col">, actions lisibles, etats vides clairs
+
+## Checklist notifications (5 min)
+- Configurer SMTP -> envoyer un test -> lancer le worker -> statut SENT
+- Configurer Infobip -> envoyer SMS test -> worker -> external_id present
+- Associer template WhatsApp -> test WhatsApp -> worker -> statut SENT
+
+## Checklist theme (5 min)
+- Medecin : bascule mode clair/sombre -> refresh -> persistance
+- Admin : bascule mode clair/sombre -> refresh -> persistance
+- Verifier Dashboard, Patients, RDV, Paiements + recus, Caisse, Rapports, Import CSV, Rappels, Services
+- Impression recu/cloture lisible en clair

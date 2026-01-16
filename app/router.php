@@ -10,6 +10,8 @@ require_once __DIR__ . '/controllers/reports_controller.php';
 require_once __DIR__ . '/controllers/services_controller.php';
 require_once __DIR__ . '/controllers/import_controller.php';
 require_once __DIR__ . '/controllers/reminders_controller.php';
+require_once __DIR__ . '/controllers/theme_controller.php';
+require_once __DIR__ . '/controllers/notifications_controller.php';
 
 $route = $_GET['r'] ?? 'dashboard';
 
@@ -40,6 +42,9 @@ switch ($route) {
         break;
     case'patients-edit':
         patients_edit();
+        break;
+    case'patients-consents':
+        patients_update_consents();
         break;
     case'patients-delete':
         patients_delete();
@@ -151,6 +156,21 @@ switch ($route) {
         break;
     case'reminders-send':
         reminders_send();
+        break;
+    case'notifications-settings':
+        notifications_settings();
+        break;
+    case'notifications-test-email':
+        notifications_test_email();
+        break;
+    case'notifications-test-sms':
+        notifications_test_sms();
+        break;
+    case'notifications-test-whatsapp':
+        notifications_test_whatsapp();
+        break;
+    case'theme-toggle':
+        theme_toggle();
         break;
     case'import':
         import_index();

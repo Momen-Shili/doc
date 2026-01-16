@@ -10,6 +10,7 @@ CREATE TABLE doctors (
   plan VARCHAR(50) NOT NULL DEFAULT 'standard',
   specialty VARCHAR(150) NULL,
   phone VARCHAR(50) NULL,
+  theme_preference ENUM('dark','light') NOT NULL DEFAULT 'dark',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   is_active TINYINT(1) NOT NULL DEFAULT 1,
   suspended_at DATETIME NULL
@@ -20,6 +21,7 @@ CREATE TABLE admins (
   name VARCHAR(150) NOT NULL,
   email VARCHAR(190) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
+  theme_preference ENUM('dark','light') NOT NULL DEFAULT 'dark',
   is_active TINYINT(1) NOT NULL DEFAULT 1,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
@@ -31,6 +33,10 @@ CREATE TABLE patients (
   full_name VARCHAR(150) NOT NULL,
   phone VARCHAR(50) NULL,
   email VARCHAR(190) NULL,
+  whatsapp_phone VARCHAR(30) NULL,
+  consent_email TINYINT(1) NOT NULL DEFAULT 0,
+  consent_sms TINYINT(1) NOT NULL DEFAULT 0,
+  consent_whatsapp TINYINT(1) NOT NULL DEFAULT 0,
   dob DATE NULL,
   notes TEXT NULL,
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -203,4 +209,54 @@ CREATE TABLE platform_settings (
   setting_key VARCHAR(100) NOT NULL UNIQUE,
   setting_value TEXT NULL,
   updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE doctor_notification_settings (
+  doctor_id BIGINT UNSIGNED PRIMARY KEY,
+  smtp_host VARCHAR(190) NULL,
+  smtp_port INT NULL,
+  smtp_secure ENUM('tls','ssl','none') NOT NULL DEFAULT 'tls',
+  smtp_username VARCHAR(190) NULL,
+  smtp_password_enc TEXT NULL,
+  smtp_from_email VARCHAR(190) NULL,
+  smtp_from_name VARCHAR(190) NULL,
+  infobip_base_url VARCHAR(255) NOT NULL DEFAULT 'https://6zjpx5.api.infobip.com',
+  infobip_api_key_enc TEXT NULL,
+  infobip_sms_sender VARCHAR(20) NULL,
+  infobip_whatsapp_sender VARCHAR(50) NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_doctor_notif_doctor FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE notifications_outbox (
+  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  doctor_id BIGINT UNSIGNED NOT NULL,
+  reminder_log_id BIGINT UNSIGNED NOT NULL,
+  channel ENUM('EMAIL','SMS','WHATSAPP') NOT NULL,
+  to_address VARCHAR(255) NOT NULL,
+  payload_json JSON NOT NULL,
+  status ENUM('PENDING','SENT','FAILED') NOT NULL DEFAULT 'PENDING',
+  tries INT NOT NULL DEFAULT 0,
+  last_error TEXT NULL,
+  next_retry_at DATETIME NULL,
+  external_id VARCHAR(120) NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY idx_outbox_status_next (status, next_retry_at),
+  KEY idx_outbox_doctor (doctor_id),
+  CONSTRAINT fk_outbox_doctor FOREIGN KEY (doctor_id) REFERENCES doctors(id),
+  CONSTRAINT fk_outbox_reminder FOREIGN KEY (reminder_log_id) REFERENCES reminders_log(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE whatsapp_template_map (
+  id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
+  doctor_id BIGINT UNSIGNED NOT NULL,
+  reminder_template_id BIGINT UNSIGNED NOT NULL,
+  template_name VARCHAR(120) NOT NULL,
+  language_code VARCHAR(10) NOT NULL DEFAULT 'fr',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_wa_map (doctor_id, reminder_template_id),
+  CONSTRAINT fk_wa_doctor FOREIGN KEY (doctor_id) REFERENCES doctors(id),
+  CONSTRAINT fk_wa_rt FOREIGN KEY (reminder_template_id) REFERENCES reminder_templates(id)
 ) ENGINE=InnoDB;

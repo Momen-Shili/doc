@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 $title = 'Fiche patient';
 $dob = $patient['dob'] ?? null;
 $age = '';
@@ -21,8 +21,8 @@ $tabs = [
             <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                     <h1 class="text-xl font-semibold text-white"><?= e($patient['full_name']) ?></h1>
-                    <p class="mt-1 text-sm text-slate-400">Email: <?= e($patient['email']) ?> · Téléphone: <?= e($patient['phone']) ?></p>
-                    <p class="mt-1 text-sm text-slate-400">Date de naissance: <?= e($patient['dob']) ?><?= $age ? ' · ' . e($age) : '' ?></p>
+                    <p class="mt-1 text-sm text-slate-400">Email: <?= e($patient['email']) ?> - TÃ©lÃ©phone: <?= e($patient['phone']) ?></p>
+                    <p class="mt-1 text-sm text-slate-400">Date de naissance: <?= e($patient['dob']) ?><?= $age ? ' - ' . e($age) : '' ?></p>
                 </div>
                 <div class="flex flex-wrap gap-2">
                     <?php foreach ($tags as $tag): ?>
@@ -36,7 +36,7 @@ $tabs = [
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="patient_id" value="<?= e($patient['id']) ?>" />
                                 <input type="hidden" name="tag_id" value="<?= e($tag['id']) ?>" />
-                                <button class="text-white/80 hover:text-white" aria-label="Retirer le tag">×</button>
+                                <button class="text-white/80 hover:text-white" aria-label="Retirer le tag">x</button>
                             </form>
                         </span>
                     <?php endforeach; ?>
@@ -71,7 +71,7 @@ $tabs = [
                                 <div class="rounded-lg bg-slate-800/70 p-4">
                                     <div class="flex items-center justify-between">
                                         <div>
-                                            <p class="text-sm font-semibold text-white"><?= e(date('d/m/Y H:i', strtotime($appt['starts_at']))) ?> – <?= e(date('H:i', strtotime($appt['ends_at']))) ?></p>
+                                            <p class="text-sm font-semibold text-white"><?= e(date('d/m/Y H:i', strtotime($appt['starts_at']))) ?> - <?= e(date('H:i', strtotime($appt['ends_at']))) ?></p>
                                             <p class="text-xs text-slate-400">Statut: <?= e(appointment_status_label($appt['status'])) ?></p>
                                         </div>
                                         <a class="text-xs font-semibold text-indigo-300 hover:text-indigo-200" href="?r=appointments-edit&id=<?= e($appt['id']) ?>">Voir</a>
@@ -91,11 +91,11 @@ $tabs = [
                                 <div class="rounded-lg bg-slate-800/70 p-4">
                                     <div class="flex items-center justify-between">
                                         <div>
-                                            <p class="text-sm font-semibold text-white"><?= e(date('d/m/Y', strtotime($payment['received_at']))) ?> · <?= e(format_tnd($payment['amount'])) ?></p>
-                                            <p class="text-xs text-slate-400">Référence: <?= e($payment['reference']) ?></p>
+                                            <p class="text-sm font-semibold text-white"><?= e(date('d/m/Y', strtotime($payment['received_at']))) ?> - <?= e(format_tnd($payment['amount'])) ?></p>
+                                            <p class="text-xs text-slate-400">RÃ©fÃ©rence: <?= e($payment['reference']) ?></p>
                                         </div>
                                         <?php if (!empty($payment['receipt_number'])): ?>
-                                            <a class="text-xs font-semibold text-indigo-300 hover:text-indigo-200" href="?r=payments-receipt&id=<?= e($payment['id']) ?>">Reçu</a>
+                                            <a class="text-xs font-semibold text-indigo-300 hover:text-indigo-200" href="?r=payments-receipt&id=<?= e($payment['id']) ?>">ReÃ§u</a>
                                         <?php endif; ?>
                                     </div>
                                 </div>
@@ -167,10 +167,10 @@ $tabs = [
                                     <div class="flex items-center justify-between">
                                         <div>
                                             <p class="text-sm font-semibold text-white"><?= e($doc['file_name']) ?></p>
-                                            <p class="text-xs text-slate-400"><?= e($doc['mime_type']) ?> · <?= e(number_format(($doc['size_bytes'] ?? 0) / 1024, 1, ',', ' ')) ?> Ko</p>
+                                            <p class="text-xs text-slate-400"><?= e($doc['mime_type']) ?> - <?= e(number_format(($doc['size_bytes'] ?? 0) / 1024, 1, ',', ' ')) ?> Ko</p>
                                         </div>
                                         <div class="flex items-center gap-2">
-                                            <a class="text-xs font-semibold text-indigo-300 hover:text-indigo-200" href="?r=documents-download&id=<?= e($doc['id']) ?>">Télécharger</a>
+                                            <a class="text-xs font-semibold text-indigo-300 hover:text-indigo-200" href="?r=documents-download&id=<?= e($doc['id']) ?>">TÃ©lÃ©charger</a>
                                             <form method="post" action="?r=documents-delete" onsubmit="return confirm('Supprimer ce document ?');">
                                                 <?= csrf_field() ?>
                                                 <input type="hidden" name="doc_id" value="<?= e($doc['id']) ?>" />
@@ -197,14 +197,39 @@ $tabs = [
                     <dd class="font-semibold text-white"><?= e($noShowCount) ?></dd>
                 </div>
                 <div class="flex items-center justify-between">
-                    <dt class="text-slate-400">Dernière visite</dt>
-                    <dd class="font-semibold text-white"><?= e($lastVisit ? date('d/m/Y', strtotime($lastVisit)) : '—') ?></dd>
+                    <dt class="text-slate-400">DerniÃ¨re visite</dt>
+                    <dd class="font-semibold text-white"><?= e($lastVisit ? date('d/m/Y', strtotime($lastVisit)) : '-') ?></dd>
                 </div>
                 <div class="flex items-center justify-between">
-                    <dt class="text-slate-400">Total encaissé</dt>
+                    <dt class="text-slate-400">Total encaissÃ©</dt>
                     <dd class="font-semibold text-white"><?= e(format_tnd($totalPaid)) ?></dd>
                 </div>
             </dl>
+        </div>
+
+        <div class="rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
+            <h2 class="text-base font-semibold text-white">Consentements & WhatsApp</h2>
+            <form method="post" action="?r=patients-consents" class="mt-4 space-y-4">
+                <?= csrf_field() ?>
+                <input type="hidden" name="patient_id" value="<?= e($patient['id']) ?>" />
+                <div>
+                    <label for="patient-whatsapp" class="block text-sm font-medium text-slate-200">TÃ©lÃ©phone WhatsApp</label>
+                    <input id="patient-whatsapp" type="text" name="whatsapp_phone" value="<?= e($patient['whatsapp_phone'] ?? '') ?>" placeholder="+216XXXXXXXX" class="mt-2 w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 placeholder:text-slate-400 focus:ring-2 focus:ring-indigo-500" />
+                </div>
+                <label class="flex items-center gap-2 text-sm text-slate-200">
+                    <input type="checkbox" name="consent_email" value="1" <?= !empty($patient['consent_email']) ? 'checked' : '' ?> class="h-4 w-4 rounded border-white/10 bg-slate-800 text-indigo-500 focus:ring-indigo-500" />
+                    Consentement Email
+                </label>
+                <label class="flex items-center gap-2 text-sm text-slate-200">
+                    <input type="checkbox" name="consent_sms" value="1" <?= !empty($patient['consent_sms']) ? 'checked' : '' ?> class="h-4 w-4 rounded border-white/10 bg-slate-800 text-indigo-500 focus:ring-indigo-500" />
+                    Consentement SMS
+                </label>
+                <label class="flex items-center gap-2 text-sm text-slate-200">
+                    <input type="checkbox" name="consent_whatsapp" value="1" <?= !empty($patient['consent_whatsapp']) ? 'checked' : '' ?> class="h-4 w-4 rounded border-white/10 bg-slate-800 text-indigo-500 focus:ring-indigo-500" />
+                    Consentement WhatsApp
+                </label>
+                <button class="rounded-md bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400">Enregistrer</button>
+            </form>
         </div>
     </div>
 </div>
