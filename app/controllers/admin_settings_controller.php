@@ -1,4 +1,4 @@
-<php
+<?php
 function admin_settings(): void {
     require_admin_auth();
     $errors = [];
@@ -7,8 +7,8 @@ function admin_settings(): void {
 
     if (is_post()) {
         verify_csrf();
-        $appName = trim($_POST['app_name'] '');
-        $supportEmail = trim($_POST['support_email'] '');
+        $appName = trim($_POST['app_name'] ?? '');
+        $supportEmail = trim($_POST['support_email'] ?? '');
 
         if ($appName === '') {
             $errors[] = 'Nom de la plateforme requis.';
@@ -20,7 +20,7 @@ function admin_settings(): void {
         if (!$errors) {
             save_setting('app_name', $appName);
             save_setting('support_email', $supportEmail);
-            flash('success', 'ParamÃ¨tres mis Ã  jour.');
+            flash('success', 'Paramètres mis à jour.');
             redirect('r=settings');
         }
         $settings['app_name'] = $appName;

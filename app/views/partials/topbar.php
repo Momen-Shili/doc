@@ -1,6 +1,6 @@
-<php
+<?php
 $user = auth_user();
->
+?>
 <div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-slate-800 bg-slate-950/80 px-4 shadow-sm backdrop-blur sm:gap-x-6 sm:px-6 lg:px-8">
     <button type="button" class="-m-2.5 p-2.5 text-slate-200 lg:hidden">
         <span class="sr-only">Ouvrir le menu</span>
@@ -13,11 +13,11 @@ $user = auth_user();
 
     <div class="flex flex-1 items-center justify-between">
         <div>
-            <div class="text-sm font-semibold text-white"><= e($user['full_name'] '') ></div>
-            <div class="text-xs text-slate-400"><= e($user['specialty'] 'MÃ©decin') ></div>
+            <div class="text-sm font-semibold text-white"><?= e($user['full_name'] ?? '') ?></div>
+            <div class="text-xs text-slate-400"><?= e($user['specialty'] ?? 'Médecin') ?></div>
         </div>
         <div class="flex items-center gap-x-3">
-            <a href="r=profile" class="text-sm font-semibold text-indigo-300 hover:text-indigo-200">ParamÃ¨tres</a>
+            <a href="?r=profile" class="text-sm font-semibold text-indigo-300 hover:text-indigo-200">Paramètres</a>
         </div>
     </div>
 </div>

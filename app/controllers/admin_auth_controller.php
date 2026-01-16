@@ -1,4 +1,4 @@
-<php
+<?php
 function admin_login(): void {
     require_admin_guest();
     $error = null;
@@ -12,8 +12,8 @@ function admin_login(): void {
             return;
         }
 
-        $email = trim($_POST['email'] '');
-        $password = $_POST['password'] '';
+        $email = trim($_POST['email'] ?? '');
+        $password = $_POST['password'] ?? '';
 
         if ($email === '' || $password === '') {
             $error = 'Email et mot de passe requis.';

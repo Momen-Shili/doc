@@ -1,4 +1,4 @@
-<php
+<?php
 // Configuration loader
 $envFile = __DIR__ . '/../.env.php';
 if (!file_exists($envFile)) {
@@ -6,8 +6,8 @@ if (!file_exists($envFile)) {
 }
 $config = require $envFile;
 
-define('APP_NAME', $config['app_name'] 'Cabinet');
-define('APP_URL', $config['app_url'] 'http://localhost');
+define('APP_NAME', $config['app_name'] ?? 'Cabinet');
+define('APP_URL', $config['app_url'] ?? 'http://localhost');
 
 define('DB_HOST', $config['db_host']);
 define('DB_NAME', $config['db_name']);

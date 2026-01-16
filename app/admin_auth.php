@@ -1,6 +1,6 @@
-<php
+<?php
 // Admin authentication helpers
-function admin_user(): array {
+function admin_user(): ?array {
     if (empty($_SESSION['admin_id'])) {
         return null;
     }
@@ -8,10 +8,10 @@ function admin_user(): array {
     if ($admin) {
         return $admin;
     }
-    $stmt = db()->prepare('SELECT id, name, email, is_active FROM admins WHERE id = ');
+    $stmt = db()->prepare('SELECT id, name, email, is_active FROM admins WHERE id = ?');
     $stmt->execute([$_SESSION['admin_id']]);
     $admin = $stmt->fetch();
-    return $admin : null;
+    return $admin ? $admin : null;
 }
 
 function login_admin(int $id): void {
@@ -35,9 +35,9 @@ function stop_impersonation(): void {
     unset($_SESSION['impersonate_doctor_id']);
 }
 
-function impersonated_doctor_id(): int {
-    $id = $_SESSION['impersonate_doctor_id'] null;
-    return $id (int)$id : null;
+function impersonated_doctor_id(): ?int {
+    $id = $_SESSION['impersonate_doctor_id'] ?? null;
+    return $id ? (int)$id : null;
 }
 
 function is_impersonating(): bool {

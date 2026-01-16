@@ -1,10 +1,10 @@
-<php
+<?php
 function reminders_templates(): void {
     require_auth();
     $doctor = auth_user();
     $doctorId = $doctor['id'];
 
-    $stmt = db()->prepare('SELECT * FROM reminder_templates WHERE doctor_id = ORDER BY created_at DESC');
+    $stmt = db()->prepare('SELECT * FROM reminder_templates WHERE doctor_id = ? ORDER BY created_at DESC');
     $stmt->execute([$doctorId]);
     $templates = $stmt->fetchAll();
 
@@ -34,17 +34,17 @@ function reminders_templates_create(): void {
 
     if (is_post()) {
         verify_csrf();
-        $template['name'] = trim($_POST['name'] '');
-        $template['channel'] = trim($_POST['channel'] 'SMS');
-        $template['body'] = trim($_POST['body'] '');
-        $template['is_active'] = isset($_POST['is_active']) a1 : 0;
+        $template['name'] = trim($_POST['name'] ?? '');
+        $template['channel'] = trim($_POST['channel'] ?? 'SMS');
+        $template['body'] = trim($_POST['body'] ?? '');
+        $template['is_active'] = isset($_POST['is_active']) ? 1 : 0;
 
         $errors = validate_reminder_template($template);
         if (!$errors) {
-            $stmt = db()->prepare('INSERT INTO reminder_templates (doctor_id, name, channel, body, is_active) VALUES (,,,,) ');
+            $stmt = db()->prepare('INSERT INTO reminder_templates (doctor_id, name, channel, body, is_active) VALUES (?,?,?,?,?)');
             $stmt->execute([$doctorId, $template['name'], $template['channel'], $template['body'], $template['is_active']]);
-            flash('success', 'ModÃƒÂ¨le de rappel crÃƒÂ©ÃƒÂ©.');
-            redirect('r=reminders-templates');
+            flash('success', 'Modèle de rappel créé.');
+            redirect('?r=reminders-templates');
         }
     }
 
@@ -58,31 +58,31 @@ function reminders_templates_create(): void {
 function reminders_templates_edit(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $id = (int)($_GET['id'] 0);
+    $id = (int)($_GET['id'] ?? 0);
 
-    $stmt = db()->prepare('SELECT * FROM reminder_templates WHERE id = AND doctor_id = ');
+    $stmt = db()->prepare('SELECT * FROM reminder_templates WHERE id = ? AND doctor_id = ?');
     $stmt->execute([$id, $doctorId]);
     $template = $stmt->fetch();
     if (!$template) {
         http_response_code(404);
-        echo render('pages/error.php', ['message' => 'ModÃƒÂ¨le introuvable.']);
+        echo render('pages/error.php', ['message' => 'Modèle introuvable.']);
         return;
     }
 
     $errors = [];
     if (is_post()) {
         verify_csrf();
-        $template['name'] = trim($_POST['name'] '');
-        $template['channel'] = trim($_POST['channel'] 'SMS');
-        $template['body'] = trim($_POST['body'] '');
-        $template['is_active'] = isset($_POST['is_active']) a1 : 0;
+        $template['name'] = trim($_POST['name'] ?? '');
+        $template['channel'] = trim($_POST['channel'] ?? 'SMS');
+        $template['body'] = trim($_POST['body'] ?? '');
+        $template['is_active'] = isset($_POST['is_active']) ? 1 : 0;
 
         $errors = validate_reminder_template($template, $id);
         if (!$errors) {
-            $stmt = db()->prepare('UPDATE reminder_templates SET name = , channel = , body = , is_active = aWHERE id = AND doctor_id = ');
+            $stmt = db()->prepare('UPDATE reminder_templates SET name = ?, channel = ?, body = ?, is_active = ? WHERE id = ? AND doctor_id = ?');
             $stmt->execute([$template['name'], $template['channel'], $template['body'], $template['is_active'], $id, $doctorId]);
-            flash('success', 'ModÃƒÂ¨le mis ÃƒÂ  jour.');
-            redirect('r=reminders-templates');
+            flash('success', 'Modèle mis à jour.');
+            redirect('?r=reminders-templates');
         }
     }
 
@@ -97,35 +97,35 @@ function reminders_templates_toggle(): void {
     require_auth();
     if (!is_post()) {
         http_response_code(405);
-        echo render('pages/error.php', ['message' => 'MÃƒÂ©thode non autorisÃƒÂ©e.']);
+        echo render('pages/error.php', ['message' => 'Méthode non autorisée.']);
         return;
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $id = (int)($_POST['id'] 0);
-    $stmt = db()->prepare('SELECT is_active FROM reminder_templates WHERE id = AND doctor_id = ');
+    $id = (int)($_POST['id'] ?? 0);
+    $stmt = db()->prepare('SELECT is_active FROM reminder_templates WHERE id = ? AND doctor_id = ?');
     $stmt->execute([$id, $doctorId]);
     $current = $stmt->fetch();
     if (!$current) {
-        flash('error', 'ModÃƒÂ¨le introuvable.');
-        redirect('r=reminders-templates');
+        flash('error', 'Modèle introuvable.');
+        redirect('?r=reminders-templates');
     }
     $newValue = (int)!((int)$current['is_active']);
-    $stmt = db()->prepare('UPDATE reminder_templates SET is_active = aWHERE id = AND doctor_id = ');
+    $stmt = db()->prepare('UPDATE reminder_templates SET is_active = ? WHERE id = ? AND doctor_id = ?');
     $stmt->execute([$newValue, $id, $doctorId]);
-    flash('success', $newValue'ModÃƒÂ¨le activÃƒÂ©.' : 'ModÃƒÂ¨le dÃƒÂ©sactivÃƒÂ©.');
-    redirect('r=reminders-templates');
+    flash('success', $newValue ? 'Modèle activé.' : 'Modèle désactivé.');
+    redirect('?r=reminders-templates');
 }
 
 function reminders_log(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $from = trim($_GET['from'] '');
-    $to = trim($_GET['to'] '');
-    $status = trim($_GET['status'] '');
-    $patientId = (int)($_GET['patient_id'] 0);
-    $channel = trim($_GET['channel'] '');
-    $viewId = (int)($_GET['view'] 0);
+    $from = trim($_GET['from'] ?? '');
+    $to = trim($_GET['to'] ?? '');
+    $status = trim($_GET['status'] ?? '');
+    $patientId = (int)($_GET['patient_id'] ?? 0);
+    $channel = trim($_GET['channel'] ?? '');
+    $viewId = (int)($_GET['view'] ?? 0);
 
     if ($from === '' || $to === '') {
         $to = date('Y-m-d');
@@ -133,17 +133,17 @@ function reminders_log(): void {
     }
 
     $params = [$doctorId, $from, $to];
-    $where = 'WHERE r.doctor_id = AND DATE(r.sent_at) BETWEEN AND';
+    $where = 'WHERE r.doctor_id = ? AND DATE(r.sent_at) BETWEEN ? AND ?';
     if ($status !== '') {
-        $where .= ' AND r.status = ';
+        $where .= ' AND r.status = ?';
         $params[] = $status;
     }
     if ($patientId > 0) {
-        $where .= ' AND r.patient_id = ';
+        $where .= ' AND r.patient_id = ?';
         $params[] = $patientId;
     }
     if ($channel !== '') {
-        $where .= ' AND r.channel = ';
+        $where .= ' AND r.channel = ?';
         $params[] = $channel;
     }
 
@@ -153,7 +153,7 @@ function reminders_log(): void {
 
     $detail = null;
     if ($viewId > 0) {
-        $stmt = db()->prepare('SELECT r.*, p.full_name AS patient_name, a.starts_at AS appointment_start FROM reminders_log r JOIN patients p ON p.id = r.patient_id LEFT JOIN appointments a ON a.id = r.appointment_id WHERE r.id = AND r.doctor_id = ');
+        $stmt = db()->prepare('SELECT r.*, p.full_name AS patient_name, a.starts_at AS appointment_start FROM reminders_log r JOIN patients p ON p.id = r.patient_id LEFT JOIN appointments a ON a.id = r.appointment_id WHERE r.id = ? AND r.doctor_id = ?');
         $stmt->execute([$viewId, $doctorId]);
         $detail = $stmt->fetch();
     }
@@ -176,21 +176,21 @@ function reminders_log_recreate(): void {
     require_auth();
     if (!is_post()) {
         http_response_code(405);
-        echo render('pages/error.php', ['message' => 'MÃƒÂ©thode non autorisÃƒÂ©e.']);
+        echo render('pages/error.php', ['message' => 'Méthode non autorisée.']);
         return;
     }
     verify_csrf();
     $doctorId = auth_user()['id'];
-    $id = (int)($_POST['id'] 0);
-    $stmt = db()->prepare('SELECT * FROM reminders_log WHERE id = AND doctor_id = ');
+    $id = (int)($_POST['id'] ?? 0);
+    $stmt = db()->prepare('SELECT * FROM reminders_log WHERE id = ? AND doctor_id = ?');
     $stmt->execute([$id, $doctorId]);
     $log = $stmt->fetch();
     if (!$log) {
         flash('error', 'Rappel introuvable.');
-        redirect('r=reminders-log');
+        redirect('?r=reminders-log');
     }
 
-    $stmt = db()->prepare('INSERT INTO reminders_log (doctor_id, appointment_id, patient_id, template_id, channel, message, status, sent_at, error_text) VALUES (,,,,,,,,) ');
+    $stmt = db()->prepare('INSERT INTO reminders_log (doctor_id, appointment_id, patient_id, template_id, channel, message, status, sent_at, error_text) VALUES (?,?,?,?,?,?,?,?,?)');
     $stmt->execute([
         $doctorId,
         $log['appointment_id'],
@@ -202,18 +202,18 @@ function reminders_log_recreate(): void {
         date('Y-m-d H:i:s'),
         null,
     ]);
-    flash('success', 'Rappel recrÃƒÂ©ÃƒÂ© en brouillon.');
-    redirect('r=reminders-log');
+    flash('success', 'Rappel recréé en brouillon.');
+    redirect('?r=reminders-log');
 }
 
 function reminders_export(): void {
     require_auth();
     $doctorId = auth_user()['id'];
-    $from = trim($_GET['from'] '');
-    $to = trim($_GET['to'] '');
-    $status = trim($_GET['status'] '');
-    $patientId = (int)($_GET['patient_id'] 0);
-    $channel = trim($_GET['channel'] '');
+    $from = trim($_GET['from'] ?? '');
+    $to = trim($_GET['to'] ?? '');
+    $status = trim($_GET['status'] ?? '');
+    $patientId = (int)($_GET['patient_id'] ?? 0);
+    $channel = trim($_GET['channel'] ?? '');
 
     if ($from === '' || $to === '') {
         $to = date('Y-m-d');
@@ -221,17 +221,17 @@ function reminders_export(): void {
     }
 
     $params = [$doctorId, $from, $to];
-    $where = 'WHERE r.doctor_id = AND DATE(r.sent_at) BETWEEN AND';
+    $where = 'WHERE r.doctor_id = ? AND DATE(r.sent_at) BETWEEN ? AND ?';
     if ($status !== '') {
-        $where .= ' AND r.status = ';
+        $where .= ' AND r.status = ?';
         $params[] = $status;
     }
     if ($patientId > 0) {
-        $where .= ' AND r.patient_id = ';
+        $where .= ' AND r.patient_id = ?';
         $params[] = $patientId;
     }
     if ($channel !== '') {
-        $where .= ' AND r.channel = ';
+        $where .= ' AND r.channel = ?';
         $params[] = $channel;
     }
 
@@ -253,14 +253,14 @@ function reminders_send(): void {
     require_auth();
     $doctor = auth_user();
     $doctorId = $doctor['id'];
-    $appointmentId = (int)($_GET['appointment_id'] $_POST['appointment_id'] 0);
-    if ($appointmentId <=  0) {
+    $appointmentId = (int)($_GET['appointment_id'] ?? ($_POST['appointment_id'] ?? 0));
+    if ($appointmentId <= 0) {
         http_response_code(404);
         echo render('pages/error.php', ['message' => 'Rendez-vous introuvable.']);
         return;
     }
 
-    $stmt = db()->prepare('SELECT a.*, p.full_name AS patient_name, p.phone AS patient_phone, p.email AS patient_email FROM appointments a JOIN patients p ON p.id = a.patient_id WHERE a.id = AND a.doctor_id = ');
+    $stmt = db()->prepare('SELECT a.*, p.full_name AS patient_name, p.phone AS patient_phone, p.email AS patient_email FROM appointments a JOIN patients p ON p.id = a.patient_id WHERE a.id = ? AND a.doctor_id = ?');
     $stmt->execute([$appointmentId, $doctorId]);
     $appointment = $stmt->fetch();
     if (!$appointment) {
@@ -269,11 +269,11 @@ function reminders_send(): void {
         return;
     }
 
-    $stmt = db()->prepare('SELECT * FROM reminder_templates WHERE doctor_id = AND is_active = 1 ORDER BY created_at DESC');
+    $stmt = db()->prepare('SELECT * FROM reminder_templates WHERE doctor_id = ? AND is_active = 1 ORDER BY created_at DESC');
     $stmt->execute([$doctorId]);
     $templates = $stmt->fetchAll();
 
-    $selectedTemplateId = (int)($_GET['template_id'] $_POST['template_id'] 0);
+    $selectedTemplateId = (int)($_GET['template_id'] ?? ($_POST['template_id'] ?? 0));
     $selectedTemplate = null;
     foreach ($templates as $tpl) {
         if ((int)$tpl['id'] === $selectedTemplateId) {
@@ -282,15 +282,15 @@ function reminders_send(): void {
         }
     }
 
-    $channel = $selectedTemplate['channel'] 'SMS';
-    $message = $selectedTemplate arender_template_vars($selectedTemplate['body'], $appointment, ['full_name' => $appointment['patient_name']], $doctor) : '';
+    $channel = $selectedTemplate['channel'] ?? 'SMS';
+    $message = $selectedTemplate ? render_template_vars($selectedTemplate['body'], $appointment, ['full_name' => $appointment['patient_name']], $doctor) : '';
     $errors = [];
 
     if (is_post()) {
         verify_csrf();
-        $channel = trim($_POST['channel'] $channel);
-        $message = trim($_POST['message'] '');
-        $status = $_POST['status'] 'SENT';
+        $channel = trim($_POST['channel'] ?? $channel);
+        $message = trim($_POST['message'] ?? '');
+        $status = $_POST['status'] ?? 'SENT';
         if ($message === '') {
             $errors[] = 'Le message est requis.';
         }
@@ -301,20 +301,20 @@ function reminders_send(): void {
             $status = 'SENT';
         }
         if (!$errors) {
-            $stmt = db()->prepare('INSERT INTO reminders_log (doctor_id, appointment_id, patient_id, template_id, channel, message, status, sent_at, error_text) VALUES (,,,,,,,,) ');
+            $stmt = db()->prepare('INSERT INTO reminders_log (doctor_id, appointment_id, patient_id, template_id, channel, message, status, sent_at, error_text) VALUES (?,?,?,?,?,?,?,?,?)');
             $stmt->execute([
                 $doctorId,
                 $appointment['id'],
                 $appointment['patient_id'],
-                $selectedTemplateId > 0 $selectedTemplateId : null,
+                $selectedTemplateId > 0 ? $selectedTemplateId : null,
                 $channel,
                 $message,
                 $status,
                 date('Y-m-d H:i:s'),
                 null,
             ]);
-            flash('success', $status === 'SENT' 'Rappel enregistracomme envoy.' : 'Rappel enregistraen brouillon.');
-            redirect('r=appointments-edit&id=' . $appointment['id']);
+            flash('success', $status === 'SENT' ? 'Rappel enregistré comme envoyé.' : 'Rappel enregistré en brouillon.');
+            redirect('?r=appointments-edit&id=' . $appointment['id']);
         }
     }
 
@@ -344,15 +344,15 @@ function validate_reminder_template(array $template, int $ignoreId = 0): array {
     if (!$errors) {
         $doctorId = auth_user()['id'];
         $params = [$doctorId, $template['name']];
-        $sql = 'SELECT id FROM reminder_templates WHERE doctor_id = AND name = ';
+        $sql = 'SELECT id FROM reminder_templates WHERE doctor_id = ? AND name = ?';
         if ($ignoreId > 0) {
-            $sql .= ' AND id != ';
+            $sql .= ' AND id != ?';
             $params[] = $ignoreId;
         }
         $stmt = db()->prepare($sql);
         $stmt->execute($params);
         if ($stmt->fetch()) {
-            $errors[] = 'Un modÃƒÂ¨le avec ce nom existe dÃƒÂ©jÃƒÂ .';
+            $errors[] = 'Un modèle avec ce nom existe déjà.';
         }
     }
     return $errors;

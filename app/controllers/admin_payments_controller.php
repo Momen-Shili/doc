@@ -1,22 +1,22 @@
-<php
+<?php
 function admin_payments(): void {
     require_admin_auth();
-    $from = trim($_GET['from'] '');
-    $to = trim($_GET['to'] '');
-    $doctorId = (int)($_GET['doctor_id'] 0);
+    $from = trim($_GET['from'] ?? '');
+    $to = trim($_GET['to'] ?? '');
+    $doctorId = (int)($_GET['doctor_id'] ?? 0);
 
     $where = [];
     $params = [];
     if ($from !== '' && $to !== '') {
-        $where[] = 'p.received_at BETWEEN AND';
+        $where[] = 'DATE(p.received_at) BETWEEN ? AND ?';
         $params[] = $from;
         $params[] = $to;
     }
     if ($doctorId > 0) {
-        $where[] = 'p.doctor_id = ';
+        $where[] = 'p.doctor_id = ?';
         $params[] = $doctorId;
     }
-    $whereSql = $where'WHERE' . implode(' AND', $where) : '';
+    $whereSql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
     $stmt = db()->prepare("SELECT p.*, d.full_name AS doctor_name, pat.full_name AS patient_name FROM payments p JOIN doctors d ON d.id = p.doctor_id JOIN patients pat ON pat.id = p.patient_id {$whereSql} ORDER BY p.received_at DESC, p.id DESC");
     $stmt->execute($params);
@@ -24,7 +24,7 @@ function admin_payments(): void {
 
     $stmt = db()->prepare("SELECT COALESCE(SUM(amount),0) AS total FROM payments p {$whereSql}");
     $stmt->execute($params);
-    $total = $stmt->fetch()['total'] 0;
+    $total = $stmt->fetch()['total'] ?? 0;
 
     $doctors = db()->query('SELECT id, full_name FROM doctors ORDER BY full_name')->fetchAll();
 
@@ -40,22 +40,22 @@ function admin_payments(): void {
 
 function admin_payments_export(): void {
     require_admin_auth();
-    $from = trim($_GET['from'] '');
-    $to = trim($_GET['to'] '');
-    $doctorId = (int)($_GET['doctor_id'] 0);
+    $from = trim($_GET['from'] ?? '');
+    $to = trim($_GET['to'] ?? '');
+    $doctorId = (int)($_GET['doctor_id'] ?? 0);
 
     $where = [];
     $params = [];
     if ($from !== '' && $to !== '') {
-        $where[] = 'p.received_at BETWEEN AND';
+        $where[] = 'DATE(p.received_at) BETWEEN ? AND ?';
         $params[] = $from;
         $params[] = $to;
     }
     if ($doctorId > 0) {
-        $where[] = 'p.doctor_id = ';
+        $where[] = 'p.doctor_id = ?';
         $params[] = $doctorId;
     }
-    $whereSql = $where'WHERE' . implode(' AND', $where) : '';
+    $whereSql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
 
     $stmt = db()->prepare("SELECT p.received_at, p.amount, p.reference, p.notes, pat.full_name AS patient, d.full_name AS doctor FROM payments p JOIN patients pat ON pat.id = p.patient_id JOIN doctors d ON d.id = p.doctor_id {$whereSql} ORDER BY p.received_at");
     $stmt->execute($params);

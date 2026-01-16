@@ -1,7 +1,7 @@
-<php
+<?php
 // Authentication helpers
-function auth_user(): array {
-    $doctorId = $_SESSION['doctor_id'] null;
+function auth_user(): ?array {
+    $doctorId = $_SESSION['doctor_id'] ?? null;
     if (!$doctorId && is_impersonating()) {
         $doctorId = impersonated_doctor_id();
     }
@@ -12,10 +12,10 @@ function auth_user(): array {
     if ($user) {
         return $user;
     }
-    $stmt = db()->prepare('SELECT id, full_name, email, specialty, phone, is_active, suspended_at, plan FROM doctors WHERE id = ');
+    $stmt = db()->prepare('SELECT id, full_name, email, specialty, phone, is_active, suspended_at, plan FROM doctors WHERE id = ?');
     $stmt->execute([$doctorId]);
     $user = $stmt->fetch();
-    return $user : null;
+    return $user ? $user : null;
 }
 
 function login_doctor(int $id): void {

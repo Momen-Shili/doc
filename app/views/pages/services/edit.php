@@ -1,51 +1,51 @@
-<php
+<?php
 $title = 'Modifier un service';
 ob_start();
 $hasErrors = !empty($errors);
->
+?>
 <div class="max-w-2xl">
     <div class="rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
         <h1 class="text-lg font-semibold text-white">Modifier un service</h1>
-        <p class="text-sm text-slate-400">Mettez Ã  jour un acte ou service.</p>
+        <p class="text-sm text-slate-400">Mettez à jour un acte ou service.</p>
 
-        <php if ($hasErrors): >
+        <?php if ($hasErrors): ?>
             <div id="service-edit-error" class="mt-4 rounded-md bg-rose-500/10 p-3 text-sm text-rose-200 ring-1 ring-rose-500/30" role="alert">
-                <= e(implode(' ', $errors)) >
+                <?= e(implode(' ', $errors))    ?>
             </div>
-        <php endif; >
+        <?php endif; ?>
 
-        <form method="post" action="r=services-edit&id=<= e($service['id']) >" class="mt-6 space-y-4">
-            <= csrf_field() >
+        <form method="post" action="?r=services-edit&id=<?= e($service['id'])    ?>" class="mt-6 space-y-4">
+            <?= csrf_field()    ?>
             <div>
                 <label for="service-edit-name" class="block text-sm font-medium text-slate-200">Nom <span class="text-rose-300">*</span></label>
-                <input id="service-edit-name" type="text" name="name" value="<= e($service['name']) >" required <= $hasErrors 'aria-describedby="service-edit-error"' : '' > class="mt-2 block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
+                <input id="service-edit-name" type="text" name="name" value="<?= e($service['name'])    ?>" required <?= $hasErrors ? 'aria-describedby="service-edit-error"' : ''    ?> class="mt-2 block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
             </div>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                    <label for="service-edit-price" class="block text-sm font-medium text-slate-200">Prix par dÃ©faut (TND)</label>
-                    <input id="service-edit-price" type="number" step="0.001" name="default_price" value="<= e($service['default_price']) >" class="mt-2 block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
+                    <label for="service-edit-price" class="block text-sm font-medium text-slate-200">Prix par défaut (TND)</label>
+                    <input id="service-edit-price" type="number" step="0.001" name="default_price" value="<?= e($service['default_price'])    ?>" class="mt-2 block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
                 </div>
                 <div>
-                    <label for="service-edit-duration" class="block text-sm font-medium text-slate-200">DurÃ©e par dÃ©faut (minutes)</label>
-                    <input id="service-edit-duration" type="number" name="default_duration_minutes" value="<= e($service['default_duration_minutes']) >" class="mt-2 block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
+                    <label for="service-edit-duration" class="block text-sm font-medium text-slate-200">Durée par défaut (minutes)</label>
+                    <input id="service-edit-duration" type="number" name="default_duration_minutes" value="<?= e($service['default_duration_minutes'])    ?>" class="mt-2 block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
                 </div>
             </div>
             <div>
                 <label for="service-edit-description" class="block text-sm font-medium text-slate-200">Description</label>
-                <textarea id="service-edit-description" name="description" rows="3" class="mt-2 block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500"><= e($service['description']) ></textarea>
+                <textarea id="service-edit-description" name="description" rows="3" class="mt-2 block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500"><?= e($service['description'])    ?></textarea>
             </div>
             <label class="flex items-center gap-2 text-sm text-slate-200">
-                <input type="checkbox" name="is_active" <= (int)$service['is_active'] === 1 'checked' : '' > class="rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500" />
+                <input type="checkbox" name="is_active" <?= (int)$service['is_active'] === 1 ? 'checked' : ''    ?> class="rounded border-slate-600 bg-slate-800 text-indigo-500 focus:ring-indigo-500" />
                 Actif
             </label>
             <div class="flex items-center gap-3">
                 <button class="inline-flex items-center rounded-md bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400">Enregistrer</button>
-                <a class="text-sm font-semibold text-slate-300 hover:text-white" href="r=services">Annuler</a>
+                <a class="text-sm font-semibold text-slate-300 hover:text-white" href="?r=services">Annuler</a>
             </div>
         </form>
     </div>
 </div>
-<php
+<?php
 $content = ob_get_clean();
 require __DIR__ . '/../../layout.php';
->
+?>

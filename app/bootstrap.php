@@ -1,4 +1,4 @@
-<php
+<?php
 // Application bootstrap
 require_once __DIR__ . '/config.php';
 require_once __DIR__ . '/helpers.php';
@@ -28,7 +28,7 @@ set_exception_handler(function ($ex) {
 header('X-Frame-Options: DENY');
 header('X-Content-Type-Options: nosniff');
 header('Referrer-Policy: same-origin');
-header("Content-Security-Policy: default-src'self'; script-src'self' https://cdn.tailwindcss.com'unsafe-inline'; style-src'self' https://cdn.tailwindcss.com'unsafe-inline'; img-src'self' data:; font-src'self' data:; connect-src'self'; frame-ancestors'none'; base-uri'self'; form-action'self'");
+header("Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.tailwindcss.com 'unsafe-inline'; style-src 'self' https://cdn.tailwindcss.com 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'");
 
 if (session_status() !== PHP_SESSION_ACTIVE) {
     $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
