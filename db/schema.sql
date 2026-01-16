@@ -212,7 +212,7 @@ CREATE TABLE platform_settings (
 ) ENGINE=InnoDB;
 
 CREATE TABLE doctor_notification_settings (
-  doctor_id BIGINT UNSIGNED PRIMARY KEY,
+  doctor_id INT UNSIGNED PRIMARY KEY,
   smtp_host VARCHAR(190) NULL,
   smtp_port INT NULL,
   smtp_secure ENUM('tls','ssl','none') NOT NULL DEFAULT 'tls',
@@ -231,8 +231,8 @@ CREATE TABLE doctor_notification_settings (
 
 CREATE TABLE notifications_outbox (
   id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-  doctor_id BIGINT UNSIGNED NOT NULL,
-  reminder_log_id BIGINT UNSIGNED NOT NULL,
+  doctor_id INT UNSIGNED NOT NULL,
+  reminder_log_id INT UNSIGNED NOT NULL,
   channel ENUM('EMAIL','SMS','WHATSAPP') NOT NULL,
   to_address VARCHAR(255) NOT NULL,
   payload_json JSON NOT NULL,
@@ -251,8 +251,8 @@ CREATE TABLE notifications_outbox (
 
 CREATE TABLE whatsapp_template_map (
   id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
-  doctor_id BIGINT UNSIGNED NOT NULL,
-  reminder_template_id BIGINT UNSIGNED NOT NULL,
+  doctor_id INT UNSIGNED NOT NULL,
+  reminder_template_id INT UNSIGNED NOT NULL,
   template_name VARCHAR(120) NOT NULL,
   language_code VARCHAR(10) NOT NULL DEFAULT 'fr',
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
