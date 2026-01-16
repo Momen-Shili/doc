@@ -42,7 +42,6 @@ $payment = $payment ?? [];
         <table>
             <tr><td class="label">Date de paiement</td><td><?= e($payment['received_at'] ?? '') ?></td></tr>
             <tr><td class="label">Montant</td><td><?= e(format_tnd($payment['amount'] ?? 0)) ?></td></tr>
-            <tr><td class="label">Référence</td><td><?= e($payment['reference'] ?? '') ?></td></tr>
             <tr><td class="label">Notes</td><td><?= e($payment['notes'] ?? '') ?></td></tr>
         </table>
 

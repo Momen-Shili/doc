@@ -8,7 +8,7 @@ $momBy = $mom['by'] ?? 'total';
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="text-lg font-semibold text-white">Rapports</h1>
-            <p class="text-sm text-slate-400">Analyse du chiffre d'affaires en espèces.</p>
+            <p class="text-sm text-slate-400">Analyse du chiffre d'affaires en espÃ¨ces.</p>
         </div>
         <div class="flex flex-wrap gap-2">
             <a class="inline-flex items-center rounded-md bg-slate-800 px-3 py-2 text-sm font-semibold text-slate-100 ring-1 ring-white/10 hover:bg-slate-700" href="?r=reports-export&from=<?= e($from) ?>&to=<?= e($to) ?>">Exporter paiements CSV</a>
@@ -18,7 +18,7 @@ $momBy = $mom['by'] ?? 'total';
 </div>
 
 <div class="mt-6 rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
-    <h2 class="text-base font-semibold text-white">Filtrer la période</h2>
+    <h2 class="text-base font-semibold text-white">Filtrer la pÃ©riode</h2>
     <form method="get" class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:items-end">
         <input type="hidden" name="r" value="reports" />
         <div>
@@ -44,7 +44,7 @@ $momBy = $mom['by'] ?? 'total';
         <dl>
             <dt class="text-xs uppercase tracking-wide text-slate-400">Chiffre d'affaires</dt>
             <dd class="mt-2 text-lg font-semibold text-white"><?= e(format_tnd($total)) ?></dd>
-            <dd class="mt-1 text-xs text-slate-400">Période : <?= e($from) ?> à <?= e($to) ?></dd>
+            <dd class="mt-1 text-xs text-slate-400">PÃ©riode : <?= e($from) ?> Ã  <?= e($to) ?></dd>
         </dl>
     </div>
 </div>
@@ -53,7 +53,7 @@ $momBy = $mom['by'] ?? 'total';
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h2 class="text-base font-semibold text-white">Comparaison MoM</h2>
-            <p class="mt-1 text-sm text-slate-400">Comparaison du cash sur deux périodes équivalentes.</p>
+            <p class="mt-1 text-sm text-slate-400">Comparaison du cash sur deux pÃ©riodes Ã©quivalentes.</p>
         </div>
         <a class="inline-flex items-center rounded-md bg-slate-800 px-3 py-2 text-sm font-semibold text-slate-100 ring-1 ring-white/10 hover:bg-slate-700" href="?r=reports-mom-export&mom_from=<?= e($mom['from'] ?? $from) ?>&mom_to=<?= e($mom['to'] ?? $to) ?>&mom_mode=<?= e($momMode) ?>&mom_by=<?= e($momBy) ?>">Exporter MoM CSV</a>
     </div>
@@ -73,7 +73,7 @@ $momBy = $mom['by'] ?? 'total';
     <form method="get" class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-12">
         <input type="hidden" name="r" value="reports" />
         <div class="lg:col-span-3">
-            <label for="mom-from" class="block text-sm font-medium text-slate-200">Début</label>
+            <label for="mom-from" class="block text-sm font-medium text-slate-200">DÃ©but</label>
             <div class="mt-2">
                 <input id="mom-from" type="date" name="mom_from" value="<?= e($mom['from'] ?? $from) ?>" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
             </div>
@@ -89,11 +89,11 @@ $momBy = $mom['by'] ?? 'total';
             <div class="mt-2 flex flex-col gap-2">
                 <label class="flex items-center gap-2 text-sm text-slate-300">
                     <input type="radio" name="mom_mode" value="previous" class="h-4 w-4 text-indigo-500 focus:ring-indigo-500" <?= $momMode === 'previous' ? 'checked' : '' ?> />
-                    Période précédente (même durée)
+                    PÃ©riode prÃ©cÃ©dente (mÃªme durÃ©e)
                 </label>
                 <label class="flex items-center gap-2 text-sm text-slate-300">
                     <input type="radio" name="mom_mode" value="same_days" class="h-4 w-4 text-indigo-500 focus:ring-indigo-500" <?= $momMode === 'same_days' ? 'checked' : '' ?> />
-                    Mêmes jours du mois précédent
+                    MÃªmes jours du mois prÃ©cÃ©dent
                 </label>
             </div>
         </fieldset>
@@ -114,22 +114,22 @@ $momBy = $mom['by'] ?? 'total';
     <?php if (empty($mom['error'])): ?>
         <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <div class="rounded-2xl bg-slate-900/60 p-4 ring-1 ring-white/10">
-                <p class="text-xs uppercase tracking-wide text-slate-400">Total période actuelle</p>
+                <p class="text-xs uppercase tracking-wide text-slate-400">Total pÃ©riode actuelle</p>
                 <p class="mt-2 text-lg font-semibold text-white"><?= e(format_tnd($mom['current']['total'] ?? 0)) ?></p>
-                <p class="mt-1 text-xs text-slate-400"><?= e($mom['current']['start'] ?? '') ?> à <?= e($mom['current']['end'] ?? '') ?></p>
+                <p class="mt-1 text-xs text-slate-400"><?= e($mom['current']['start'] ?? '') ?> Ã  <?= e($mom['current']['end'] ?? '') ?></p>
             </div>
             <div class="rounded-2xl bg-slate-900/60 p-4 ring-1 ring-white/10">
                 <p class="text-xs uppercase tracking-wide text-slate-400">Total comparaison</p>
                 <p class="mt-2 text-lg font-semibold text-white"><?= e(format_tnd($mom['prev']['total'] ?? 0)) ?></p>
-                <p class="mt-1 text-xs text-slate-400"><?= e($mom['prev']['start'] ?? '') ?> à <?= e($mom['prev']['end'] ?? '') ?></p>
+                <p class="mt-1 text-xs text-slate-400"><?= e($mom['prev']['start'] ?? '') ?> Ã  <?= e($mom['prev']['end'] ?? '') ?></p>
             </div>
             <div class="rounded-2xl bg-slate-900/60 p-4 ring-1 ring-white/10">
-                <p class="text-xs uppercase tracking-wide text-slate-400">? valeur</p>
+                <p class="text-xs uppercase tracking-wide text-slate-400">Ã‰cart valeur</p>
                 <p class="mt-2 text-lg font-semibold text-white"><?= e(format_tnd($mom['delta']['value'] ?? 0)) ?></p>
                 <p class="mt-1 text-xs text-slate-400">
-                    ? % :
+                    Ã‰cart % :
                     <?php if (($mom['delta']['percent'] ?? null) === null): ?>
-                        —
+                        â€“
                     <?php else: ?>
                         <?= e(number_format($mom['delta']['percent'], 1, ',', ' ')) ?> %
                     <?php endif; ?>
@@ -154,13 +154,13 @@ $momBy = $mom['by'] ?? 'total';
                         <th class="px-3 py-2 text-left" scope="col">Date</th>
                         <th class="px-3 py-2 text-left" scope="col">Total actuel</th>
                         <th class="px-3 py-2 text-left" scope="col">Total comparaison</th>
-                        <th class="px-3 py-2 text-left" scope="col">?</th>
+                        <th class="px-3 py-2 text-left" scope="col">Ã‰cart</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-white/5">
                     <?php if (empty($mom['rows'])): ?>
                         <tr>
-                            <td colspan="4" class="px-3 py-6 text-center text-sm text-slate-400">Aucune donnée pour la période.</td>
+                            <td colspan="4" class="px-3 py-6 text-center text-sm text-slate-400">Aucune donnÃ©e pour la pÃ©riode.</td>
                         </tr>
                     <?php else: ?>
                         <?php foreach ($mom['rows'] as $row): ?>
@@ -172,7 +172,7 @@ $momBy = $mom['by'] ?? 'total';
                                         <?= e(format_tnd($row['total_prev'])) ?>
                                         <span class="ml-2 text-xs text-slate-500">(<?= e($row['date_prev']) ?>)</span>
                                     <?php else: ?>
-                                        <span class="text-slate-500">—</span>
+                                        <span class="text-slate-500">â€“</span>
                                     <?php endif; ?>
                                 </td>
                                 <td class="px-3 py-2 text-slate-300"><?= e(format_tnd($row['diff'])) ?></td>
@@ -196,7 +196,7 @@ $momBy = $mom['by'] ?? 'total';
                                     <th class="px-3 py-2 text-left" scope="col">Service</th>
                                     <th class="px-3 py-2 text-left" scope="col">Total actuel</th>
                                     <th class="px-3 py-2 text-left" scope="col">Total comparaison</th>
-                                    <th class="px-3 py-2 text-left" scope="col">?</th>
+                                    <th class="px-3 py-2 text-left" scope="col">Ã‰cart</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-white/5">
@@ -221,7 +221,7 @@ $momBy = $mom['by'] ?? 'total';
     <h2 class="text-base font-semibold text-white">Chiffre d'affaires par patient</h2>
     <div class="mt-4">
         <?php if (!$byPatient): ?>
-            <p class="text-sm text-slate-400">Aucun paiement sur la période.</p>
+            <p class="text-sm text-slate-400">Aucun paiement sur la pÃ©riode.</p>
         <?php else: ?>
             <div class="-mx-3 overflow-x-auto">
                 <table class="min-w-full text-sm">
@@ -249,7 +249,7 @@ $momBy = $mom['by'] ?? 'total';
     <h2 class="text-base font-semibold text-white">Recettes par service</h2>
     <div class="mt-4">
         <?php if (empty($byService)): ?>
-            <p class="text-sm text-slate-400">Aucune recette sur la période.</p>
+            <p class="text-sm text-slate-400">Aucune recette sur la pÃ©riode.</p>
         <?php else: ?>
             <div class="-mx-3 overflow-x-auto">
                 <table class="min-w-full text-sm">

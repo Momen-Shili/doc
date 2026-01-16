@@ -13,7 +13,7 @@ ob_start();
                 <a class="text-sm font-semibold text-indigo-300 hover:text-indigo-200" href="?r=import-map">Retour au mapping</a>
             </div>
         <?php else: ?>
-            <p class="mt-4 text-sm text-slate-400">Validation réussie. Lancer l'import </p>
+            <p class="mt-4 text-sm text-slate-400">Validation rÃ©ussie. Lancer l'import </p>
             <form method="post" action="?r=import-run" class="mt-6">
                 <?= csrf_field()    ?>
                 <button class="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400">Importer</button>

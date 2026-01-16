@@ -1,4 +1,4 @@
-# Cabinet SaaS - Medecins independants
+﻿# Cabinet SaaS - Medecins independants
 
 ## Prerequis
 - PHP 8.2+
@@ -7,12 +7,15 @@
 ## Installation
 1. Creer la base de donnees et les tables :
    - Importer `db/schema.sql`
-   (Optionnel) Importer `db/seed.sql`
-   (Optionnel) Importer `db/seed_demo.sql`
+   - (Optionnel) Importer `db/seed.sql`
+   - (Optionnel) Importer `db/seed_demo.sql`
 
 2. Configurer l'environnement :
    - Copier `.env.example.php` vers `.env.php`
    - Modifier les identifiants MySQL
+   - Generer une cle APP_KEY :
+     `php -r "echo 'base64:' . base64_encode(random_bytes(32)) . PHP_EOL;"`
+   - Renseigner `app_key` dans `.env.php`
 
 3. Lancer le serveur PHP :
    - Dans le dossier racine :
@@ -21,10 +24,12 @@
 4. Acceder a l'application :
    - `http://localhost:8000`
 
-## Compte de demonstration (seed_demo) - Email : `demo@exemple.fr`
+## Compte de demonstration (seed_demo)
+- Email : `demo@exemple.fr`
 - Mot de passe : `demo1234`
 
-## Acces admin (seed) - URL : `http://localhost:8000/admin`
+## Acces admin (seed)
+- URL : `http://localhost:8000/admin`
 - Email : `admin@exemple.fr`
 - Mot de passe : `admin1234`
 
@@ -39,9 +44,21 @@
 - Paiements : especes uniquement.
 - Chiffre d'affaires base uniquement sur `payments`.
 - Devise : TND (3 decimales, millimes).
+- Notifications reelles : file d'attente + worker CLI (pas d'envoi direct).
 
 ## Nouvelles tables
-- `clinical_notes` (notes cliniques) - `tags` + `patient_tags` (tags patients) - `documents` (documents patients) - `reminder_templates` (modeles de rappels) - `reminders_log` (journal des rappels) - `doctor_notification_settings` (parametres notifications) - `notifications_outbox` (file d'envoi) - `whatsapp_template_map` (mapping templates WA) - `cash_closures` (clotures de caisse) - `services` (catalogue des services) - `appointment_services` (liaisons rendez-vous/services) - `payment_items` (details des paiements)
+- `clinical_notes` (notes cliniques)
+- `tags` + `patient_tags` (tags patients)
+- `documents` (documents patients)
+- `reminder_templates` (modeles de rappels)
+- `reminders_log` (journal des rappels)
+- `doctor_notification_settings` (parametres notifications)
+- `notifications_outbox` (file d'envoi)
+- `whatsapp_template_map` (mapping templates WhatsApp)
+- `cash_closures` (clotures de caisse)
+- `services` (catalogue des services)
+- `appointment_services` (liaisons rendez-vous/services)
+- `payment_items` (details des paiements)
 
 ## Migration manuelle (DB existante)
 ```
@@ -201,21 +218,25 @@ CREATE TABLE whatsapp_template_map (
 - Erreurs applicatives : `storage/logs/app.log`
 
 ## Notifications (Email/SMS/WhatsApp)
-- Generez une cle APP_KEY:
-  `php -r "echo 'base64:' . base64_encode(random_bytes(32)) . PHP_EOL;"`
-- Renseignez `app_key` dans `.env.php`.
-- SMTP: utilisez un mot de passe d'application si necessaire (Gmail/Outlook).
-- Infobip: Base URL + API Key + Sender SMS + Sender WhatsApp.
-- WhatsApp: associez un template Infobip a chaque modele (dans les modeles de rappels).
+- Reglages: `?r=notifications-settings`
+- SMS/WhatsApp: Infobip (`https://6zjpx5.api.infobip.com`)
+- Email: SMTP personnel du medecin
+- WhatsApp: associer un template Infobip dans les modeles de rappels
 - Envoi via worker:
   `php tools/worker_send_notifications.php`
+- Consentements:
+  - Email: patient.email + consent_email = 1
+  - SMS: patient.phone + consent_sms = 1
+  - WhatsApp: patient.whatsapp_phone (ou phone) + consent_whatsapp = 1
 
-## Checklist tests (manuel) - Creer un service, verifier l'affichage dans la liste.
+## Checklist tests (manuel)
+- Creer un service, verifier l'affichage dans la liste.
 - Creer un rendez-vous avec services et valider le total et la duree suggeres.
 - Enregistrer un paiement avec "Detailler le paiement" et verifier les lignes.
 - Verifier les recettes par service et l'export CSV.
 
-## UI audit (kit sombre) - app/views/admin/layout.php
+## UI audit (kit sombre)
+- app/views/admin/layout.php
 - app/views/admin/partials/sidebar.php
 - app/views/admin/partials/topbar.php
 - app/views/admin/pages/dashboard.php
@@ -248,7 +269,8 @@ CREATE TABLE whatsapp_template_map (
 - app/views/pages/cash/closure_print.php
 - app/views/pages/error.php
 
-## Recette manuelle UI (10 min) - Connexion
+## Recette manuelle UI (10 min)
+- Connexion
 - Dashboard
 - Patients -> fiche patient -> notes/documents/tags
 - Services -> creer service
@@ -257,18 +279,14 @@ CREATE TABLE whatsapp_template_map (
 - Rapports -> recettes par service + export
 - Caisse -> cloture + impression
 
-## Checklist accessibilite (5 min) - Navigation clavier : Tab/Shift+Tab depuis sidebar -> topbar -> contenu
+## Checklist accessibilite (5 min)
+- Navigation clavier : Tab/Shift+Tab depuis sidebar -> topbar -> contenu
 - Focus visible : boutons, liens, champs, onglets, drawer et modals
 - Modals/drawers : focus initial, piege de tabulation, ESC pour fermer, focus retour
-- Formulaires : labels associes, erreurs annoncees (role="alert" / aria-describedby) - Tableaux : entetes <th scope="col">, actions lisibles, etats vides clairs
+- Formulaires : labels associes, erreurs annoncees (role="alert" / aria-describedby)
+- Tableaux : entetes <th scope="col">, actions lisibles, etats vides clairs
 
 ## Checklist notifications (5 min)
 - Configurer SMTP -> envoyer un test -> lancer le worker -> statut SENT
 - Configurer Infobip -> envoyer SMS test -> worker -> external_id present
 - Associer template WhatsApp -> test WhatsApp -> worker -> statut SENT
-
-## Checklist theme (5 min)
-- Medecin : bascule mode clair/sombre -> refresh -> persistance
-- Admin : bascule mode clair/sombre -> refresh -> persistance
-- Verifier Dashboard, Patients, RDV, Paiements + recus, Caisse, Rapports, Import CSV, Rappels, Services
-- Impression recu/cloture lisible en clair

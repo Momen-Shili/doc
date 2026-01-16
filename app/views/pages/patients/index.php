@@ -19,7 +19,7 @@ $totalPages = (int)ceil($total / $perPage);
         <div class="sm:flex-1">
             <label for="patients-search" class="block text-sm font-medium text-slate-200">Recherche</label>
             <div class="mt-2">
-                <input id="patients-search" type="text" name="q" value="<?= e($q)    ?>" placeholder="Nom, email ou téléphone" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
+                <input id="patients-search" type="text" name="q" value="<?= e($q)    ?>" placeholder="Nom, email ou tÃ©lÃ©phone" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
             </div>
         </div>
         <button class="inline-flex items-center justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400">Rechercher</button>
@@ -32,7 +32,7 @@ $totalPages = (int)ceil($total / $perPage);
             <thead class="text-xs uppercase text-slate-400">
                 <tr>
                     <th class="px-3 py-2 text-left" scope="col">Nom</th>
-                    <th class="px-3 py-2 text-left" scope="col">Téléphone</th>
+                    <th class="px-3 py-2 text-left" scope="col">TÃ©lÃ©phone</th>
                     <th class="px-3 py-2 text-left" scope="col">Email</th>
                     <th class="px-3 py-2 text-right" scope="col">Actions</th>
                 </tr>
@@ -40,7 +40,7 @@ $totalPages = (int)ceil($total / $perPage);
             <tbody class="divide-y divide-white/5">
                 <?php if (!$patients): ?>
                     <tr>
-                        <td colspan="4" class="px-3 py-6 text-center text-sm text-slate-400">Aucun patient trouvé.</td>
+                        <td colspan="4" class="px-3 py-6 text-center text-sm text-slate-400">Aucun patient trouvÃ©.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($patients as $patient): ?>

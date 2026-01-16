@@ -6,7 +6,7 @@ $hasError = !empty($error);
 <div class="w-full max-w-md">
     <div class="rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
         <h1 class="text-lg font-semibold text-white">Connexion admin</h1>
-        <p class="mt-1 text-sm text-slate-400">Accédez à l'administration de la plateforme.</p>
+        <p class="mt-1 text-sm text-slate-400">AccÃ©dez Ã  l'administration de la plateforme.</p>
 
         <?php if ($hasError): ?>
             <div id="admin-login-error" class="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200" role="alert">

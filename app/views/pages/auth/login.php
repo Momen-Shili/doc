@@ -5,8 +5,8 @@ $hasError = !empty($error);
 ?>
 <div class="w-full max-w-md">
     <div class="rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
-        <h1 class="text-lg font-semibold text-white">Connexion médecin</h1>
-        <p class="mt-1 text-sm text-slate-400">Accédez à votre espace sécurisé.</p>
+        <h1 class="text-lg font-semibold text-white">Connexion mÃ©decin</h1>
+        <p class="mt-1 text-sm text-slate-400">AccÃ©dez Ã  votre espace sÃ©curisÃ©.</p>
 
         <?php if ($hasError): ?>
             <div id="login-error" class="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200" role="alert">
@@ -32,7 +32,7 @@ $hasError = !empty($error);
         </form>
 
         <p class="mt-6 text-sm text-slate-400">
-            Pas de compte ? <a class="font-semibold text-indigo-300 hover:text-indigo-200" href="?r=register">Créer un compte</a>
+            Pas de compte ? <a class="font-semibold text-indigo-300 hover:text-indigo-200" href="?r=register">CrÃ©er un compte</a>
         </p>
     </div>
 </div>

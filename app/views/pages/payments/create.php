@@ -5,8 +5,8 @@ $hasErrors = !empty($errors);
 ?>
 <div class="max-w-2xl">
     <div class="rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
-        <h1 class="text-lg font-semibold text-white">Ajouter un paiement (espèces)</h1>
-        <p class="mt-1 text-sm text-slate-400">Enregistrer un paiement reçu.</p>
+        <h1 class="text-lg font-semibold text-white">Ajouter un paiement (espÃ¨ces)</h1>
+        <p class="mt-1 text-sm text-slate-400">Enregistrer un paiement reÃ§u.</p>
 
         <?php if ($hasErrors): ?>
             <div id="payment-create-error" class="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200" role="alert">
@@ -20,7 +20,7 @@ $hasErrors = !empty($errors);
                 <label for="payment-patient" class="block text-sm font-medium text-slate-200">Patient <span class="text-rose-400">*</span></label>
                 <div class="mt-2">
                     <select id="payment-patient" name="patient_id" required <?= $hasErrors ? 'aria-describedby="payment-create-error"' : ''    ?> class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500">
-                        <option value="">Sélectionner</option>
+                        <option value="">SÃ©lectionner</option>
                         <?php foreach ($patients as $p): ?>
                             <option value="<?= e($p['id'])    ?>" <?= (int)old('patient_id') === (int)$p['id'] ? 'selected' : ''    ?>><?= e($p['full_name'])    ?></option>
                         <?php endforeach; ?>
@@ -38,7 +38,7 @@ $hasErrors = !empty($errors);
                     </select>
                 </div>
                 <?php if (!empty($appointmentServices)): ?>
-                    <p class="mt-2 text-xs text-slate-400">Total suggéré: <?= e(format_tnd($appointmentSummary['total_price'] ?? 0))    ?></p>
+                    <p class="mt-2 text-xs text-slate-400">Total suggÃ©rÃ©: <?= e(format_tnd($appointmentSummary['total_price'] ?? 0))    ?></p>
                 <?php endif; ?>
             </div>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -75,15 +75,15 @@ $hasErrors = !empty($errors);
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
-                <p class="mt-2 text-xs text-slate-400">Quantité 0 pour exclure.</p>
-                <p class="mt-2 text-xs text-slate-400">Total suggéré: <span id="payment-service-total">0,000 TND</span></p>
+                <p class="mt-2 text-xs text-slate-400">Quantitï¿½ 0 pour exclure.</p>
+                <p class="mt-2 text-xs text-slate-400">Total suggï¿½rï¿½: <span id="payment-service-total">0,000 TND</span></p>
                 <label class="mt-3 flex items-center gap-2 text-sm text-slate-200">
                     <input type="checkbox" name="detail_items" class="rounded border-slate-600 bg-slate-900 text-indigo-500 focus:ring-indigo-500" />
-                    Détailler le paiement
+                    Dï¿½tailler le paiement
                 </label>
             </div>
             <div>
-                <label for="payment-reference" class="block text-sm font-medium text-slate-200">Référence (optionnel)</label>
+                <label for="payment-reference" class="block text-sm font-medium text-slate-200">Rï¿½fï¿½rence (optionnel)</label>
                 <div class="mt-2">
                     <input id="payment-reference" type="text" name="reference" value="<?= e(old('reference'))    ?>" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
                 </div>

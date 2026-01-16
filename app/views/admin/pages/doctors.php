@@ -1,10 +1,10 @@
 <?php
-$title = 'Médecins';
+$title = 'MÃ©decins';
 ob_start();
 ?>
 <div class="rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
-    <h1 class="text-lg font-semibold text-white">Médecins</h1>
-    <p class="mt-1 text-sm text-slate-400">Gestion des comptes médecins.</p>
+    <h1 class="text-lg font-semibold text-white">MÃ©decins</h1>
+    <p class="mt-1 text-sm text-slate-400">Gestion des comptes mÃ©decins.</p>
 </div>
 
 <div class="mt-6 rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
@@ -22,7 +22,7 @@ ob_start();
             <tbody class="divide-y divide-white/5">
                 <?php if (!$doctors): ?>
                     <tr>
-                        <td colspan="5" class="px-3 py-6 text-center text-sm text-slate-400">Aucun médecin.</td>
+                        <td colspan="5" class="px-3 py-6 text-center text-sm text-slate-400">Aucun mÃ©decin.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($doctors as $doc): ?>
@@ -48,7 +48,7 @@ ob_start();
                                         <button class="text-emerald-300 hover:text-emerald-200">Activer</button>
                                     </form>
                                 <?php else: ?>
-                                    <form method="post" action="?r=doctor-toggle" class="inline" onsubmit="return confirm('Suspendre ce médecin ?');">
+                                    <form method="post" action="?r=doctor-toggle" class="inline" onsubmit="return confirm('Suspendre ce mÃ©decin ?');">
                                         <?= csrf_field()    ?>
                                         <input type="hidden" name="id" value="<?= e($doc['id'])    ?>" />
                                         <input type="hidden" name="action" value="suspend" />

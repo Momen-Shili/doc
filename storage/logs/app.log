@@ -97,3 +97,14 @@
 [2026-01-16 10:16:38] Uncaught Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'theme_preference' in 'field list'
 [2026-01-16 10:16:41] Uncaught Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'theme_preference' in 'field list'
 [2026-01-16 10:16:46] Uncaught Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'theme_preference' in 'field list'
+[2026-01-16 15:09:27] Uncaught Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.whatsapp_phone' in 'field list'
+[2026-01-16 15:09:29] Uncaught Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.whatsapp_phone' in 'field list'
+[2026-01-16 15:09:30] Uncaught Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.whatsapp_phone' in 'field list'
+[2026-01-16 15:09:31] Uncaught Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.whatsapp_phone' in 'field list'
+[2026-01-16 15:09:32] Uncaught Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.whatsapp_phone' in 'field list'
+[2026-01-16 15:09:37] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.doctor_notification_settings' doesn't exist
+[2026-01-16 15:09:40] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.doctor_notification_settings' doesn't exist
+[2026-01-16 15:09:41] Uncaught Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.whatsapp_phone' in 'field list'
+[2026-01-16 15:14:11] Uncaught Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.whatsapp_phone' in 'field list'
+[2026-01-16 15:14:17] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.whatsapp_template_map' doesn't exist
+[2026-01-16 15:15:48] Uncaught Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.whatsapp_phone' in 'field list'

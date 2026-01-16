@@ -5,15 +5,15 @@ ob_start();
 <div class="rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h1 class="text-lg font-semibold text-white">Paiements (Espèces)</h1>
-            <p class="mt-1 text-sm text-slate-400">Paiements reçus en espèces uniquement.</p>
+            <h1 class="text-lg font-semibold text-white">Paiements (EspÃ¨ces)</h1>
+            <p class="mt-1 text-sm text-slate-400">Paiements reÃ§us en espÃ¨ces uniquement.</p>
         </div>
         <a class="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400" href="?r=payments-create">Ajouter un paiement</a>
     </div>
 </div>
 
 <div class="mt-6 rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
-    <h2 class="text-base font-semibold text-white">Filtrer la période</h2>
+    <h2 class="text-base font-semibold text-white">Filtrer la pÃ©riode</h2>
     <form method="get" class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-3 sm:items-end">
         <input type="hidden" name="r" value="payments" />
         <div>
@@ -42,7 +42,7 @@ ob_start();
                     <th class="px-3 py-2 text-left" scope="col">Date</th>
                     <th class="px-3 py-2 text-left" scope="col">Patient</th>
                     <th class="px-3 py-2 text-left" scope="col">Montant</th>
-                    <th class="px-3 py-2 text-left" scope="col">Reçu</th>
+                    <th class="px-3 py-2 text-left" scope="col">ReÃ§u</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-white/5">
@@ -58,7 +58,7 @@ ob_start();
                             <td class="px-3 py-3 text-slate-300"><?= e(format_tnd($payment['amount']))    ?></td>
                             <td class="px-3 py-3 text-slate-300">
                                 <?php if (!empty($payment['receipt_number'])): ?>
-                                    <a class="text-indigo-300 hover:text-indigo-200" href="?r=payments-receipt&id=<?= e($payment['id'])    ?>">Imprimer reçu</a>
+                                    <a class="text-indigo-300 hover:text-indigo-200" href="?r=payments-receipt&id=<?= e($payment['id'])    ?>">Imprimer reÃ§u</a>
                                 <?php else: ?>
                                     <span class="text-slate-500"></span>
                                 <?php endif; ?>
@@ -69,7 +69,7 @@ ob_start();
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="2" class="px-3 py-3 text-sm font-semibold text-slate-100">Total période</td>
+                    <td colspan="2" class="px-3 py-3 text-sm font-semibold text-slate-100">Total pÃ©riode</td>
                     <td class="px-3 py-3 text-sm font-semibold text-slate-100"><?= e(format_tnd($total))    ?></td>
                     <td class="px-3 py-3"></td>
                 </tr>

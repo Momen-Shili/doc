@@ -6,7 +6,7 @@ $hasErrors = !empty($errors);
 <div class="max-w-2xl">
     <div class="rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
         <h1 class="text-lg font-semibold text-white">Modifier un patient</h1>
-        <p class="mt-1 text-sm text-slate-400">Mettez à jour les informations.</p>
+        <p class="mt-1 text-sm text-slate-400">Mettez Ã  jour les informations.</p>
 
         <?php if ($hasErrors): ?>
             <div id="patient-edit-error" class="mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 px-4 py-3 text-sm text-rose-200" role="alert">
@@ -24,7 +24,7 @@ $hasErrors = !empty($errors);
             </div>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                    <label for="patient-edit-phone" class="block text-sm font-medium text-slate-200">Téléphone</label>
+                    <label for="patient-edit-phone" class="block text-sm font-medium text-slate-200">TÃ©lÃ©phone</label>
                     <div class="mt-2">
                         <input id="patient-edit-phone" type="text" name="phone" value="<?= e($patient['phone'])    ?>" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
                     </div>
@@ -49,7 +49,7 @@ $hasErrors = !empty($errors);
                 </div>
             </div>
             <div class="flex items-center gap-3">
-                <button class="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400">Mettre à jour</button>
+                <button class="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400">Mettre Ã  jour</button>
                 <a class="text-sm font-semibold text-slate-300 hover:text-white" href="?r=patients">Annuler</a>
             </div>
         </form>

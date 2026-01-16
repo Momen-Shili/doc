@@ -229,6 +229,13 @@ select:disabled {
 .text-slate-500 { color: var(--text-muted) !important; }
 .text-white\/80 { color: color-mix(in srgb, var(--text) 80%, transparent) !important; }
 
+.bg-indigo-500 {
+  color: #ffffff !important;
+}
+.bg-indigo-500 * {
+  color: #ffffff !important;
+}
+
 .border-slate-800,
 .border-slate-700,
 .border-slate-600,

@@ -8,7 +8,7 @@ ob_start();
             <h1 class="text-lg font-semibold text-white">Services</h1>
             <p class="text-sm text-slate-400">Catalogue des actes et services.</p>
         </div>
-        <a class="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400" href="?r=services-create">Cr�er un service</a>
+        <a class="inline-flex items-center rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-400" href="?r=services-create">Créer un service</a>
     </div>
 </div>
 
@@ -21,7 +21,7 @@ ob_start();
                 <div class="flex flex-wrap items-center justify-between gap-4 rounded-xl bg-slate-800/70 p-4">
                     <div>
                         <p class="text-sm font-semibold text-white"><?= e($service['name'])    ?></p>
-                        <p class="text-xs text-slate-400">Prix: <?= e(format_tnd($service['default_price']))    ?> · Dur�e: <?= e($service['default_duration_minutes'])    ?> min</p>
+                        <p class="text-xs text-slate-400">Prix: <?= e(format_tnd($service['default_price']))    ?> · Durée: <?= e($service['default_duration_minutes'])    ?> min</p>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="rounded-md px-2 py-1 text-xs font-semibold <?= (int)$service['is_active'] === 1 ? 'bg-emerald-500/20 text-emerald-200' : 'bg-slate-700 text-slate-300' ?>">

@@ -24,7 +24,7 @@ $hasErrors = !empty($errors);
             </div>
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
                 <div>
-                    <label for="patient-phone" class="block text-sm font-medium text-slate-200">Téléphone</label>
+                    <label for="patient-phone" class="block text-sm font-medium text-slate-200">TÃ©lÃ©phone</label>
                     <div class="mt-2">
                         <input id="patient-phone" type="text" name="phone" value="<?= e(old('phone'))    ?>" class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
                     </div>
