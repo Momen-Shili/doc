@@ -117,3 +117,4 @@
 [2026-01-16 16:06:12] Uncaught Exception: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
 [2026-01-16 16:36:28] Uncaught Exception: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in D:\XAMPP\htdocs\doc\app\controllers\admin_auth_controller.php:22
 [2026-01-16 16:36:58] Uncaught Exception: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in D:\XAMPP\htdocs\doc\app\controllers\admin_auth_controller.php:22
+[2026-01-16 17:02:41] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.doctor_notification_settings' doesn't exist in D:\XAMPP\htdocs\doc\app\controllers\notifications_controller.php:239
