@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 function admin_login(): void {
     require_admin_guest();
     $error = null;
@@ -18,18 +18,18 @@ function admin_login(): void {
         if ($email === '' || $password === '') {
             $error = 'Email et mot de passe requis.';
         } else {
-            $stmt = db()->prepare('SELECT id, password_hash, is_active FROM admins WHERE email = ');
+            $stmt = db()->prepare('SELECT id, password_hash, is_active FROM admins WHERE email = ?');
             $stmt->execute([$email]);
             $admin = $stmt->fetch();
             if (!$admin || !password_verify($password, $admin['password_hash'])) {
                 $error = 'Identifiants invalides.';
                 rate_limit_register('admin_login');
             } elseif ((int)$admin['is_active'] !== 1) {
-                $error = 'Compte dsactiv.';
+                $error = 'Compte désactivé.';
             } else {
                 rate_limit_clear('admin_login');
                 login_admin((int)$admin['id']);
-                redirect('r=dashboard');
+                redirect('?r=dashboard');
             }
         }
     }
@@ -39,5 +39,5 @@ function admin_login(): void {
 
 function admin_logout(): void {
     logout_admin();
-    redirect('r=login');
+    redirect('?r=login');
 }

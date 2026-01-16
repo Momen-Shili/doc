@@ -108,3 +108,12 @@
 [2026-01-16 15:14:11] Uncaught Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.whatsapp_phone' in 'field list'
 [2026-01-16 15:14:17] Uncaught Exception: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'doctor_saas.whatsapp_template_map' doesn't exist
 [2026-01-16 15:15:48] Uncaught Exception: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'p.whatsapp_phone' in 'field list'
+[2026-01-16 15:57:10] Uncaught Exception: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+[2026-01-16 15:57:43] Uncaught Exception: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+[2026-01-16 15:58:21] Uncaught Exception: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+[2026-01-16 16:00:14] Uncaught Exception: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+[2026-01-16 16:00:49] Uncaught Exception: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+[2026-01-16 16:05:58] Uncaught Exception: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+[2026-01-16 16:06:12] Uncaught Exception: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+[2026-01-16 16:36:28] Uncaught Exception: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in D:\XAMPP\htdocs\doc\app\controllers\admin_auth_controller.php:22
+[2026-01-16 16:36:58] Uncaught Exception: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens in D:\XAMPP\htdocs\doc\app\controllers\admin_auth_controller.php:22

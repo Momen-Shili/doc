@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 function admin_settings(): void {
     require_admin_auth();
     $errors = [];
@@ -20,8 +20,8 @@ function admin_settings(): void {
         if (!$errors) {
             save_setting('app_name', $appName);
             save_setting('support_email', $supportEmail);
-            flash('success', 'Paramètres mis à jour.');
-            redirect('r=settings');
+            flash('success', 'ParamÃ¨tres mis Ã  jour.');
+            redirect('?r=settings');
         }
         $settings['app_name'] = $appName;
         $settings['support_email'] = $supportEmail;
@@ -41,6 +41,6 @@ function load_settings(): array {
 }
 
 function save_setting(string $key, string $value): void {
-    $stmt = db()->prepare('INSERT INTO platform_settings (setting_key, setting_value) VALUES (, ) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value) ');
+    $stmt = db()->prepare('INSERT INTO platform_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)');
     $stmt->execute([$key, $value]);
 }

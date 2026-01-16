@@ -20,7 +20,7 @@ set_error_handler(function ($severity, $message, $file, $line) {
 });
 
 set_exception_handler(function ($ex) {
-    log_error('Uncaught Exception: ' . $ex->getMessage());
+    log_error('Uncaught Exception: ' . $ex->getMessage() . ' in ' . $ex->getFile() . ':' . $ex->getLine());
     http_response_code(500);
     echo render('pages/error.php', ['message' => 'Erreur interne.']);
 });
