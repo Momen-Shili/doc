@@ -45,6 +45,7 @@
 - Chiffre d'affaires base uniquement sur `payments`.
 - Devise : TND (3 decimales, millimes).
 - Notifications reelles : file d'attente + worker CLI (pas d'envoi direct).
+- Calendrier du dashboard : rafraichissement automatique toutes les 30 secondes (polling).
 
 ## Nouvelles tables
 - `clinical_notes` (notes cliniques)

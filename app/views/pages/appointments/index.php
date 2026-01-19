@@ -67,7 +67,7 @@ $statuses = ['PLANIFIE','CONFIRME','TERMINE','ANNULE','NO_SHOW'];
                             <td class="px-3 py-3 text-right text-sm font-semibold">
                                 <a class="text-indigo-300 hover:text-indigo-200" href="?r=appointments-edit&id=<?= e($appt['id'])    ?>">Modifier</a>
                                 <?php if ($appt['status'] !== 'ANNULE'): ?>
-                                    <form method="post" action="?r=appointments-cancel" class="inline" onsubmit="return confirm('Annuler ce rendez-vous ?');">
+                                    <form method="post" action="?r=appointments-cancel" class="inline" onsubmit="localStorage.setItem('calendarRefresh','1'); return confirm('Annuler ce rendez-vous ?');">
                                         <?= csrf_field()    ?>
                                         <input type="hidden" name="id" value="<?= e($appt['id'])    ?>" />
                                         <button class="ml-3 text-rose-300 hover:text-rose-200">Annuler</button>

@@ -130,3 +130,11 @@ function updateServiceSummary() {
 }
 updateServiceSummary();
 </script>
+<script>
+var createForm = document.querySelector('form[action*="appointments-create"]');
+if (createForm) {
+    createForm.addEventListener('submit', function () {
+        localStorage.setItem('calendarRefresh', '1');
+    });
+}
+</script>

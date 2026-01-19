@@ -134,3 +134,11 @@ function updateServiceSummary() {
 }
 updateServiceSummary();
 </script>
+<script>
+var editForm = document.querySelector('form[action*="appointments-edit"]');
+if (editForm) {
+    editForm.addEventListener('submit', function () {
+        localStorage.setItem('calendarRefresh', '1');
+    });
+}
+</script>

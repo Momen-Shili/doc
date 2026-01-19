@@ -33,6 +33,22 @@ html[data-theme="dark"] {
   --info: #38bdf8;
   --info-soft: rgba(56, 189, 248, 0.2);
 
+  --accent-1: #6366f1;
+  --accent-1-soft: rgba(99, 102, 241, 0.2);
+  --accent-1-text: #c7d2fe;
+  --accent-2: #22d3ee;
+  --accent-2-soft: rgba(34, 211, 238, 0.2);
+  --accent-2-text: #bae6fd;
+  --accent-3: #f59e0b;
+  --accent-3-soft: rgba(245, 158, 11, 0.2);
+  --accent-3-text: #fde68a;
+  --accent-4: #f43f5e;
+  --accent-4-soft: rgba(244, 63, 94, 0.2);
+  --accent-4-text: #fecdd3;
+  --accent-5: #10b981;
+  --accent-5-soft: rgba(16, 185, 129, 0.2);
+  --accent-5-text: #bbf7d0;
+
   --input-bg: #0f172a;
   --input-text: #f8fafc;
   --input-border: #1e293b;
@@ -119,6 +135,22 @@ html[data-theme="light"] {
   --success-soft: rgba(5, 150, 105, 0.12);
   --info: #0284c7;
   --info-soft: rgba(2, 132, 199, 0.12);
+
+  --accent-1: #4f46e5;
+  --accent-1-soft: rgba(79, 70, 229, 0.12);
+  --accent-1-text: #312e81;
+  --accent-2: #0ea5e9;
+  --accent-2-soft: rgba(14, 165, 233, 0.12);
+  --accent-2-text: #0c4a6e;
+  --accent-3: #d97706;
+  --accent-3-soft: rgba(217, 119, 6, 0.12);
+  --accent-3-text: #92400e;
+  --accent-4: #e11d48;
+  --accent-4-soft: rgba(225, 29, 72, 0.12);
+  --accent-4-text: #9f1239;
+  --accent-5: #059669;
+  --accent-5-soft: rgba(5, 150, 105, 0.12);
+  --accent-5-text: #065f46;
 
   --input-bg: #ffffff;
   --input-text: #0f172a;
@@ -291,6 +323,31 @@ select:disabled {
 .hover\:text-amber-700:hover { color: var(--warning) !important; }
 
 .bg-black\/60 { background-color: var(--overlay) !important; }
+
+.bg-accent-1-soft { background-color: var(--accent-1-soft) !important; }
+.bg-accent-2-soft { background-color: var(--accent-2-soft) !important; }
+.bg-accent-3-soft { background-color: var(--accent-3-soft) !important; }
+.bg-accent-4-soft { background-color: var(--accent-4-soft) !important; }
+.bg-accent-5-soft { background-color: var(--accent-5-soft) !important; }
+
+.text-accent-1 { color: var(--accent-1-text) !important; }
+.text-accent-2 { color: var(--accent-2-text) !important; }
+.text-accent-3 { color: var(--accent-3-text) !important; }
+.text-accent-4 { color: var(--accent-4-text) !important; }
+.text-accent-5 { color: var(--accent-5-text) !important; }
+
+.status-scheduled { background-color: var(--status-scheduled-bg) !important; color: var(--status-scheduled-text) !important; }
+.status-confirmed { background-color: var(--status-confirmed-bg) !important; color: var(--status-confirmed-text) !important; }
+.status-completed { background-color: var(--status-completed-bg) !important; color: var(--status-completed-text) !important; }
+.status-cancelled { background-color: var(--status-cancelled-bg) !important; color: var(--status-cancelled-text) !important; }
+.status-noshow { background-color: var(--status-noshow-bg) !important; color: var(--status-noshow-text) !important; }
+
+.status-dot { width: 8px; height: 8px; border-radius: 9999px; display: inline-block; }
+.status-dot.status-scheduled { background-color: var(--status-scheduled-text) !important; }
+.status-dot.status-confirmed { background-color: var(--status-confirmed-text) !important; }
+.status-dot.status-completed { background-color: var(--status-completed-text) !important; }
+.status-dot.status-cancelled { background-color: var(--status-cancelled-text) !important; }
+.status-dot.status-noshow { background-color: var(--status-noshow-text) !important; }
 
 .from-indigo-600\/80 {
   --tw-gradient-from: color-mix(in srgb, var(--primary) 80%, transparent) !important;

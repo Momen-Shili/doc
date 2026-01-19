@@ -31,6 +31,12 @@ switch ($route) {
     case'dashboard':
         dashboard_index();
         break;
+    case'calendar-events-json':
+        calendar_events_json();
+        break;
+    case'calendar-event-json':
+        calendar_event_json();
+        break;
     case'patients':
         patients_index();
         break;
