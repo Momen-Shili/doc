@@ -4,6 +4,7 @@ require_once __DIR__ . '/controllers/auth_controller.php';
 require_once __DIR__ . '/controllers/dashboard_controller.php';
 require_once __DIR__ . '/controllers/patients_controller.php';
 require_once __DIR__ . '/controllers/appointments_controller.php';
+require_once __DIR__ . '/controllers/calendar_controller.php';
 require_once __DIR__ . '/controllers/payments_controller.php';
 require_once __DIR__ . '/controllers/cash_controller.php';
 require_once __DIR__ . '/controllers/reports_controller.php';
@@ -36,6 +37,24 @@ switch ($route) {
         break;
     case'calendar-day-agenda-json':
         calendar_day_agenda_json();
+        break;
+    case'patients-search-json':
+        patients_search_json();
+        break;
+    case'services-json':
+        services_json();
+        break;
+    case'calendar-event-create':
+        calendar_event_create();
+        break;
+    case'calendar-event-update':
+        calendar_event_update();
+        break;
+    case'calendar-event-delete':
+        calendar_event_delete();
+        break;
+    case'calendar-event-status':
+        calendar_event_status();
         break;
     case'calendar':
         calendar_page();

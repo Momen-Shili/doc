@@ -45,7 +45,7 @@
 - Chiffre d'affaires base uniquement sur `payments`.
 - Devise : TND (3 decimales, millimes).
 - Notifications reelles : file d'attente + worker CLI (pas d'envoi direct).
-- Calendrier du dashboard : rafraichissement automatique toutes les 30 secondes (polling).
+- Calendrier du dashboard : rafraichissement automatique toutes les 60 secondes (polling).
 
 ## Nouvelles tables
 - `clinical_notes` (notes cliniques)
@@ -229,6 +229,20 @@ CREATE TABLE whatsapp_template_map (
   - Email: patient.email + consent_email = 1
   - SMS: patient.phone + consent_sms = 1
   - WhatsApp: patient.whatsapp_phone (ou phone) + consent_whatsapp = 1
+
+## Calendrier (mini Google)
+- Page: `?r=calendar`
+- JSON:
+  - `?r=calendar-events-json&view=month|week|day&date=YYYY-MM-DD`
+  - `?r=calendar-event-json&id=ID`
+  - `?r=calendar-day-agenda-json&date=YYYY-MM-DD`
+  - `?r=patients-search-json&q=...`
+  - `?r=services-json`
+- POST (CSRF requis):
+  - `?r=calendar-event-create`
+  - `?r=calendar-event-update&id=ID`
+  - `?r=calendar-event-delete&id=ID`
+  - `?r=calendar-event-status&id=ID` (status=PLANIFIE|CONFIRME|TERMINE|ANNULE|NO_SHOW)
 
 ## Checklist tests (manuel)
 - Creer un service, verifier l'affichage dans la liste.
