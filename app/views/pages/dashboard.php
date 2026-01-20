@@ -562,16 +562,40 @@ function fetchCalendar() {
   setCalendarLoading(true);
   updateViewButtons();
   updateUrl();
-  fetch('?r=calendar-events-json&mode=' + encodeURIComponent(calendarState.mode) + '&date=' + encodeURIComponent(calendarState.date), {
-    headers: { 'Accept': 'application/json' }
+  var url = '?r=calendar-events-json&mode=' + encodeURIComponent(calendarState.mode) + '&date=' + encodeURIComponent(calendarState.date) + '&_=' + Date.now();
+  fetch(url, {
+    headers: { 'Accept': 'application/json' },
+    credentials: 'include',
+    cache: 'no-store'
   })
-    .then(function (res) { return res.json(); })
+    .then(function (res) {
+      if (!res.ok) {
+        if (res.status === 401 || res.status === 302) {
+          throw new Error('unauthorized');
+        }
+        throw new Error('badstatus');
+      }
+      return res.text().then(function (text) {
+        var trimmed = text.trim();
+        if (trimmed.startsWith('{')) {
+          return JSON.parse(trimmed);
+        }
+        if (res.redirected || trimmed.indexOf('Connexion') !== -1) {
+          throw new Error('unauthorized');
+        }
+        throw new Error('notjson');
+      });
+    })
     .then(function (data) {
       setCalendarLoading(false);
       renderCalendar(data || {});
     })
-    .catch(function () {
+    .catch(function (err) {
       setCalendarLoading(false);
+      if (err && err.message === 'unauthorized') {
+        setCalendarToast('Session expirée. Rechargez la page.');
+        return;
+      }
       setCalendarToast('Impossible de charger le calendrier. Réessayez.');
     });
 }

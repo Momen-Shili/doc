@@ -73,8 +73,13 @@ function dashboard_index(): void {
 }
 
 function calendar_events_json(): void {
-    require_auth();
     $doctor = auth_user();
+    header('Content-Type: application/json; charset=utf-8');
+    if (!$doctor) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Session expirée.'], JSON_UNESCAPED_UNICODE);
+        return;
+    }
     $today = date('Y-m-d');
     $mode = $_GET['mode'] ?? 'day';
     $date = $_GET['date'] ?? $today;
@@ -148,7 +153,6 @@ function calendar_events_json(): void {
         ];
     }
 
-    header('Content-Type: application/json; charset=utf-8');
     echo json_encode([
         'range' => ['start' => $rangeStart, 'end' => $rangeEnd],
         'now' => date('Y-m-d H:i:s'),
@@ -157,10 +161,14 @@ function calendar_events_json(): void {
 }
 
 function calendar_event_json(): void {
-    require_auth();
     $doctor = auth_user();
     $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     header('Content-Type: application/json; charset=utf-8');
+    if (!$doctor) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Session expirée.'], JSON_UNESCAPED_UNICODE);
+        return;
+    }
     if ($id <= 0) {
         http_response_code(404);
         echo json_encode(['error' => 'Rendez-vous introuvable.'], JSON_UNESCAPED_UNICODE);
