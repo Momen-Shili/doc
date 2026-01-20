@@ -38,7 +38,7 @@ $hasErrors = !empty($errors);
                 <div>
                     <label for="appointment-starts" class="block text-sm font-medium text-slate-200">Début <span class="text-rose-400">*</span></label>
                     <div class="mt-2">
-                        <input id="appointment-starts" type="datetime-local" name="starts_at" value="<?= e(old('starts_at')) ?>" required <?= $hasErrors ? 'aria-describedby="appointment-create-error"' : '' ?> class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
+                        <input id="appointment-starts" type="datetime-local" name="starts_at" value="<?= e(old('starts_at', $prefillStartsAt ?? '')) ?>" required <?= $hasErrors ? 'aria-describedby="appointment-create-error"' : '' ?> class="block w-full rounded-md border-0 bg-slate-800/70 px-3 py-2 text-sm text-white ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-indigo-500" />
                     </div>
                 </div>
                 <div>

@@ -349,6 +349,229 @@ select:disabled {
 .status-dot.status-cancelled { background-color: var(--status-cancelled-text) !important; }
 .status-dot.status-noshow { background-color: var(--status-noshow-text) !important; }
 
+.ui-calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--table-divider);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.ui-calendar-cell {
+  min-height: 96px;
+  background: var(--surface);
+  border: 1px solid transparent;
+  padding: 8px;
+  text-align: left;
+  color: var(--text);
+}
+
+.ui-calendar-cell:hover {
+  background: var(--surface-2);
+}
+
+.ui-calendar-cell.is-outside {
+  background: var(--surface-2);
+  color: var(--text-muted);
+}
+
+.ui-calendar-cell.is-today {
+  border-color: var(--primary);
+  box-shadow: inset 0 0 0 1px var(--primary);
+}
+
+.ui-calendar-cell.is-selected {
+  background: var(--primary-soft);
+  border-color: var(--primary);
+}
+
+.calendar-day-number {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.calendar-markers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.calendar-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  display: inline-block;
+}
+
+.calendar-more {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.ui-calendar-week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(140px, 1fr));
+  gap: 12px;
+  min-width: 980px;
+}
+
+.ui-calendar-week-day {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.calendar-week-title {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.calendar-week-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.calendar-week-item {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.calendar-week-time {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.calendar-week-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.calendar-week-empty {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--surface-2);
+}
+
+.ui-calendar-day-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.calendar-day-row {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 12px;
+  align-items: start;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 10px;
+  background: var(--surface);
+}
+
+.calendar-day-hour {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding-top: 6px;
+}
+
+.calendar-day-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.calendar-day-item {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  text-align: left;
+  display: grid;
+  gap: 6px;
+}
+
+.calendar-day-time {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.calendar-day-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.calendar-day-empty {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 12px;
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.calendar-day-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.calendar-day-pill {
+  padding: 6px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+
+.calendar-day-pill.is-active {
+  background: var(--primary-soft);
+  color: var(--text);
+  border-color: var(--primary);
+}
+
+.calendar-agenda-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  text-align: left;
+}
+
+.calendar-status-chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 9999px;
+}
+
 .from-indigo-600\/80 {
   --tw-gradient-from: color-mix(in srgb, var(--primary) 80%, transparent) !important;
   --tw-gradient-to: color-mix(in srgb, var(--primary) 0%, transparent) !important;

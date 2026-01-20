@@ -7,7 +7,7 @@ function dashboard_index(): void {
     $monthStart = date('Y-m-01');
     $weekStart = date('Y-m-d', strtotime('-6 days'));
 
-    $view = $_GET['view'] ?? 'day';
+    $view = $_GET['view'] ?? 'month';
     $date = $_GET['date'] ?? $today;
     $view = in_array($view, ['day', 'week', 'month'], true) ? $view : 'day';
     $stmt = db()->prepare('SELECT COALESCE(SUM(amount),0) AS total FROM payments WHERE doctor_id = ? AND DATE(received_at) = ?');
@@ -72,6 +72,19 @@ function dashboard_index(): void {
     ]);
 }
 
+function calendar_page(): void {
+    require_auth();
+    $doctor = auth_user();
+    $view = $_GET['view'] ?? 'month';
+    $date = $_GET['date'] ?? date('Y-m-d');
+    $view = in_array($view, ['day', 'week', 'month'], true) ? $view : 'month';
+    echo render('pages/calendar.php', [
+        'doctor' => $doctor,
+        'view' => $view,
+        'date' => $date,
+    ]);
+}
+
 function calendar_events_json(): void {
     $doctor = auth_user();
     header('Content-Type: application/json; charset=utf-8');
@@ -86,7 +99,8 @@ function calendar_events_json(): void {
     $mode = in_array($mode, ['day', 'week', 'month'], true) ? $mode : 'day';
     $dateTs = strtotime($date) ?: strtotime($today);
 
-    $rangeStart = date('Y-m-d', $dateTs);
+    $selectedDate = date('Y-m-d', $dateTs);
+    $rangeStart = $selectedDate;
     $rangeEnd = $rangeStart;
     if ($mode === 'week') {
         $rangeStart = date('Y-m-d', strtotime('monday this week', $dateTs));
@@ -108,16 +122,7 @@ function calendar_events_json(): void {
         $appointmentIds[] = (int)$appt['id'];
     }
 
-    $servicesByAppointment = [];
-    if ($appointmentIds) {
-        $placeholders = implode(',', array_fill(0, count($appointmentIds), '?'));
-        $params = array_merge([$doctor['id']], $appointmentIds);
-        $stmt = db()->prepare("SELECT aps.appointment_id, aps.qty, s.name, s.default_price FROM appointment_services aps JOIN services s ON s.id = aps.service_id WHERE s.doctor_id = ? AND aps.appointment_id IN ({$placeholders})");
-        $stmt->execute($params);
-        while ($row = $stmt->fetch()) {
-            $servicesByAppointment[(int)$row['appointment_id']][] = $row;
-        }
-    }
+    $servicesByAppointment = calendar_services_by_appointment($doctor['id'], $appointmentIds);
 
     $statusMap = [
         'PLANIFIE' => 'scheduled',
@@ -139,14 +144,17 @@ function calendar_events_json(): void {
         $statusKey = $statusMap[$appt['status']] ?? 'scheduled';
         $events[] = [
             'id' => (int)$appt['id'],
+            'date' => date('Y-m-d', strtotime($appt['starts_at'])),
             'patient_name' => $appt['patient_name'],
             'starts_at' => $appt['starts_at'],
             'ends_at' => $appt['ends_at'],
             'status' => $appt['status'],
             'status_label' => appointment_status_label($appt['status']),
+            'status_label_fr' => appointment_status_label_fr($appt['status']),
             'reason' => $appt['reason'],
             'notes' => $appt['notes'],
             'service_labels' => $labels,
+            'services' => implode(', ', $labels),
             'service_total' => $total,
             'service_total_formatted' => format_tnd($total),
             'color_token' => 'status-' . $statusKey,
@@ -154,7 +162,9 @@ function calendar_events_json(): void {
     }
 
     echo json_encode([
+        'mode' => $mode,
         'range' => ['start' => $rangeStart, 'end' => $rangeEnd],
+        'selected_date' => $selectedDate,
         'now' => date('Y-m-d H:i:s'),
         'events' => $events,
     ], JSON_UNESCAPED_UNICODE);
@@ -184,9 +194,7 @@ function calendar_event_json(): void {
         return;
     }
 
-    $stmt = db()->prepare('SELECT aps.qty, s.name, s.default_price FROM appointment_services aps JOIN services s ON s.id = aps.service_id WHERE s.doctor_id = ? AND aps.appointment_id = ?');
-    $stmt->execute([$doctor['id'], $id]);
-    $services = $stmt->fetchAll();
+    $services = calendar_services_for_appointment($doctor['id'], $id);
     $labels = [];
     $total = 0;
     foreach ($services as $srv) {
@@ -201,10 +209,95 @@ function calendar_event_json(): void {
         'ends_at' => $appt['ends_at'],
         'status' => $appt['status'],
         'status_label' => appointment_status_label($appt['status']),
+        'status_label_fr' => appointment_status_label_fr($appt['status']),
         'reason' => $appt['reason'],
         'notes' => $appt['notes'],
         'service_labels' => $labels,
+        'services' => implode(', ', $labels),
         'service_total' => $total,
         'service_total_formatted' => format_tnd($total),
     ], JSON_UNESCAPED_UNICODE);
+}
+
+function calendar_day_agenda_json(): void {
+    $doctor = auth_user();
+    header('Content-Type: application/json; charset=utf-8');
+    if (!$doctor) {
+        http_response_code(401);
+        echo json_encode(['error' => 'Session expiree.'], JSON_UNESCAPED_UNICODE);
+        return;
+    }
+    $date = $_GET['date'] ?? date('Y-m-d');
+    $dateTs = strtotime($date) ?: time();
+    $selectedDate = date('Y-m-d', $dateTs);
+    $events = calendar_fetch_events($doctor['id'], $selectedDate, $selectedDate);
+    echo json_encode([
+        'selected_date' => $selectedDate,
+        'events' => $events,
+    ], JSON_UNESCAPED_UNICODE);
+}
+
+function calendar_fetch_events(int $doctorId, string $rangeStart, string $rangeEnd): array {
+    $startDateTime = $rangeStart . ' 00:00:00';
+    $endDateTime = $rangeEnd . ' 23:59:59';
+    $stmt = db()->prepare('SELECT a.id, a.starts_at, a.ends_at, a.status, a.reason, a.notes, p.full_name AS patient_name FROM appointments a JOIN patients p ON p.id = a.patient_id WHERE a.doctor_id = ? AND a.starts_at BETWEEN ? AND ? ORDER BY a.starts_at');
+    $stmt->execute([$doctorId, $startDateTime, $endDateTime]);
+    $appointments = $stmt->fetchAll();
+
+    $appointmentIds = [];
+    foreach ($appointments as $appt) {
+        $appointmentIds[] = (int)$appt['id'];
+    }
+    $servicesByAppointment = calendar_services_by_appointment($doctorId, $appointmentIds);
+
+    $statusMap = [
+        'PLANIFIE' => 'scheduled',
+        'CONFIRME' => 'confirmed',
+        'TERMINE' => 'completed',
+        'ANNULE' => 'cancelled',
+        'NO_SHOW' => 'noshow',
+    ];
+
+    $events = [];
+    foreach ($appointments as $appt) {
+        $services = $servicesByAppointment[$appt['id']] ?? [];
+        $labels = [];
+        foreach ($services as $srv) {
+            $labels[] = $srv['name'] . ' x' . (int)$srv['qty'];
+        }
+        $statusKey = $statusMap[$appt['status']] ?? 'scheduled';
+        $events[] = [
+            'id' => (int)$appt['id'],
+            'date' => date('Y-m-d', strtotime($appt['starts_at'])),
+            'patient_name' => $appt['patient_name'],
+            'starts_at' => $appt['starts_at'],
+            'ends_at' => $appt['ends_at'],
+            'status' => $appt['status'],
+            'status_label_fr' => appointment_status_label_fr($appt['status']),
+            'services' => implode(', ', $labels),
+            'color_token' => 'status-' . $statusKey,
+        ];
+    }
+    return $events;
+}
+
+function calendar_services_by_appointment(int $doctorId, array $appointmentIds): array {
+    $servicesByAppointment = [];
+    if (!$appointmentIds) {
+        return $servicesByAppointment;
+    }
+    $placeholders = implode(',', array_fill(0, count($appointmentIds), '?'));
+    $params = array_merge([$doctorId], $appointmentIds);
+    $stmt = db()->prepare("SELECT aps.appointment_id, aps.qty, s.name, s.default_price FROM appointment_services aps JOIN services s ON s.id = aps.service_id WHERE s.doctor_id = ? AND aps.appointment_id IN ({$placeholders})");
+    $stmt->execute($params);
+    while ($row = $stmt->fetch()) {
+        $servicesByAppointment[(int)$row['appointment_id']][] = $row;
+    }
+    return $servicesByAppointment;
+}
+
+function calendar_services_for_appointment(int $doctorId, int $appointmentId): array {
+    $stmt = db()->prepare('SELECT aps.qty, s.name, s.default_price FROM appointment_services aps JOIN services s ON s.id = aps.service_id WHERE s.doctor_id = ? AND aps.appointment_id = ?');
+    $stmt->execute([$doctorId, $appointmentId]);
+    return $stmt->fetchAll();
 }

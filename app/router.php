@@ -34,6 +34,12 @@ switch ($route) {
     case'calendar-events-json':
         calendar_events_json();
         break;
+    case'calendar-day-agenda-json':
+        calendar_day_agenda_json();
+        break;
+    case'calendar':
+        calendar_page();
+        break;
     case'calendar-event-json':
         calendar_event_json();
         break;

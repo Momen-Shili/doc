@@ -158,6 +158,17 @@ function appointment_status_label(string $status): string {
     return $status;
 }
 
+function appointment_status_label_fr(string $status): string {
+    $map = [
+        'PLANIFIE' => 'Planifie',
+        'CONFIRME' => 'Confirme',
+        'TERMINE' => 'Termine',
+        'ANNULE' => 'Annule',
+        'NO_SHOW' => 'Absent',
+    ];
+    return $map[$status] ?? $status;
+}
+
 function generate_receipt_number(int $doctorId): string {
     $year = date('Y');
     $stmt = db()->prepare('SELECT COUNT(*) AS cnt FROM payments WHERE doctor_id = ? AND YEAR(created_at) = ?');

@@ -33,6 +33,16 @@ function appointments_create(): void {
     $patients = load_patients($doctorId);
     $services = load_services_for_form($doctorId, []);
     $errors = [];
+    $prefillDate = trim($_GET['date'] ?? '');
+    $prefillTime = trim($_GET['time'] ?? '');
+    $prefillStartsAt = '';
+    if ($prefillDate !== '' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $prefillDate)) {
+        if ($prefillTime !== '' && preg_match('/^\d{2}:\d{2}$/', $prefillTime)) {
+            $prefillStartsAt = $prefillDate . 'T' . $prefillTime;
+        } else {
+            $prefillStartsAt = $prefillDate . 'T09:00';
+        }
+    }
 
     if (is_post()) {
         verify_csrf();
@@ -71,6 +81,7 @@ function appointments_create(): void {
         'errors' => $errors,
         'patients' => $patients,
         'services' => $services,
+        'prefillStartsAt' => $prefillStartsAt,
     ]);
 }
 
