@@ -2,6 +2,7 @@
 $title = 'Ajouter un rendez-vous';
 ob_start();
 $statuses = [
+    'PENDING' => 'EN_ATTENTE',
     'PLANIFIE' => 'PLANIFIE',
     'CONFIRME' => 'CONFIRME',
     'TERMINE' => 'TERMINE',

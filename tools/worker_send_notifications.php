@@ -115,8 +115,10 @@ foreach ($jobs as $job) {
         if (!empty($response['success'])) {
             db()->prepare("UPDATE notifications_outbox SET status = 'SENT', external_id = ?, last_error = NULL WHERE id = ?")
                 ->execute([$response['external_id'], $jobId]);
-            db()->prepare("UPDATE reminders_log SET status = 'SENT', sent_at = NOW(), error_text = NULL WHERE id = ? AND doctor_id = ?")
-                ->execute([(int)$job['reminder_log_id'], $doctorId]);
+            if (!empty($job['reminder_log_id'])) {
+                db()->prepare("UPDATE reminders_log SET status = 'SENT', sent_at = NOW(), error_text = NULL WHERE id = ? AND doctor_id = ?")
+                    ->execute([(int)$job['reminder_log_id'], $doctorId]);
+            }
             $sent++;
         } else {
             $error = $response['error'] ?? 'Erreur envoi.';
@@ -133,8 +135,10 @@ foreach ($jobs as $job) {
         db()->prepare("UPDATE notifications_outbox SET status = ?, tries = ?, last_error = ?, next_retry_at = ? WHERE id = ?")
             ->execute([$status, $tries, $ex->getMessage(), $nextRetry, $jobId]);
         if ($status === 'FAILED') {
-            db()->prepare("UPDATE reminders_log SET status = 'FAILED', error_text = ? WHERE id = ? AND doctor_id = ?")
-                ->execute([$ex->getMessage(), (int)$job['reminder_log_id'], $doctorId]);
+            if (!empty($job['reminder_log_id'])) {
+                db()->prepare("UPDATE reminders_log SET status = 'FAILED', error_text = ? WHERE id = ? AND doctor_id = ?")
+                    ->execute([$ex->getMessage(), (int)$job['reminder_log_id'], $doctorId]);
+            }
         }
         log_error('Notification failed id=' . $jobId . ' error=' . $ex->getMessage());
         $failed++;

@@ -299,7 +299,7 @@ function import_appointment_row(int $doctorId, array $data) {
     if ($status === 'ABSENT') {
         $status = 'NO_SHOW';
     }
-    $allowed = ['PLANIFIE', 'CONFIRME', 'TERMINE', 'ANNULE', 'NO_SHOW'];
+    $allowed = ['PENDING','PLANIFIE', 'CONFIRME', 'TERMINE', 'ANNULE', 'NO_SHOW'];
     if (!in_array($status, $allowed, true)) {
         $status = 'PLANIFIE';
     }

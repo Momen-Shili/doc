@@ -1,7 +1,7 @@
 <?php
 $title = 'Rendez-vous';
 ob_start();
-$statuses = ['PLANIFIE','CONFIRME','TERMINE','ANNULE','NO_SHOW'];
+$statuses = ['PENDING','PLANIFIE','CONFIRME','TERMINE','ANNULE','NO_SHOW'];
 ?>
 <div class="rounded-2xl bg-slate-900/60 p-6 ring-1 ring-white/10">
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">

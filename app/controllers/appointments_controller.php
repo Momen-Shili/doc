@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 function appointments_index(): void {
     require_auth();
     $doctorId = auth_user()['id'];
@@ -25,6 +25,107 @@ function appointments_index(): void {
         'date' => $date,
         'status' => $status,
     ]);
+}
+
+function appointments_pending(): void {
+    require_auth();
+    $doctorId = auth_user()['id'];
+
+    $stmt = db()->prepare("SELECT a.*, p.full_name AS patient_name, p.phone AS patient_phone, p.email AS patient_email
+        FROM appointments a
+        LEFT JOIN patients p ON p.id = a.patient_id
+        WHERE a.doctor_id = ? AND a.status = 'PENDING'
+        ORDER BY a.starts_at ASC");
+    $stmt->execute([$doctorId]);
+    $appointments = $stmt->fetchAll();
+
+    echo render('pages/appointments/pending.php', [
+        'appointments' => $appointments,
+    ]);
+}
+
+function appointments_pending_confirm(): void {
+    require_auth();
+    if (!is_post()) {
+        http_response_code(405);
+        echo render('pages/error.php', ['message' => 'Methode non autorisee.']);
+        return;
+    }
+    verify_csrf();
+    $doctor = auth_user();
+    $doctorId = $doctor['id'];
+    $id = (int)($_POST['id'] ?? 0);
+
+    $stmt = db()->prepare('SELECT * FROM appointments WHERE id = ? AND doctor_id = ? AND status = ?');
+    $stmt->execute([$id, $doctorId, 'PENDING']);
+    $appointment = $stmt->fetch();
+    if (!$appointment) {
+        flash('error', 'Demande introuvable.');
+        redirect('?r=appointments-pending');
+    }
+
+    $patientId = (int)($appointment['patient_id'] ?? 0);
+    $patientName = trim($appointment['public_patient_name'] ?? '');
+    $patientPhone = trim($appointment['public_patient_phone'] ?? '');
+    $patientEmail = trim($appointment['public_patient_email'] ?? '');
+
+    if ($patientId <= 0) {
+        if ($patientName === '') {
+            $patientName = 'Patient';
+        }
+        $normalizedPhone = $patientPhone !== '' ? (normalize_tn_phone($patientPhone) ?? $patientPhone) : null;
+        $stmt = db()->prepare('INSERT INTO patients (doctor_id, full_name, phone, email, created_at) VALUES (?,?,?,?,NOW())');
+        $stmt->execute([$doctorId, $patientName, $normalizedPhone, $patientEmail !== '' ? $patientEmail : null]);
+        $patientId = (int)db()->lastInsertId();
+    }
+
+    $stmt = db()->prepare('UPDATE appointments SET status = ?, patient_id = ? WHERE id = ? AND doctor_id = ?');
+    $stmt->execute(['CONFIRME', $patientId, $id, $doctorId]);
+
+    if ($patientEmail !== '') {
+        $dateLabel = $appointment['starts_at'] ? date('d/m/Y H:i', strtotime($appointment['starts_at'])) : '';
+        $serviceName = $appointment['reason'] ?: 'Rendez-vous';
+        $message = "Votre rendez-vous est confirme.\nMedecin: " . ($doctor['full_name'] ?? '') . "\nDate: {$dateLabel}\nService: {$serviceName}\nAdresse: " . ($doctor['address_public'] ?? '');
+        enqueue_outbox_email($doctorId, $patientEmail, 'Rendez-vous confirme', $message, null);
+    }
+
+    flash('success', 'Demande confirmee.');
+    redirect('?r=appointments-pending');
+}
+
+function appointments_pending_refuse(): void {
+    require_auth();
+    if (!is_post()) {
+        http_response_code(405);
+        echo render('pages/error.php', ['message' => 'Methode non autorisee.']);
+        return;
+    }
+    verify_csrf();
+    $doctor = auth_user();
+    $doctorId = $doctor['id'];
+    $id = (int)($_POST['id'] ?? 0);
+
+    $stmt = db()->prepare('SELECT * FROM appointments WHERE id = ? AND doctor_id = ? AND status = ?');
+    $stmt->execute([$id, $doctorId, 'PENDING']);
+    $appointment = $stmt->fetch();
+    if (!$appointment) {
+        flash('error', 'Demande introuvable.');
+        redirect('?r=appointments-pending');
+    }
+
+    $stmt = db()->prepare('UPDATE appointments SET status = ? WHERE id = ? AND doctor_id = ?');
+    $stmt->execute(['ANNULE', $id, $doctorId]);
+
+    $patientEmail = trim($appointment['public_patient_email'] ?? '');
+    if ($patientEmail !== '') {
+        $dateLabel = $appointment['starts_at'] ? date('d/m/Y H:i', strtotime($appointment['starts_at'])) : '';
+        $serviceName = $appointment['reason'] ?: 'Rendez-vous';
+        $message = "Votre demande n'a pas pu etre confirmee.\nMedecin: " . ($doctor['full_name'] ?? '') . "\nDate: {$dateLabel}\nService: {$serviceName}\nContact: " . ($doctor['phone'] ?? '');
+        enqueue_outbox_email($doctorId, $patientEmail, 'Rendez-vous non confirme', $message, null);
+    }
+
+    flash('success', 'Demande refusee.');
+    redirect('?r=appointments-pending');
 }
 
 function appointments_create(): void {
@@ -55,7 +156,7 @@ function appointments_create(): void {
         $errors = validate_appointment($data);
 
         if (!$errors && appointment_overlaps($doctorId, $data['starts_at'], $data['ends_at'])) {
-            $errors[] = 'Chevauchement détecté avec un autre rendez-vous.';
+            $errors[] = 'Chevauchement detecte avec un autre rendez-vous.';
         }
 
         if (!$errors) {
@@ -71,7 +172,7 @@ function appointments_create(): void {
             ]);
             $appointmentId = (int)db()->lastInsertId();
             sync_appointment_services($doctorId, $appointmentId, $selectedServices);
-            flash('success', 'Rendez-vous ajouté.');
+            flash('success', 'Rendez-vous ajoute.');
             redirect('?r=appointments');
         }
         set_old($data);
@@ -114,7 +215,7 @@ function appointments_edit(): void {
         $errors = validate_appointment($data);
 
         if (!$errors && appointment_overlaps($doctorId, $data['starts_at'], $data['ends_at'], $id)) {
-            $errors[] = 'Chevauchement détecté avec un autre rendez-vous.';
+            $errors[] = 'Chevauchement detecte avec un autre rendez-vous.';
         }
 
         if (!$errors) {
@@ -130,7 +231,7 @@ function appointments_edit(): void {
                 $doctorId,
             ]);
             sync_appointment_services($doctorId, $id, $selectedServices);
-            flash('success', 'Rendez-vous mis à jour.');
+            flash('success', 'Rendez-vous mis a jour.');
             redirect('?r=appointments');
         }
         $appointment = array_merge($appointment, $data);
@@ -150,7 +251,7 @@ function appointments_cancel(): void {
     require_auth();
     if (!is_post()) {
         http_response_code(405);
-        echo render('pages/error.php', ['message' => 'Méthode non autorisée.']);
+        echo render('pages/error.php', ['message' => 'Methode non autorisee.']);
         return;
     }
     verify_csrf();
@@ -158,7 +259,7 @@ function appointments_cancel(): void {
     $id = (int)($_POST['id'] ?? 0);
     $stmt = db()->prepare("UPDATE appointments SET status = 'ANNULE' WHERE id = ? AND doctor_id = ?");
     $stmt->execute([$id, $doctorId]);
-    flash('success', 'Rendez-vous annulé.');
+    flash('success', 'Rendez-vous annule.');
     redirect('?r=appointments');
 }
 
@@ -181,19 +282,19 @@ function appointment_payload(): array {
 
 function validate_appointment(array $data): array {
     $errors = [];
-    $allowed = ['PLANIFIE', 'CONFIRME', 'TERMINE', 'ANNULE', 'NO_SHOW'];
+    $allowed = ['PENDING', 'PLANIFIE', 'CONFIRME', 'TERMINE', 'ANNULE', 'NO_SHOW'];
     if ($data['patient_id'] <= 0) {
         $errors[] = 'Patient requis.';
     }
     if ($data['starts_at'] === '' || $data['ends_at'] === '') {
-        $errors[] = 'Dates de début et fin requises.';
+        $errors[] = 'Dates de debut et fin requises.';
     } else {
         $start = strtotime($data['starts_at']);
         $end = strtotime($data['ends_at']);
         if ($start === false || $end === false) {
             $errors[] = 'Dates invalides.';
         } elseif ($end <= $start) {
-            $errors[] = 'La fin doit être après le début.';
+            $errors[] = 'La fin doit etre apres le debut.';
         }
     }
     if (!in_array($data['status'], $allowed, true)) {

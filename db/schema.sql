@@ -9,6 +9,16 @@ CREATE TABLE doctors (
   password_hash VARCHAR(255) NOT NULL,
   plan VARCHAR(50) NOT NULL DEFAULT 'standard',
   specialty VARCHAR(150) NULL,
+  city VARCHAR(120) NULL,
+  address_public VARCHAR(255) NULL,
+  public_phone VARCHAR(50) NULL,
+  bio_public TEXT NULL,
+  public_photo VARCHAR(255) NULL,
+  public_slug VARCHAR(120) UNIQUE,
+  is_public TINYINT(1) NOT NULL DEFAULT 1,
+  latitude DECIMAL(10,7) NULL,
+  longitude DECIMAL(10,7) NULL,
+  geo_updated_at DATETIME NULL,
   phone VARCHAR(50) NULL,
   theme_preference ENUM('dark','light') NOT NULL DEFAULT 'dark',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -48,17 +58,22 @@ CREATE TABLE appointments (
   id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   doctor_id INT UNSIGNED NOT NULL,
   external_id VARCHAR(64) NULL,
-  patient_id INT UNSIGNED NOT NULL,
+  patient_id INT UNSIGNED NULL,
   starts_at DATETIME NOT NULL,
   ends_at DATETIME NOT NULL,
-  status ENUM('PLANIFIE','CONFIRME','TERMINE','ANNULE','NO_SHOW') NOT NULL DEFAULT 'PLANIFIE',
+  status ENUM('PLANIFIE','CONFIRME','TERMINE','ANNULE','NO_SHOW','PENDING') NOT NULL DEFAULT 'PLANIFIE',
   reason VARCHAR(255) NULL,
   notes TEXT NULL,
+  public_patient_name VARCHAR(190) NULL,
+  public_patient_phone VARCHAR(30) NULL,
+  public_patient_email VARCHAR(190) NULL,
+  public_booking_token VARCHAR(64) NULL,
+  source ENUM('INTERNAL','PUBLIC') NOT NULL DEFAULT 'INTERNAL',
   created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   UNIQUE KEY uq_appointments_doctor_external (doctor_id, external_id),
   INDEX idx_appointments_doctor_starts (doctor_id, starts_at),
   CONSTRAINT fk_appointments_doctor FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE,
-  CONSTRAINT fk_appointments_patient FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE CASCADE
+  CONSTRAINT fk_appointments_patient FOREIGN KEY (patient_id) REFERENCES patients(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE payments (
@@ -232,7 +247,7 @@ CREATE TABLE doctor_notification_settings (
 CREATE TABLE notifications_outbox (
   id BIGINT UNSIGNED PRIMARY KEY AUTO_INCREMENT,
   doctor_id INT UNSIGNED NOT NULL,
-  reminder_log_id INT UNSIGNED NOT NULL,
+  reminder_log_id INT UNSIGNED NULL,
   channel ENUM('EMAIL','SMS','WHATSAPP') NOT NULL,
   to_address VARCHAR(255) NOT NULL,
   payload_json JSON NOT NULL,
@@ -246,7 +261,7 @@ CREATE TABLE notifications_outbox (
   KEY idx_outbox_status_next (status, next_retry_at),
   KEY idx_outbox_doctor (doctor_id),
   CONSTRAINT fk_outbox_doctor FOREIGN KEY (doctor_id) REFERENCES doctors(id),
-  CONSTRAINT fk_outbox_reminder FOREIGN KEY (reminder_log_id) REFERENCES reminders_log(id)
+  CONSTRAINT fk_outbox_reminder FOREIGN KEY (reminder_log_id) REFERENCES reminders_log(id) ON DELETE SET NULL
 ) ENGINE=InnoDB;
 
 CREATE TABLE whatsapp_template_map (
@@ -259,4 +274,35 @@ CREATE TABLE whatsapp_template_map (
   UNIQUE KEY uq_wa_map (doctor_id, reminder_template_id),
   CONSTRAINT fk_wa_doctor FOREIGN KEY (doctor_id) REFERENCES doctors(id),
   CONSTRAINT fk_wa_rt FOREIGN KEY (reminder_template_id) REFERENCES reminder_templates(id)
+) ENGINE=InnoDB;
+
+CREATE TABLE doctor_working_hours (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  doctor_id INT UNSIGNED NOT NULL,
+  weekday TINYINT NOT NULL,
+  start_time TIME NOT NULL,
+  end_time TIME NOT NULL,
+  slot_step_minutes INT NOT NULL DEFAULT 15,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_doc_day (doctor_id, weekday, start_time, end_time),
+  KEY idx_doc_day (doctor_id, weekday),
+  CONSTRAINT fk_hours_doctor FOREIGN KEY (doctor_id) REFERENCES doctors(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+CREATE TABLE rate_limits (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  rl_key VARCHAR(190) NOT NULL UNIQUE,
+  hits INT NOT NULL DEFAULT 0,
+  reset_at DATETIME NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE geocode_cache (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  query_hash CHAR(40) NOT NULL UNIQUE,
+  query_text VARCHAR(255) NOT NULL,
+  latitude DECIMAL(10,7) NULL,
+  longitude DECIMAL(10,7) NULL,
+  city VARCHAR(120) NULL,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;

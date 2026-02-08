@@ -16,6 +16,11 @@ $nav = [
         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />'
     ],
     [
+        'route' => 'appointments-pending',
+        'label' => 'Demandes',
+        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3h9m-9 3h5.25M3.75 6h16.5A1.5 1.5 0 0121.75 7.5v9a1.5 1.5 0 01-1.5 1.5H6l-3.75 3v-3H3.75A1.5 1.5 0 012.25 16.5v-9A1.5 1.5 0 013.75 6z" />'
+    ],
+    [
         'route' => 'services',
         'label' => 'Services',
         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12a7.5 7.5 0 0015 0 7.5 7.5 0 00-15 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6" />'

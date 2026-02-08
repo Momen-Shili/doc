@@ -12,7 +12,7 @@ function auth_user(): ?array {
     if ($user) {
         return $user;
     }
-    $stmt = db()->prepare('SELECT id, full_name, email, specialty, phone, is_active, suspended_at, plan, theme_preference FROM doctors WHERE id = ?');
+    $stmt = db()->prepare('SELECT id, full_name, email, specialty, phone, public_phone, city, address_public, bio_public, public_slug, public_photo, latitude, longitude, is_active, suspended_at, plan, theme_preference FROM doctors WHERE id = ?');
     $stmt->execute([$doctorId]);
     $user = $stmt->fetch();
     return $user ? $user : null;

@@ -46,6 +46,7 @@
 - Devise : TND (3 decimales, millimes).
 - Notifications reelles : file d'attente + worker CLI (pas d'envoi direct).
 - Calendrier du dashboard : rafraichissement automatique toutes les 60 secondes (polling).
+- Geolocalisation publique : utilise Nominatim (OpenStreetMap), pas de stockage de la position patient.
 
 ## Nouvelles tables
 - `clinical_notes` (notes cliniques)
@@ -65,6 +66,12 @@
 ```
 ALTER TABLE doctors
   ADD COLUMN theme_preference ENUM('dark','light') NOT NULL DEFAULT 'dark';
+
+ALTER TABLE doctors
+  ADD COLUMN public_phone VARCHAR(50) NULL,
+  ADD COLUMN latitude DECIMAL(10,7) NULL,
+  ADD COLUMN longitude DECIMAL(10,7) NULL,
+  ADD COLUMN geo_updated_at DATETIME NULL;
 
 ALTER TABLE admins
   ADD COLUMN theme_preference ENUM('dark','light') NOT NULL DEFAULT 'dark';
@@ -125,6 +132,24 @@ CREATE TABLE payment_items (
   line_total DECIMAL(10,3) NOT NULL DEFAULT 0,
   CONSTRAINT fk_payment_items_payment FOREIGN KEY (payment_id) REFERENCES payments(id) ON DELETE CASCADE,
   CONSTRAINT fk_payment_items_service FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+CREATE TABLE rate_limits (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  rl_key VARCHAR(190) NOT NULL UNIQUE,
+  hits INT NOT NULL DEFAULT 0,
+  reset_at DATETIME NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+CREATE TABLE geocode_cache (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  query_hash CHAR(40) NOT NULL UNIQUE,
+  query_text VARCHAR(255) NOT NULL,
+  latitude DECIMAL(10,7) NULL,
+  longitude DECIMAL(10,7) NULL,
+  city VARCHAR(120) NULL,
+  updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
 
 CREATE TABLE reminder_templates (

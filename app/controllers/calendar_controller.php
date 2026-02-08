@@ -180,7 +180,7 @@ function calendar_event_status(): void {
     verify_csrf();
     $id = (int)($_GET['id'] ?? 0);
     $status = trim($_POST['status'] ?? '');
-    $allowed = ['PLANIFIE', 'CONFIRME', 'TERMINE', 'ANNULE', 'NO_SHOW'];
+    $allowed = ['PENDING','PLANIFIE', 'CONFIRME', 'TERMINE', 'ANNULE', 'NO_SHOW'];
     if ($id <= 0 || !in_array($status, $allowed, true)) {
         http_response_code(422);
         echo json_encode(['success' => false, 'error' => 'Statut invalide.'], JSON_UNESCAPED_UNICODE);
@@ -279,7 +279,7 @@ function calendar_normalize_datetime(string $value): string {
 
 function calendar_validate(int $doctorId, array $payload, int $id): array {
     $errors = [];
-    $allowed = ['PLANIFIE', 'CONFIRME', 'TERMINE', 'ANNULE', 'NO_SHOW'];
+    $allowed = ['PENDING','PLANIFIE', 'CONFIRME', 'TERMINE', 'ANNULE', 'NO_SHOW'];
     if ($payload['patient_id'] <= 0) {
         $errors['patient_id'] = 'Patient requis.';
     } else {

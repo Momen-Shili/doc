@@ -13,6 +13,7 @@ require_once __DIR__ . '/controllers/import_controller.php';
 require_once __DIR__ . '/controllers/reminders_controller.php';
 require_once __DIR__ . '/controllers/theme_controller.php';
 require_once __DIR__ . '/controllers/notifications_controller.php';
+require_once __DIR__ . '/controllers/public_controller.php';
 
 $route = $_GET['r'] ?? 'dashboard';
 
@@ -28,6 +29,9 @@ switch ($route) {
         break;
     case'profile':
         auth_profile();
+        break;
+    case'doctor-geocode-address':
+        doctor_geocode_address();
         break;
     case'dashboard':
         dashboard_index();
@@ -58,6 +62,30 @@ switch ($route) {
         break;
     case'calendar':
         calendar_page();
+        break;
+    case'public-home':
+        public_home();
+        break;
+    case'public-doctors':
+        public_doctors();
+        break;
+    case'public-doctor':
+        public_doctor();
+        break;
+    case'public-slots-json':
+        public_slots_json();
+        break;
+    case'public-geocode-reverse':
+        public_geocode_reverse();
+        break;
+    case'public-book':
+        public_book();
+        break;
+    case'public-thanks':
+        public_thanks();
+        break;
+    case'public-theme-toggle':
+        public_theme_toggle();
         break;
     case'calendar-event-json':
         calendar_event_json();
@@ -106,6 +134,15 @@ switch ($route) {
         break;
     case'appointments':
         appointments_index();
+        break;
+    case'appointments-pending':
+        appointments_pending();
+        break;
+    case'appointments-pending-confirm':
+        appointments_pending_confirm();
+        break;
+    case'appointments-pending-refuse':
+        appointments_pending_refuse();
         break;
     case'appointments-create':
         appointments_create();

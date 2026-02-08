@@ -90,6 +90,118 @@ function normalize_tn_phone(string $phone): ?string {
     return null;
 }
 
+function slugify(string $text): string {
+    $text = trim($text);
+    if ($text === '') {
+        return '';
+    }
+    $text = mb_strtolower($text, 'UTF-8');
+    $text = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $text);
+    $text = preg_replace('/[^a-z0-9]+/i', '-', $text ?? '');
+    $text = trim($text ?? '', '-');
+    return $text !== '' ? $text : 'medecin';
+}
+
+function unique_doctor_slug(int $doctorId, string $base): string {
+    $slug = $base;
+    $i = 0;
+    while (true) {
+        $check = db()->prepare('SELECT id FROM doctors WHERE public_slug = ? AND id != ? LIMIT 1');
+        $check->execute([$slug, $doctorId]);
+        if (!$check->fetch()) {
+            return $slug;
+        }
+        $i++;
+        $slug = $base . '-' . $i;
+    }
+}
+
+function geocode_address(string $address): ?array {
+    $address = trim($address);
+    if ($address === '') {
+        return null;
+    }
+    $hash = sha1(mb_strtolower($address, 'UTF-8'));
+    $stmt = db()->prepare('SELECT latitude, longitude, city FROM geocode_cache WHERE query_hash = ? LIMIT 1');
+    $stmt->execute([$hash]);
+    $row = $stmt->fetch();
+    if ($row && $row['latitude'] !== null && $row['longitude'] !== null) {
+        return [
+            'lat' => (float)$row['latitude'],
+            'lng' => (float)$row['longitude'],
+            'city' => $row['city'] ?? null,
+        ];
+    }
+
+    $url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' . urlencode($address);
+    $response = http_get_json($url);
+    if (!$response || empty($response[0]['lat']) || empty($response[0]['lon'])) {
+        return null;
+    }
+    $lat = (float)$response[0]['lat'];
+    $lng = (float)$response[0]['lon'];
+    $city = $response[0]['address']['city'] ?? $response[0]['address']['town'] ?? $response[0]['address']['village'] ?? null;
+    $display = $response[0]['display_name'] ?? null;
+    $stmt = db()->prepare('INSERT INTO geocode_cache (query_hash, query_text, latitude, longitude, city, updated_at) VALUES (?,?,?,?,?,NOW()) ON DUPLICATE KEY UPDATE latitude = VALUES(latitude), longitude = VALUES(longitude), city = VALUES(city), updated_at = NOW()');
+    $stmt->execute([$hash, $address, $lat, $lng, $city]);
+    return ['lat' => $lat, 'lng' => $lng, 'city' => $city, 'address' => $display];
+}
+
+function reverse_geocode(float $lat, float $lng): ?array {
+    if ($lat < -90 || $lat > 90 || $lng < -180 || $lng > 180) {
+        return null;
+    }
+    $query = 'reverse:' . $lat . ',' . $lng;
+    $hash = sha1($query);
+    $stmt = db()->prepare('SELECT city FROM geocode_cache WHERE query_hash = ? LIMIT 1');
+    $stmt->execute([$hash]);
+    $row = $stmt->fetch();
+    if ($row && !empty($row['city'])) {
+        return ['city' => $row['city']];
+    }
+    $url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' . urlencode((string)$lat) . '&lon=' . urlencode((string)$lng);
+    $response = http_get_json($url);
+    if (!$response || empty($response['address'])) {
+        return null;
+    }
+    $city = $response['address']['city'] ?? $response['address']['town'] ?? $response['address']['village'] ?? null;
+    $stmt = db()->prepare('INSERT INTO geocode_cache (query_hash, query_text, city, updated_at) VALUES (?,?,?,NOW()) ON DUPLICATE KEY UPDATE city = VALUES(city), updated_at = NOW()');
+    $stmt->execute([$hash, $query, $city]);
+    return ['city' => $city];
+}
+
+function http_get_json(string $url): ?array {
+    $ch = curl_init($url);
+    if (!$ch) {
+        return null;
+    }
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 8,
+        CURLOPT_HTTPHEADER => [
+            'Accept: application/json',
+            'User-Agent: CabinetSaaS/1.0 (contact@smartcare.tn)',
+        ],
+    ]);
+    $raw = curl_exec($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    if ($raw === false || $status >= 400) {
+        return null;
+    }
+    $data = json_decode($raw, true);
+    return is_array($data) ? $data : null;
+}
+
+function haversine_km(float $lat1, float $lng1, float $lat2, float $lng2): float {
+    $earth = 6371.0;
+    $dLat = deg2rad($lat2 - $lat1);
+    $dLng = deg2rad($lng2 - $lng1);
+    $a = sin($dLat / 2) ** 2 + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng / 2) ** 2;
+    $c = 2 * asin(min(1, sqrt($a)));
+    return $earth * $c;
+}
+
 function set_theme_cookie(string $theme): void {
     $value = ($theme === 'light') ? 'light' : 'dark';
     $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
@@ -155,11 +267,15 @@ function appointment_status_label(string $status): string {
     if ($status === 'NO_SHOW') {
         return 'ABSENT';
     }
+    if ($status === 'PENDING') {
+        return 'EN_ATTENTE';
+    }
     return $status;
 }
 
 function appointment_status_label_fr(string $status): string {
     $map = [
+        'PENDING' => 'En attente',
         'PLANIFIE' => 'Planifie',
         'CONFIRME' => 'Confirme',
         'TERMINE' => 'Termine',
@@ -267,6 +383,12 @@ function rate_limit_register(string $key, int $max = 5, int $window = 300, int $
 
 function rate_limit_clear(string $key): void {
     unset($_SESSION['_rate'][$key]);
+}
+
+function enqueue_outbox_email(int $doctorId, string $to, string $subject, string $message, ?int $reminderLogId = null): void {
+    $payload = json_encode(['subject' => $subject, 'message' => $message], JSON_UNESCAPED_UNICODE);
+    $stmt = db()->prepare('INSERT INTO notifications_outbox (doctor_id, reminder_log_id, channel, to_address, payload_json, status) VALUES (?,?,?,?,?,?)');
+    $stmt->execute([$doctorId, $reminderLogId, 'EMAIL', $to, $payload, 'PENDING']);
 }
 
 function daterange_days(string $start, string $end): array {
