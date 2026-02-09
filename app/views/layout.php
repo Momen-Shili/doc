@@ -54,7 +54,11 @@ $theme = current_theme();
                 </div>
             </main>
         </div>
+    <?php elseif (isset($isLandingPage) && $isLandingPage): ?>
+        <!-- Landing page: full width, no container -->
+        <?= $content ?>
     <?php else: ?>
+        <!-- Login/Register pages: centered container -->
         <main class="min-h-screen flex items-center justify-center px-4 bg-slate-950">
             <?= $content ?>
         </main>

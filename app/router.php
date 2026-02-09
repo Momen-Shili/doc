@@ -15,9 +15,12 @@ require_once __DIR__ . '/controllers/theme_controller.php';
 require_once __DIR__ . '/controllers/notifications_controller.php';
 require_once __DIR__ . '/controllers/public_controller.php';
 
-$route = $_GET['r'] ?? 'dashboard';
+$route = $_GET['r'] ?? 'landing';
 
 switch ($route) {
+    case 'landing':
+        echo render('pages/landing.php', ['title' => 'Cabinet SaaS']);
+        break;
     case'login':
         auth_login();
         break;
